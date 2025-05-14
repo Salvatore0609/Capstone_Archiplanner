@@ -10,25 +10,29 @@ function LoginSuccess() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-    const avatar = decodeURIComponent(params.get("avatar") || "");
-    const email = params.get("email");
-    const nome = params.get("name");
+    const encoded = params.get("data");
+    if (!encoded) return (window.location.href = "/");
 
-    if (!token) {
-      window.location.href = "/";
-      return;
+    let userData;
+    try {
+      const json = atob(decodeURIComponent(encoded));
+      userData = JSON.parse(json);
+    } catch {
+      return (window.location.href = "/");
     }
-    //Salva i dati
-    const userData = { token, email, nome, avatar, provider: "google" };
-    saveToken(token);
+
+    if (!userData.token) {
+      return (window.location.href = "/");
+    }
+
+    saveToken(userData.token);
     saveUserData(userData);
     dispatch(loginGoogleSuccess(userData));
-    //Timer per il caricamento
+
     const timer = setTimeout(() => {
       setShowContent(false);
       window.location.href = "/dashboard";
-    }, 5000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [dispatch]);

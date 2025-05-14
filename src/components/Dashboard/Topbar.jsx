@@ -9,12 +9,13 @@ import { logoutGoogle, logoutNormal } from "../../redux/action/LoginActions";
 const Topbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user: googleUser } = useSelector((state) => state.loginGoogle);
-  const { user: normalUser } = useSelector((state) => state.loginNormal);
+  const activeUser = useSelector((state) => state.loginGoogle.user || state.loginNormal.user);
+  console.log("User in Topbar:", activeUser);
+  const wholeState = useSelector((state) => state);
+  console.log("Stato redux completo top:", wholeState);
 
-  const activeUser = googleUser || normalUser;
-
-  const avatarUrl = activeUser?.avatar || activeUser?.userData?.avatar || activeUser?.picture;
+  const getAvatarUrl = () => activeUser?.avatar;
+  const avatarUrl = getAvatarUrl();
 
   const handleLogout = () => {
     dispatch(logoutNormal());

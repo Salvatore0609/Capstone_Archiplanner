@@ -54,9 +54,12 @@ function Register({ show, onClose }) {
       formData.append("file", imageFile);
     }
 
-    dispatch(registerUser(formData)).then(() => {
-      onClose();
-    });
+    dispatch(registerUser(formData))
+      .then((result) => {
+        if (result.error) throw result.error;
+        onClose();
+      })
+      .catch(() => {});
   };
 
   return (

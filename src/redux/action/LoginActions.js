@@ -43,14 +43,19 @@ export const LOGIN_NORMAL_FAILURE = "auth/LOGIN_NORMAL_FAILURE";
 export const LOGOUT_NORMAL = "auth/LOGOUT_NORMAL";
 
 export const loginNormalRequest = () => ({ type: LOGIN_NORMAL_REQUEST });
-export const loginNormalSuccess = (userData) => ({ type: LOGIN_NORMAL_SUCCESS, payload: userData });
+export const loginNormalSuccess = (userData, token) => {
+  const avatar = userData.avatar;
+  return {
+    type: LOGIN_NORMAL_SUCCESS,
+    payload: { ...userData, avatar, token },
+  };
+};
 export const loginNormalFailure = (error) => ({ type: LOGIN_NORMAL_FAILURE, payload: error });
 export const logoutNormal = () => ({ type: LOGOUT_NORMAL });
 
 export const loginUser = (username, password, navigate) => async (dispatch) => {
   dispatch(loginNormalRequest());
   try {
-    // LOGIN API
     const response = await fetch(`${import.meta.env.VITE_API_URL}/utenti/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -66,24 +71,8 @@ export const loginUser = (username, password, navigate) => async (dispatch) => {
     const token = data.token;
     saveToken(token);
 
-    // FETCH USER PROFILE
-    const profileRes = await fetch(`${import.meta.env.VITE_API_URL}/utenti/current-user`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!profileRes.ok) {
-      throw new Error("Impossibile caricare il profilo");
-    }
-
-    const profile = await profileRes.json();
-
-    // COMBINA token + profilo
-    const fullUserData = { token, ...profile };
-
-    dispatch(loginNormalSuccess(fullUserData));
-    navigate("/login-success");
+    // Reindirizza alla pagina di successo specifica per login normale
+    navigate(`/login-normal-success?token=${token}`);
   } catch (error) {
     dispatch(loginNormalFailure(error.message));
     alert(error.message);
@@ -99,16 +88,13 @@ export const LOGIN_GOOGLE_FAILURE = "auth/LOGIN_GOOGLE_FAILURE";
 export const LOGOUT_GOOGLE = "auth/LOGOUT_GOOGLE";
 
 export const loginGoogleRequest = () => ({ type: LOGIN_GOOGLE_REQUEST });
-export const loginGoogleSuccess = (userData) => ({
-  type: LOGIN_GOOGLE_SUCCESS,
-  userData: {
-    token: userData.token,
-    userData: {
-      ...userData.userData,
-      avatar: userData.avatar,
-    },
-  },
-});
+export const loginGoogleSuccess = (userData) => {
+  const avatar = userData.avatar;
+  return {
+    type: LOGIN_GOOGLE_SUCCESS,
+    payload: { ...userData, avatar },
+  };
+};
 export const loginGoogleFailure = (error) => ({ type: LOGIN_GOOGLE_FAILURE, payload: error });
 export const logoutGoogle = () => ({ type: LOGOUT_GOOGLE });
 

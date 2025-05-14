@@ -5,7 +5,6 @@ import { FaRegUserCircle } from "react-icons/fa";
 import Sidebar from "../components/Dashboard/Sidebar";
 import Topbar from "../components/Dashboard/Topbar";
 import { fetchProfile } from "../redux/action/LoginActions";
-import { getToken } from "../redux/utils/authUtils";
 
 const languageMap = {
   it: "Italiano",
@@ -15,28 +14,11 @@ const languageMap = {
 };
 
 export default function ProfileDetails() {
-  const dispatch = useDispatch();
-
   // Recupera i dati da Redux
-  const googleUser = useSelector((state) => state.loginGoogle?.user);
-  const normalUser = useSelector((state) => state.loginNormal?.user);
   const loadingNormal = useSelector((state) => state.loginNormal.loginLoading);
   const loadingGoogle = useSelector((state) => state.loginGoogle.loginLoading);
-
-  const [showSpinner, setShowSpinner] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSpinner(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Effetto per il caricamento iniziale
-  useEffect(() => {
-    if (getToken()) {
-      dispatch(fetchProfile());
-    }
-  }, [dispatch]);
-
+  const activeUser = useSelector((state) => state.loginGoogle.user || state.loginNormal.user);
+  const dispatch = useDispatch();
   // Stato del form
   const [formData, setFormData] = useState({
     nome: "",
@@ -51,36 +33,37 @@ export default function ProfileDetails() {
     avatar: null,
   });
 
-  // Aggiornamento formData ottimizzato
+  const getAvatarUrl = () => activeUser?.avatar;
+
   useEffect(() => {
-    const user = googleUser || normalUser;
-    if (user) {
+    if (activeUser) {
       setFormData({
-        nome: user.nome || "",
-        cognome: user.cognome || "",
-        email: user.email || "",
-        username: user.username || "",
-        annoNascita: user.annoNascita || "",
-        luogoNascita: user.luogoNascita || "",
-        residenza: user.residenza || "",
-        nomeCompagnia: user.nomeCompagnia || "",
-        lingua: user.lingua || "it",
-        avatar: user.avatar || null,
+        nome: activeUser.nome || "",
+        cognome: activeUser.cognome || "",
+        email: activeUser.email || "",
+        username: activeUser.username || "",
+        annoNascita: activeUser.annoNascita || "",
+        luogoNascita: activeUser.luogoNascita || "",
+        residenza: activeUser.residenza || "",
+        nomeCompagnia: activeUser.nomeCompagnia || "",
+        lingua: activeUser.lingua || "it",
+        avatar: activeUser.avatar || null,
       });
     }
-  }, [googleUser, normalUser]);
+  }, [activeUser]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const getAvatarUrl = () => {
-    const user = googleUser || normalUser;
-    return user?.avatar || user?.userData?.avatar || user?.picture;
-  };
-  // Condizione di caricamento migliorata
-  if (showSpinner && (loadingNormal || loadingGoogle) && !googleUser && !normalUser) {
+  useEffect(() => {
+    if (!activeUser) {
+      dispatch(fetchProfile());
+    }
+  }, [activeUser, dispatch]);
+
+  if (loadingNormal || loadingGoogle) {
     return (
       <Container className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
         <Spinner animation="border" role="status">

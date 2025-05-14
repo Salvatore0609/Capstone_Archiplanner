@@ -1,18 +1,15 @@
 // loginGoogleReducer.js
 
 import { LOGIN_GOOGLE_REQUEST, LOGIN_GOOGLE_SUCCESS, LOGIN_GOOGLE_FAILURE, LOGOUT_GOOGLE } from "../action/LoginActions";
-import { getToken, getUserData } from "../utils/authUtils";
+import { getToken, saveUserData } from "../utils/authUtils";
 
 const initialState = {
   loading: false,
-  user: getUserData() || {
-    token: null,
-    userData: {
-      avatar: null,
-    },
-  },
+  user: null,
   error: null,
   isAuthenticated: !!getToken(),
+  loginLoading: false,
+  registerLoading: false,
 };
 
 export default function loginGoogleReducer(state = initialState, action) {
@@ -20,6 +17,7 @@ export default function loginGoogleReducer(state = initialState, action) {
     case LOGIN_GOOGLE_REQUEST:
       return { ...state, loading: true, error: null };
     case LOGIN_GOOGLE_SUCCESS:
+      saveUserData(action.payload);
       return {
         ...state,
         isAuthenticated: true,

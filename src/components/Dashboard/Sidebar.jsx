@@ -39,15 +39,12 @@ const Sidebar = () => {
 
   const currentProject = location.state?.project;
 
-  const { user: googleUser } = useSelector((state) => state.loginGoogle) || {};
-  const { user: normalUser } = useSelector((state) => state.loginNormal) || {};
+  const activeUser = useSelector((state) => state.loginGoogle.user || state.loginNormal.user);
+  console.log("User in Sidebar:", activeUser);
+  const wholeState = useSelector((state) => state);
+  console.log("Stato redux completo in side:", wholeState);
 
-  const activeUser = googleUser || normalUser;
-
-  const getAvatarUrl = () => {
-    const url = activeUser?.avatar || activeUser?.userData?.avatar || activeUser?.picture;
-    return typeof url === "string" ? url : null;
-  };
+  const getAvatarUrl = () => activeUser?.avatar;
   const avatarUrl = getAvatarUrl();
 
   // Effetto per resettare il form alla apertura del modale

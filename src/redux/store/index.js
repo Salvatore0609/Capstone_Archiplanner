@@ -8,6 +8,7 @@ import loginGoogleReducer from "../reducers/LoginGoogleReducer";
 // import otherReducer from "../reducers/otherReducer";
 
 // Carica i progetti salvati all'avvio
+
 const preloadedState = {
   projects: JSON.parse(localStorage.getItem("projects")) || [],
 };
