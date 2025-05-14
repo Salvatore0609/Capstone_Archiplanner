@@ -16,6 +16,7 @@ export function removeToken() {
   localStorage.removeItem(KEY);
 }
 
+// -------------------- GOOGLE USER --------------------
 export const saveUserData = (userData) => {
   localStorage.setItem("google_user_data", JSON.stringify(userData));
 };
@@ -27,4 +28,18 @@ export const getUserData = () => {
 
 export const clearUserData = () => {
   localStorage.removeItem("google_user_data");
+};
+
+// -------------------- NORMAL LOGIN USER --------------------
+export const saveNormalUserData = (userData) => {
+  localStorage.setItem("normal_user_data", JSON.stringify(userData));
+};
+
+export const getNormalUserData = () => {
+  const data = localStorage.getItem("normal_user_data");
+  return data ? JSON.parse(data) : null;
+};
+
+export const clearNormalUserData = () => {
+  localStorage.removeItem("normal_user_data");
 };

@@ -42,7 +42,7 @@ const projectsReducer = (state = initialState, action) => {
               phases: {
                 ...project.phases,
                 [phaseKey]: {
-                  ...(project.phases?.[phaseKey] || {}), // Inizializza se non esiste
+                  ...(project.phases?.[phaseKey] || {}),
                   [taskId]: {
                     ...(project.phases?.[phaseKey]?.[taskId] || {}),
                     ...data,

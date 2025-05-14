@@ -50,9 +50,9 @@ export const phase1Tasks = [
       },
       {
         label: "Verifica conformità catastale",
-        type: ["iframe"],
+        type: ["link"],
         modalTitle: "Portale SISTER",
-        modalSrc: "https://sister.agenziaentrate.gov.it/portale",
+        modalSrc: "https://iampe.agenziaentrate.gov.it/sam/UI/Login?realm=/agenziaentrate",
       },
       {
         label: "Carica un primo preventivo",

@@ -23,7 +23,7 @@ export default function loginGoogleReducer(state = initialState, action) {
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload, // Ora ha una struttura piatta
+        user: action.payload,
         loading: false,
       };
     case LOGIN_GOOGLE_FAILURE:

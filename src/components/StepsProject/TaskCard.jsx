@@ -21,7 +21,7 @@ const TaskCard = ({ task, project, phaseKey }) => {
   const handleUpdate = (stepKey, newData) => {
     // 1. Prendi i dati attuali della task
     const currentData = taskState[stepKey] || {};
-    // 2. Unisci i vecchi dati con quelli nuovi (come un collage)
+    // 2. Unisco i vecchi dati con quelli nuovi (come un collage)
     const mergedData = { ...currentData, ...newData };
     // 3. Invia i dati aggiornati allo stato globale
     dispatch(
@@ -95,27 +95,21 @@ const TaskCard = ({ task, project, phaseKey }) => {
                     )}
 
                     {/* Finestra per siti esterni */}
-                    {step.type.includes("iframe") && (
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        onClick={() =>
-                          setActiveIframe({
-                            // Apri la finestra
-                            title: step.modalTitle, // Titolo della finestra
-                            src: step.modalSrc, // Indirizzo web da mostrare
-                          })
-                        }
-                      >
+                    {step.type.includes("link") && (
+                      <Button variant="outline-primary" size="sm" href={step.modalSrc} target="_blank" rel="noopener noreferrer">
                         Apri
                       </Button>
                     )}
-
                     {/* Area di testo modificabile */}
                     {step.type.includes("textarea") && (
                       <>
-                        <div className="d-flex justify-content-between align-items-center w-100 ms-auto">
-                          <Button size="sm" variant="outline-secondary" onClick={() => handleUpdate(stepKey, { show: !stepData.show })}>
+                        <div className="d-flex justify-content-between align-items-center w-100">
+                          <Button
+                            size="sm"
+                            variant="outline-secondary"
+                            className="ms-auto"
+                            onClick={() => handleUpdate(stepKey, { show: !stepData.show })}
+                          >
                             {stepData.show ? "Nascondi" : "Modifica"}
                           </Button>
                         </div>

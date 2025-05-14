@@ -1,7 +1,7 @@
 import { Button, Form, Spinner, Modal, FormGroup, Alert, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { registerSuccess, registerUser } from "../../redux/action/LoginActions";
+import { registerUser } from "../../redux/action/LoginActions";
 
 function Register({ show, onClose }) {
   const dispatch = useDispatch();
@@ -55,7 +55,6 @@ function Register({ show, onClose }) {
     }
 
     dispatch(registerUser(formData)).then(() => {
-      registerSuccess();
       onClose();
     });
   };

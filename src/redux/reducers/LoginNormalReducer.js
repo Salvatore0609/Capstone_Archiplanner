@@ -6,12 +6,16 @@ import {
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
+  FETCH_PROFILE_REQUEST,
+  FETCH_PROFILE_SUCCESS,
+  FETCH_PROFILE_FAILURE,
 } from "../action/LoginActions";
-import { getToken } from "../utils/authUtils";
+
+import { clearNormalUserData, getNormalUserData, getToken, saveNormalUserData } from "../utils/authUtils";
 
 const initialState = {
   loading: false,
-  user: null,
+  user: getNormalUserData(),
   error: null,
   registeredUser: null,
   isAuthenticated: !!getToken(),
@@ -23,7 +27,7 @@ const initialState = {
 
 export default function LoginNormalReducer(state = initialState, action) {
   switch (action.type) {
-    // CASO REGISTRAZIONE
+    // --- REGISTRAZIONE ---
     case REGISTER_REQUEST:
       return {
         ...state,
@@ -32,6 +36,7 @@ export default function LoginNormalReducer(state = initialState, action) {
       };
 
     case REGISTER_SUCCESS:
+      saveNormalUserData(action.payload);
       return {
         ...state,
         registeredUser: action.payload,
@@ -45,7 +50,7 @@ export default function LoginNormalReducer(state = initialState, action) {
         registerError: action.payload,
       };
 
-    // CASO LOGIN
+    // --- LOGIN ---
     case LOGIN_NORMAL_REQUEST:
       return {
         ...state,
@@ -54,13 +59,11 @@ export default function LoginNormalReducer(state = initialState, action) {
       };
 
     case LOGIN_NORMAL_SUCCESS:
+      saveNormalUserData(action.payload);
       return {
         ...state,
         isAuthenticated: true,
-        user: {
-          ...state.registeredUser,
-          ...action.payload,
-        },
+        user: action.payload,
         loginLoading: false,
       };
 
@@ -71,8 +74,35 @@ export default function LoginNormalReducer(state = initialState, action) {
         loginError: action.payload,
       };
 
-    // CASO LOGOUT
+    // --- FETCH PROFILO ---
+    case FETCH_PROFILE_REQUEST:
+      return {
+        ...state,
+        loginLoading: true,
+        loginError: null,
+      };
+
+    case FETCH_PROFILE_SUCCESS: {
+      const token = getToken();
+      const fullUser = { token, ...action.payload };
+      saveNormalUserData(fullUser);
+      return {
+        ...state,
+        user: fullUser,
+        loginLoading: false,
+      };
+    }
+
+    case FETCH_PROFILE_FAILURE:
+      return {
+        ...state,
+        loginLoading: false,
+        loginError: action.payload,
+      };
+
+    // --- LOGOUT ---
     case LOGOUT_NORMAL:
+      clearNormalUserData();
       return {
         ...initialState,
         isAuthenticated: false,

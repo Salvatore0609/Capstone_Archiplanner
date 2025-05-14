@@ -76,13 +76,6 @@ const FasePage = () => {
                 ))}
               </Row>
             </Carousel.Item>
-
-            <Carousel.Item>
-              <Row className="mt-5 justify-content-center">
-                <Col md={2}></Col>
-                <Col md={6}></Col>
-              </Row>
-            </Carousel.Item>
           </Carousel>
 
           <div className="carousel-arrow">
