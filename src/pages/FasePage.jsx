@@ -35,13 +35,13 @@ const FasePage = () => {
   const { state } = useLocation();
   const { id } = useParams();
   const project = state?.project;
-  const phaseKey = `fase-${id}`;
   const phaseNum = Number(id);
+  const phase = { id: phaseNum };
   const tasks = phaseTasksMap[phaseNum] || [];
   const title = titles[phaseNum] || `Fase ${phaseNum}`;
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const totalSlides = 2;
+  const totalSlides = 1; // Per ora 1 slide, puoi implementare paginazione se vuoi
 
   const handleNext = () => {
     if (activeIndex < totalSlides - 1) {
@@ -71,7 +71,7 @@ const FasePage = () => {
               <Row className="justify-content-center m-5" style={{ overflowY: "auto", height: "calc(85vh - 180px)" }}>
                 {tasks.map((task) => (
                   <Col key={task.id} md={12}>
-                    <TaskCard task={task} project={project} phaseKey={phaseKey} />
+                    <TaskCard task={task} project={project} phase={phase} />
                   </Col>
                 ))}
               </Row>

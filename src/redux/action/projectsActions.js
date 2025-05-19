@@ -85,7 +85,7 @@ export const fetchProjects = () => async (dispatch) => {
       type: FETCH_PROJECTS_FAILURE,
       payload: error.message,
     });
-    return []; // Ritorna array vuoto in caso di errore
+    return [];
   }
 };
 
@@ -112,7 +112,7 @@ export const deleteProject = (id) => async (dispatch) => {
       payload: id,
     });
 
-    dispatch(fetchProjects()); // Aggiorna la lista progetti
+    dispatch(fetchProjects());
   } catch (error) {
     dispatch({
       type: DELETE_PROJECT_FAILURE,

@@ -2,14 +2,13 @@ import { Button, Card, Col, Form, Modal, Nav, Row } from "react-bootstrap";
 import { FaCog, FaPlus, FaHeart, FaRegUserCircle, FaChevronLeft, FaLayerGroup, FaTimes, FaListUl } from "react-icons/fa";
 import { FiSidebar } from "react-icons/fi";
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Image } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { addProject, deleteProject, fetchProjects } from "../../redux/action/projectsActions";
 import GoogleMapView from "../commons/GoogleMapView";
 import { TiDeleteOutline } from "react-icons/ti";
 import { getToken } from "../../redux/utils/authUtils";
-import { store } from "../../redux/store";
 
 const Sidebar = () => {
   // Stati per la gestione dell'UI
@@ -36,8 +35,10 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.projects?.items || []);
   const navigate = useNavigate();
+  //
   const location = useLocation();
-  const currentProject = location.state?.project;
+  const { id } = useParams();
+  const currentProject = location.state?.project || projects.find((p) => p.id === Number(id));
 
   // Utente autenticato
   const [localAvatarError, setLocalAvatarError] = useState(false);
@@ -104,17 +105,9 @@ const Sidebar = () => {
       lng: previewCoordinates.lng,
     };
     try {
-      const addedProject = await dispatch(addProject(completeProject));
-      await dispatch(fetchProjects());
-      const stateNow = store.getState();
-      const currentUser = stateNow.loginNormal.user || stateNow.loginGoogle.user;
-      if (currentUser) {
-        if (stateNow.loginNormal.isAuthenticated) {
-          localStorage.setItem("normal_user_data", JSON.stringify(currentUser));
-        } else {
-          localStorage.setItem("google_user_data", JSON.stringify(currentUser));
-        }
-      }
+      const addedProject = dispatch(addProject(completeProject));
+      dispatch(fetchProjects());
+
       navigate(`/project/${addedProject.id}`);
       setShowModal(false);
     } catch (error) {
@@ -351,7 +344,7 @@ const Sidebar = () => {
       {showPhaseCards && currentProject && (
         <div className="floating-cards-container">
           <h5>{currentProject.nomeProgetto} - Fasi</h5>
-          <Button className="close-button" onClick={() => setShowPhaseCards(false)}>
+          <Button className="btn-close" onClick={() => setShowPhaseCards(false)}>
             <FaTimes size={20} color="#C69B7B" />
           </Button>
           {[

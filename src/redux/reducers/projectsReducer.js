@@ -2,7 +2,6 @@ import {
   ADD_PROJECT_SUCCESS,
   FETCH_PROJECTS_SUCCESS,
   DELETE_PROJECT_SUCCESS,
-  UPDATE_TASK_DATA,
   FETCH_PROJECTS_REQUEST,
   FETCH_PROJECTS_FAILURE,
   ADD_PROJECT_REQUEST,
@@ -56,33 +55,6 @@ const projectsReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload,
       };
-
-    // AGGIORNAMENTO TASK
-    case UPDATE_TASK_DATA: {
-      const { projectId, phaseKey, taskId, data } = action.payload;
-
-      return {
-        ...state,
-        items: state.items.map((project) => {
-          if (project.id === projectId) {
-            return {
-              ...project,
-              phases: {
-                ...project.phases,
-                [phaseKey]: {
-                  ...project.phases[phaseKey],
-                  [taskId]: {
-                    ...project.phases[phaseKey][taskId],
-                    ...data,
-                  },
-                },
-              },
-            };
-          }
-          return project;
-        }),
-      };
-    }
 
     default:
       return state;

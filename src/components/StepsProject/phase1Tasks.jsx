@@ -5,11 +5,13 @@ export const phase1Tasks = [
     title: "Incontro con il cliente",
     steps: [
       {
+        id: 1,
         label: "Definisci esigenze e obiettivi",
         type: ["textarea"],
         placeholder: "Scrivi qui le esigenze e gli obiettivi…",
       },
       {
+        id: 2,
         label: "Carica una prima analisi del budget",
         type: ["file"],
         accept: ".pdf",
@@ -21,6 +23,7 @@ export const phase1Tasks = [
     title: "Analisi normativa e vincoli",
     steps: [
       {
+        id: 3,
         label: "Scegli l’area di interesse (collegamento al PRG)",
         type: ["dropdown"],
         options: [
@@ -30,10 +33,12 @@ export const phase1Tasks = [
         ],
       },
       {
+        id: 4,
         label: "Verifica vincoli paesaggistici, ambientali, storici",
         type: ["static"],
       },
       {
+        id: 5,
         label: "Conformità alle Normative Edilizie e Antisismiche",
         type: ["static"],
       },
@@ -44,17 +49,20 @@ export const phase1Tasks = [
     title: "Studio fattibilità tecnica ed economica",
     steps: [
       {
+        id: 6,
         label: "Analisi del lotto o dell’edificio esistente",
         type: ["file"],
         accept: ".pdf,.dwg",
       },
       {
+        id: 7,
         label: "Verifica conformità catastale",
         type: ["link"],
         modalTitle: "Portale SISTER",
         modalSrc: "https://iampe.agenziaentrate.gov.it/sam/UI/Login?realm=/agenziaentrate",
       },
       {
+        id: 8,
         label: "Carica un primo preventivo",
         type: ["file"],
         accept: ".pdf",
@@ -66,16 +74,19 @@ export const phase1Tasks = [
     title: "Rilievo e documentazione",
     steps: [
       {
+        id: 9,
         label: "Rilievo metrico dell’area o edificio",
         type: ["file"],
         accept: ".pdf,.dwg",
       },
       {
+        id: 10,
         label: "Fotografie stato di fatto",
         type: ["file"],
         accept: ".jpg,.png",
       },
       {
+        id: 11,
         label: "Acquisizione di visure catastali e planimetrie",
         type: ["file"],
         accept: ".pdf",

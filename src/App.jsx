@@ -26,12 +26,12 @@ const App = () => {
       // Priorità al login normale se entrambi presenti
       if (normalUser?.token) {
         await dispatch(loginNormalSuccess(normalUser, normalUser.token));
-        await dispatch(fetchProfile()); // Aggiungi questa linea
+        await dispatch(fetchProfile());
       } else if (googleUser?.token) {
         await dispatch(loginGoogleSuccess(googleUser, googleUser.token));
       }
 
-      dispatch(fetchProjects());
+      /* dispatch(fetchProjects()); */
     };
 
     restoreSession();

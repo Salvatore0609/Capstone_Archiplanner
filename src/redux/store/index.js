@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import calendarReducer from "../reducers/calendarReducer";
 import loginNormalReducer from "../reducers/LoginNormalReducer";
 import loginGoogleReducer from "../reducers/LoginGoogleReducer";
+import stepDataReducer from "../reducers/stepDataReducer";
 
 const preloadedState = {
   projects: JSON.parse(localStorage.getItem("projects")) || [],
@@ -14,6 +15,7 @@ export const store = configureStore({
     calendar: calendarReducer,
     loginNormal: loginNormalReducer,
     loginGoogle: loginGoogleReducer,
+    stepData: stepDataReducer,
   },
   preloadedState,
 });

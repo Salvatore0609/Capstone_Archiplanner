@@ -1,141 +1,208 @@
+// src/components/StepsProject/TaskCard.jsx
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateTaskData } from "../../redux/action/projectsActions";
 import { Button, Card, ListGroup, Form, Modal } from "react-bootstrap";
 import { TiDeleteOutline } from "react-icons/ti";
-import { useState } from "react";
+import { fetchStepDataByProject, saveStepData, uploadStepFile } from "../../redux/action/stepDataActions";
 
-// Questo è il componente per una singola task (attività)
-const TaskCard = ({ task, project, phaseKey }) => {
-  // Strumenti per gestire lo stato globale (Redux)
-  const dispatch = useDispatch(); // Invia azioni (come messaggi) per modificare lo stato
-  const taskState = useSelector(
-    (state) =>
-      // Cerca il progetto corrente e prendi i dati della task
-      state.projects.find((p) => p.id === project.id)?.phases?.[phaseKey]?.[task.id] || {}
-  );
+const TaskCard = ({ task, project, phase }) => {
+  const dispatch = useDispatch();
 
-  // Stato per controllare l'iframe (finestra popup)
+  // 1) Prendo tutti gli StepData salvati per questo progetto dal Redux store
+  const stepDataItems = useSelector((state) => state.stepData.items || []);
+
+  // 2) Costruisco un oggetto “taskState” indicizzato su `step-<stepId>` per accesso rapido
+  const taskState = {};
+  stepDataItems
+    .filter((sd) => sd.projectId === project.id && sd.taskId === task.id)
+    .forEach((sd) => {
+      taskState[`step-${sd.stepId}`] = sd;
+    });
+
+  // 3) Stato locale: bozza (draft) dei campi modificati dall’utente
+  const [localData, setLocalData] = useState({});
+
+  // 4) Handler per mostrare un eventuale iframe in modal (solo per i link)
   const [activeIframe, setActiveIframe] = useState(null);
 
-  //  Funzione per aggiornare i dati della task
-  const handleUpdate = (stepKey, newData) => {
-    // 1. Prendi i dati attuali della task
-    const currentData = taskState[stepKey] || {};
-    // 2. Unisco i vecchi dati con quelli nuovi (come un collage)
-    const mergedData = { ...currentData, ...newData };
-    // 3. Invia i dati aggiornati allo stato globale
-    dispatch(
-      updateTaskData(project.id, phaseKey, task.id, {
-        [stepKey]: mergedData,
-      })
-    );
+  // Funzione che aggiorna solo il draft in locale, senza chiamare subito il backend
+  const handleFieldChange = (stepKey, newPartialData) => {
+    setLocalData((prev) => ({
+      ...prev,
+      [stepKey]: {
+        ...prev[stepKey],
+        ...newPartialData,
+      },
+    }));
   };
 
-  // Funzione per gestire i file caricati
+  // 5) Ad ogni cambio di `project`, ricarico gli StepData da backend
+  useEffect(() => {
+    if (project?.id) {
+      dispatch(fetchStepDataByProject(project.id));
+    }
+  }, [dispatch, project]);
+
+  // 6) Salvataggio “JSON” di checkbox / dropdown / textarea per un singolo step
+  const handleSaveStep = async (stepIndex) => {
+    const step = task.steps?.[stepIndex];
+    if (!step || !step.id) {
+      console.error("Step non trovato per stepIndex:", stepIndex);
+      return;
+    }
+
+    const realStepId = step.id;
+    const stepKey = `step-${realStepId}`;
+    const draft = localData[stepKey] || {};
+    const saved = taskState[stepKey] || {};
+
+    const payload = {
+      id: saved.id || null,
+      projectId: project.id,
+      faseId: phase.id,
+      taskId: task.id,
+      stepId: realStepId,
+      textareaValue: draft.textareaValue ?? saved.textareaValue ?? null,
+      dropdownSelected: draft.dropdownSelected ?? saved.dropdownSelected ?? null,
+      checkboxValue: typeof draft.checkboxValue !== "undefined" ? draft.checkboxValue : saved.checkboxValue ?? null,
+    };
+
+    try {
+      await dispatch(saveStepData(payload.projectId, payload.faseId, payload.taskId, payload.stepId, payload));
+      setLocalData((prev) => {
+        const copy = { ...prev };
+        delete copy[stepKey];
+        return copy;
+      });
+    } catch (err) {
+      alert("Errore nel salvataggio: " + err.message);
+    }
+  };
+
+  // 8) Upload automatico del file: appena scelto, invia a backend e ricarica i dati
   const handleFileUpload = (stepIndex, file) => {
-    const stepKey = `step-${stepIndex}`; // Crea un nome unico per questo step
-    handleUpdate(stepKey, {
-      file: {
-        // Salva le informazioni del file
-        name: file.name, // Nome del file
-        size: file.size, // Dimensione
-        type: file.type, // Tipo (es. PDF)
-        lastModified: file.lastModified, // Data ultima modifica
-      },
+    const realStepId = task.steps[stepIndex].id;
+    const realTaskId = task.id;
+    const realFaseId = phase.id;
+    const realProjectId = project.id;
+
+    dispatch(uploadStepFile(realProjectId, realFaseId, realTaskId, realStepId, file)).catch((err) => {
+      console.error("Errore upload:", err);
     });
   };
 
   return (
     <>
-      {/*  Carta contenente tutta la task */}
       <Card className="task-card p-4 shadow-sm rounded-4 mb-4">
         <Card.Body>
-          {/*  Titolo della task */}
           <div className="fw-bold fs-5 mb-3">{task.title}</div>
-
-          {/* Lista dei passaggi della task */}
           <ListGroup variant="flush">
             {task.steps.map((step, idx) => {
-              const stepKey = `step-${idx}`; // Nome unico per ogni passaggio
-              const stepData = taskState[stepKey] || {}; // Dati salvati per questo passaggio
+              const realStepId = step.id;
+              const stepKey = `step-${realStepId}`;
+
+              // Dati già salvati sul server per questo step
+              const savedData = taskState[stepKey] || {};
+              // Bozza “draft” in locale
+              const draft = localData[stepKey] || {};
 
               return (
-                <ListGroup.Item key={idx} className="border-0 px-0 py-2 bg-transparent">
+                <ListGroup.Item
+                  key={realStepId} // ← qui uso `step.id` come chiave univoca
+                  className="border-0 px-0 py-2 bg-transparent"
+                >
                   <div className="d-flex justify-content-between align-items-center">
                     <span className="task-label-pill">{step.label}</span>
 
-                    {/* Interruttore ON/OFF */}
                     {step.type.includes("boolean") && (
                       <Form.Check
                         type="switch"
-                        checked={!!stepData.checked} // Stato attuale
-                        onChange={(e) => handleUpdate(stepKey, { checked: e.target.checked })}
+                        checked={draft.checkboxValue ?? savedData.checkboxValue ?? false}
+                        onChange={(e) =>
+                          handleFieldChange(stepKey, {
+                            checkboxValue: e.target.checked,
+                          })
+                        }
                       />
                     )}
 
-                    {/*  Menu a tendina */}
                     {step.type.includes("dropdown") && (
-                      <Form.Select value={stepData.selected || ""} onChange={(e) => handleUpdate(stepKey, { selected: e.target.value })}>
-                        <option value="">Seleziona...</option>
-                        {step.options.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
+                      <Form.Select
+                        value={draft.dropdownSelected ?? savedData.dropdownSelected ?? ""}
+                        onChange={(e) =>
+                          handleFieldChange(stepKey, {
+                            dropdownSelected: e.target.value,
+                          })
+                        }
+                      >
+                        <option value="">Seleziona…</option>
+                        {step.options &&
+                          step.options.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ))}
                       </Form.Select>
                     )}
 
-                    {/*  Caricamento file */}
-                    {step.type.includes("file") && (
+                    {step.type.includes("textarea") && (
                       <Form.Control
-                        type="file"
-                        accept={step.accept} // Tipi di file permessi (es. .pdf)
-                        onChange={(e) => handleFileUpload(idx, e.target.files[0])}
+                        as="textarea"
+                        value={draft.textareaValue ?? savedData.textareaValue ?? ""}
+                        onChange={(e) =>
+                          handleFieldChange(stepKey, {
+                            textareaValue: e.target.value,
+                          })
+                        }
+                        placeholder={step.placeholder || "Inserisci il testo…"}
+                        style={{ width: "60%", marginRight: "8px" }}
                       />
                     )}
 
-                    {/* Finestra per siti esterni */}
+                    {step.type.includes("file") && (
+                      <Form.Control
+                        type="file"
+                        accept={step.accept}
+                        onChange={(e) => {
+                          const chosen = e.target.files?.[0];
+                          if (chosen) {
+                            handleFileUpload(idx, chosen);
+                          }
+                        }}
+                      />
+                    )}
+
                     {step.type.includes("link") && (
-                      <Button variant="outline-primary" size="sm" href={step.modalSrc} target="_blank" rel="noopener noreferrer">
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() =>
+                          setActiveIframe({
+                            src: step.modalSrc,
+                            title: step.modalTitle,
+                          })
+                        }
+                      >
                         Apri
                       </Button>
                     )}
-                    {/* Area di testo modificabile */}
-                    {step.type.includes("textarea") && (
-                      <>
-                        <div className="d-flex justify-content-between align-items-center w-100">
-                          <Button
-                            size="sm"
-                            variant="outline-secondary"
-                            className="ms-auto"
-                            onClick={() => handleUpdate(stepKey, { show: !stepData.show })}
-                          >
-                            {stepData.show ? "Nascondi" : "Modifica"}
-                          </Button>
-                        </div>
 
-                        {stepData.show && (
-                          <Form.Control
-                            as="textarea"
-                            value={stepData.text || ""}
-                            onChange={(e) =>
-                              handleUpdate(stepKey, {
-                                text: e.target.value,
-                                show: true,
-                              })
-                            }
-                            placeholder={step.placeholder || "Inserisci il testo..."}
-                          />
-                        )}
-                      </>
+                    {(step.type.includes("boolean") || step.type.includes("dropdown") || step.type.includes("textarea")) && (
+                      <Button
+                        size="sm"
+                        variant="success"
+                        onClick={() => handleSaveStep(idx)}
+                        disabled={!localData[stepKey] || Object.keys(localData[stepKey]).length === 0}
+                      >
+                        Salva
+                      </Button>
                     )}
                   </div>
 
-                  {/* Mostra nome file dopo il caricamento */}
-                  {stepData.file && (
+                  {savedData.fileName && (
                     <div className="d-flex align-items-center gap-2 mt-2">
-                      <small className="text-success">{stepData.file.name}</small>
-                      <Button variant="link" size="sm" className="text-danger p-0" onClick={() => handleUpdate(stepKey, { file: null })}>
+                      <small className="text-success">{savedData.fileName}</small>
+                      <Button variant="link" size="sm" className="text-danger p-0" onClick={() => handleFieldChange(stepKey, { fileName: null })}>
                         <TiDeleteOutline />
                       </Button>
                     </div>
@@ -147,7 +214,6 @@ const TaskCard = ({ task, project, phaseKey }) => {
         </Card.Body>
       </Card>
 
-      {/* Finestra popup per iframe */}
       {activeIframe && (
         <Modal size="lg" show={!!activeIframe} onHide={() => setActiveIframe(null)} centered>
           <Modal.Header closeButton>
