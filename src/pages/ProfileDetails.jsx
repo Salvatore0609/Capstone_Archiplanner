@@ -14,6 +14,7 @@ const languageMap = {
 };
 
 export default function ProfileDetails() {
+  const [avatarError, setAvatarError] = useState(false);
   // Recupera i dati da Redux
   const loadingNormal = useSelector((state) => state.loginNormal.loginLoading);
   const loadingGoogle = useSelector((state) => state.loginGoogle.loginLoading);
@@ -25,7 +26,7 @@ export default function ProfileDetails() {
     cognome: "",
     email: "",
     username: "",
-    annoNascita: "",
+    dataNascita: "",
     luogoNascita: "",
     residenza: "",
     nomeCompagnia: "",
@@ -33,7 +34,10 @@ export default function ProfileDetails() {
     avatar: null,
   });
 
-  const getAvatarUrl = () => activeUser?.avatar;
+  const getAvatarUrl = () => {
+    if (avatarError) return null;
+    return activeUser?.avatar;
+  };
 
   useEffect(() => {
     if (activeUser) {
@@ -42,7 +46,7 @@ export default function ProfileDetails() {
         cognome: activeUser.cognome || "",
         email: activeUser.email || "",
         username: activeUser.username || "",
-        annoNascita: activeUser.annoNascita || "",
+        dataNascita: activeUser.dataNascita || "",
         luogoNascita: activeUser.luogoNascita || "",
         residenza: activeUser.residenza || "",
         nomeCompagnia: activeUser.nomeCompagnia || "",
@@ -58,10 +62,25 @@ export default function ProfileDetails() {
   };
 
   useEffect(() => {
-    if (!activeUser) {
-      dispatch(fetchProfile());
-    }
-  }, [activeUser, dispatch]);
+    let isMounted = true;
+    const fetchData = async () => {
+      if (!activeUser?.avatar) {
+        // Solo se manca l'avatar
+        try {
+          await dispatch(fetchProfile());
+        } catch (error) {
+          if (isMounted) {
+            console.error("Error fetching profile:", error);
+            setAvatarError(true);
+          }
+        }
+      }
+    };
+    fetchData();
+    return () => {
+      isMounted = false;
+    };
+  }, [dispatch, activeUser?.avatar]); // Solo alla modifica dell'avatar
 
   if (loadingNormal || loadingGoogle) {
     return (
@@ -104,12 +123,9 @@ export default function ProfileDetails() {
                       <img
                         src={getAvatarUrl()}
                         alt="Avatar"
+                        onError={() => setAvatarError(true)}
                         className="w-100 h-100"
                         style={{ objectFit: "cover" }}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "/default-avatar.jpg";
-                        }}
                       />
                     ) : (
                       <FaRegUserCircle size={80} className="text-secondary" />
@@ -134,15 +150,8 @@ export default function ProfileDetails() {
                         <Form.Control name="cognome" value={formData.cognome} onChange={handleInputChange} />
                       </Form.Group>
                       <Form.Group className="mb-3">
-                        <Form.Label>Anno di Nascita</Form.Label>
-                        <Form.Control
-                          type="number"
-                          name="annoNascita"
-                          value={formData.annoNascita}
-                          onChange={handleInputChange}
-                          min="1900"
-                          max={new Date().getFullYear() - 18}
-                        />
+                        <Form.Label>La tua data di Nascita</Form.Label>
+                        <Form.Control type="date" name="dataNascita" value={formData.dataNascita} onChange={handleInputChange} />
                       </Form.Group>
                     </Col>
                     <Col md={6}>

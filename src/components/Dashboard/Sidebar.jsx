@@ -5,10 +5,11 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Image } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { addProject, deleteProject } from "../../redux/action/projectsActions";
+import { addProject, deleteProject, fetchProjects } from "../../redux/action/projectsActions";
 import GoogleMapView from "../commons/GoogleMapView";
-
 import { TiDeleteOutline } from "react-icons/ti";
+import { getToken } from "../../redux/utils/authUtils";
+import { store } from "../../redux/store";
 
 const Sidebar = () => {
   // Stati per la gestione dell'UI
@@ -18,96 +19,134 @@ const Sidebar = () => {
   const [showProjectList, setShowProjectList] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [loadingProjects, setLoadingProjects] = useState(false);
 
-  // Stato per il nuovo progetto
+  // Stato per il nuovo progetto e geocoding
   const [newProject, setNewProject] = useState({
     nomeProgetto: "",
     progettista: "",
     impresaCostruttrice: "",
     indirizzo: "",
   });
-
-  // Stati per la mappa
-  const [mapForceUpdate, setMapForceUpdate] = useState(0);
+  const [previewCoordinates, setPreviewCoordinates] = useState(null);
   const [addressError, setAddressError] = useState(null);
+  const [isGeocoding, setIsGeocoding] = useState(false);
 
   // Redux e routing
   const dispatch = useDispatch();
-  const projects = useSelector((state) => state.projects);
+  const projects = useSelector((state) => state.projects?.items || []);
   const navigate = useNavigate();
   const location = useLocation();
-
   const currentProject = location.state?.project;
 
+  // Utente autenticato
+  const [localAvatarError, setLocalAvatarError] = useState(false);
   const activeUser = useSelector((state) => state.loginGoogle.user || state.loginNormal.user);
-  console.log("User in Sidebar:", activeUser);
-  const wholeState = useSelector((state) => state);
-  console.log("Stato redux completo in side:", wholeState);
+  const avatarUrl = activeUser?.avatar;
 
-  const getAvatarUrl = () => activeUser?.avatar;
-  const avatarUrl = getAvatarUrl();
-
-  // Effetto per resettare il form alla apertura del modale
   useEffect(() => {
     if (showModal) {
-      setNewProject({
-        nomeProgetto: "",
-        progettista: "",
-        impresaCostruttrice: "",
-        indirizzo: "",
-      });
-      setAddressError(null);
-      setMapForceUpdate((prev) => prev + 1);
+      resetForm();
     }
   }, [showModal]);
 
-  // Gestione submit nuovo progetto
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Funzioni
+  const resetForm = () => {
+    setNewProject({
+      nomeProgetto: "",
+      progettista: "",
+      impresaCostruttrice: "",
+      indirizzo: "",
+    });
+    setPreviewCoordinates(null);
+    setAddressError(null);
+  };
 
-    // Validazione indirizzo
-    if (!newProject.indirizzo || addressError) {
-      setAddressError("Inserisci un indirizzo valido");
+  const handleGeocode = async (address) => {
+    if (!address.trim() || address.trim().length < 10) {
+      setPreviewCoordinates(null);
       return;
     }
 
-    // Crea il progetto con struttura completa
-    const nuovoProgetto = {
-      ...newProject,
-      id: Date.now(), // ID univoco
-      phases: {}, // Inizializza le fasi vuote
-    };
+    try {
+      setIsGeocoding(true);
+      const token = getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/geocode?address=${encodeURIComponent(address)}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    dispatch(addProject(nuovoProgetto));
-    navigate("/project", { state: { project: nuovoProgetto } });
-    setShowModal(false);
+      if (!response.ok) throw new Error("Indirizzo non trovato");
+
+      const coordinates = await response.json();
+      setPreviewCoordinates(coordinates);
+      setAddressError(null);
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setAddressError("Completa l'indirizzo per vedere l'anteprima");
+        setPreviewCoordinates(null);
+      }
+    } finally {
+      setIsGeocoding(false);
+    }
   };
 
-  // Array delle fasi predefinite
-  const fasiProgetto = [
-    { num: "1", titolo: "FASE INIZIALE", sottotitolo: "Studio di Fattibilità & Analisi Preliminare" },
-    { num: "2", titolo: "PROGETTAZIONE PRELIMINARE" },
-    { num: "3", titolo: "PROGETTAZIONE DEFINITIVA E AUTORIZZAZIONI" },
-    { num: "4", titolo: "PROGETTAZIONE ESECUTIVA & APPALTI" },
-    { num: "5", titolo: "DIREZIONE LAVORI & CANTIERE" },
-    { num: "6", titolo: "FINE LAVORI & AGGIORNAMENTI CATASTALI" },
-  ];
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!previewCoordinates) {
+      setAddressError("Verifica l'indirizzo prima di procedere");
+      return;
+    }
+    const completeProject = {
+      ...newProject,
+      lat: previewCoordinates.lat,
+      lng: previewCoordinates.lng,
+    };
+    try {
+      const addedProject = await dispatch(addProject(completeProject));
+      await dispatch(fetchProjects());
+      const stateNow = store.getState();
+      const currentUser = stateNow.loginNormal.user || stateNow.loginGoogle.user;
+      if (currentUser) {
+        if (stateNow.loginNormal.isAuthenticated) {
+          localStorage.setItem("normal_user_data", JSON.stringify(currentUser));
+        } else {
+          localStorage.setItem("google_user_data", JSON.stringify(currentUser));
+        }
+      }
+      navigate(`/project/${addedProject.id}`);
+      setShowModal(false);
+    } catch (error) {
+      setAddressError("Errore nel salvataggio del progetto: " + error.message);
+    }
+  };
+
+  const handleLoadProjects = async () => {
+    try {
+      setLoadingProjects(true);
+      await dispatch(fetchProjects());
+      setShowProjectList(true);
+      setShowPhaseCards(false);
+    } catch (error) {
+      console.error("Errore caricamento progetti:", error);
+    } finally {
+      setLoadingProjects(false);
+    }
+  };
 
   return (
     <>
-      {/* SIDEBAR PRINCIPALE */}
       <div className={`d-flex flex-column align-items-center sidebar ${expanded ? "sidebar-expanded" : "sidebar-collapsed"}`}>
         <button onClick={() => setExpanded(!expanded)} className="sidebar-toggle btn btn-link p-1">
           {expanded ? <FaChevronLeft size={25} /> : <FiSidebar size={25} />}
         </button>
 
         <Nav className="flex-column text-center w-100">
-          {/* Logo */}
           <Link to="/dashboard" className="text-decoration-none p-0">
             <Image src="../assets/logo1.jpg" alt="logo" roundedCircle fluid className="h-50" />
           </Link>
 
-          {/* Pulsante Nuovo Progetto */}
           <Nav.Link
             className={`d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}
             onClick={() => setShowModal(true)}
@@ -118,21 +157,23 @@ const Sidebar = () => {
             {expanded && <span className="ms-2">Nuovo progetto</span>}
           </Nav.Link>
 
-          {/* Lista Progetti */}
           <Nav.Link
             className={`my-3 d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}
-            onClick={() => {
-              setShowProjectList(true);
-              setShowPhaseCards(false);
-            }}
+            onClick={handleLoadProjects}
           >
             <div className="icon-hover">
               <FaListUl size={20} color="#C69B7B" />
+              {loadingProjects && (
+                <span className="ms-2">
+                  <div className="spinner-border spinner-border-sm text-secondary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </span>
+              )}
             </div>
             {expanded && <span className="ms-2">Progetti</span>}
           </Nav.Link>
 
-          {/* Fasi Progetto (mostrato solo se c'è un progetto selezionato) */}
           {currentProject && (
             <Nav.Link
               className={`my-3 d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}
@@ -148,7 +189,6 @@ const Sidebar = () => {
             </Nav.Link>
           )}
 
-          {/* Voci secondarie */}
           <Nav.Link className={`my-3 d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}>
             <div className="icon-hover">
               <FaHeart size={20} color="#C69B7B" />
@@ -164,31 +204,36 @@ const Sidebar = () => {
           </Nav.Link>
         </Nav>
 
-        {/* Footer sidebar */}
         <div className="mt-auto mb-3 d-flex flex-column align-items-center">
-          {avatarUrl ? (
+          {localAvatarError || !avatarUrl ? (
+            <FaRegUserCircle size={30} className="text-secondary" />
+          ) : (
             <img
               src={avatarUrl}
-              alt="Avatar utente"
+              alt="Avatar"
               className="avatar-image"
               onError={(e) => {
-                e.target.style.display = "none";
+                setLocalAvatarError(true);
+                e.target.onerror = null;
+              }}
+              style={{
+                width: "40px",
+                height: "40px",
+                objectFit: "cover",
+                borderRadius: "50%",
+                border: "2px solid #C69B7B",
               }}
             />
-          ) : (
-            <FaRegUserCircle size={30} className="text-secondary" />
           )}
         </div>
       </div>
 
-      {/* MODAL NUOVO PROGETTO */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Crea nuovo progetto</Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleSubmit}>
           <Modal.Body>
-            {/* Campo Nome Progetto */}
             <Form.Group className="mb-3">
               <Form.Label>Nome progetto</Form.Label>
               <Form.Control
@@ -198,13 +243,11 @@ const Sidebar = () => {
               />
             </Form.Group>
 
-            {/* Campo Progettista */}
             <Form.Group className="mb-3">
               <Form.Label>Progettista</Form.Label>
               <Form.Control value={newProject.progettista} onChange={(e) => setNewProject({ ...newProject, progettista: e.target.value })} required />
             </Form.Group>
 
-            {/* Campo Impresa */}
             <Form.Group className="mb-3">
               <Form.Label>Impresa costruttrice</Form.Label>
               <Form.Control
@@ -214,80 +257,111 @@ const Sidebar = () => {
               />
             </Form.Group>
 
-            {/* Area Progetto */}
             <Form.Group className="mb-3">
-              <Form.Label>Seleziona l&apos;area del progetto</Form.Label>
+              <Form.Label>Area del progetto</Form.Label>
               <Form.Control
                 value={newProject.indirizzo}
-                onChange={(e) => setNewProject({ ...newProject, indirizzo: e.target.value })}
+                onChange={(e) => {
+                  setNewProject({ ...newProject, indirizzo: e.target.value });
+                  if (e.target.value.length >= 20) {
+                    handleGeocode(e.target.value);
+                  }
+                }}
                 isInvalid={!!addressError}
+                placeholder="Es: Via Roma 1, Milano"
               />
-              {newProject.indirizzo && (
-                <div className="my-3">
-                  <GoogleMapView address={newProject.indirizzo} key={`map-${mapForceUpdate}`} onError={(error) => setAddressError(error)} />
-                  {addressError && <div className="text-danger small mt-2">{addressError}</div>}
-                </div>
-              )}
+              {addressError && <Form.Text className="text-danger">{addressError}</Form.Text>}
             </Form.Group>
+
+            {previewCoordinates && (
+              <div className="mt-3">
+                <GoogleMapView
+                  projects={[
+                    {
+                      id: "preview",
+                      lat: previewCoordinates.lat,
+                      lng: previewCoordinates.lng,
+                    },
+                  ]}
+                />
+              </div>
+            )}
           </Modal.Body>
           <Modal.Footer>
-            <Button type="submit">Crea e vai al progetto</Button>
+            <Button type="submit" disabled={!previewCoordinates || isGeocoding}>
+              Crea progetto
+            </Button>
           </Modal.Footer>
         </Form>
       </Modal>
 
-      {/* LISTA PROGETTI FLOTTANTE */}
       {showProjectList && (
         <div className="floating-cards-container">
-          <h5>Progetti</h5>
-          <Button className="position-absolute top-0 end-0 p-2 bg-transparent" onClick={() => setShowProjectList(false)}>
+          <h5>Progetti ({projects.length})</h5>
+          <Button className="btn-close" onClick={() => setShowProjectList(false)}>
             <FaTimes size={20} color="#C69B7B" />
           </Button>
-          {projects.map((proj, index) => (
-            <Card
-              key={proj.id}
-              className="floating-card mb-3"
-              onClick={() => {
-                navigate("/project", { state: { project: proj } });
-                setShowProjectList(false);
-              }}
-            >
-              <Card.Body>
-                <Row className="d-flex justify-content-center">
-                  <Col md={2}>
-                    <Card.Title>{index + 1}</Card.Title>
-                  </Col>
-                  <Col md={8} className="d-flex align-items-center">
-                    <Card.Subtitle className="text-muted">{proj.nomeProgetto}</Card.Subtitle>
-                    <TiDeleteOutline
-                      size={25}
-                      className="text-danger ms-auto"
-                      cursor={"pointer"}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setProjectToDelete(proj);
-                        setShowDeleteModal(true);
-                      }}
-                    />
-                  </Col>
-                  <Col md={6}>
-                    <Card.Text className="text-secondary">{proj.indirizzo}</Card.Text>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          ))}
+
+          {loadingProjects ? (
+            <div className="text-center p-3">
+              <div className="spinner-border text-secondary" role="status">
+                <span className="visually-hidden">Caricamento...</span>
+              </div>
+            </div>
+          ) : (
+            projects
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .map((proj, index) => (
+                <Card
+                  key={proj.id}
+                  className="floating-card mb-3"
+                  onClick={() => {
+                    navigate(`/project/${proj.id}`);
+                    setShowProjectList(false);
+                  }}
+                >
+                  <Card.Body>
+                    <Row className="align-items-center">
+                      <Col md={2}>
+                        <Card.Title>{index + 1}</Card.Title>
+                      </Col>
+                      <Col md={8} className="d-flex align-items-center">
+                        <Card.Subtitle className="text-muted">{proj.nomeProgetto}</Card.Subtitle>
+                        <TiDeleteOutline
+                          size={25}
+                          className="text-danger ms-auto"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setProjectToDelete(proj);
+                            setShowDeleteModal(true);
+                          }}
+                        />
+                      </Col>
+                      <Col md={12}>
+                        <Card.Text className="text-secondary">{proj.indirizzo}</Card.Text>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              ))
+          )}
         </div>
       )}
 
-      {/* LISTA FASI FLOTTANTE */}
       {showPhaseCards && currentProject && (
         <div className="floating-cards-container">
-          <h5>{currentProject.nomeProgetto} - Fasi Progetto</h5>
-          <Button onClick={() => setShowPhaseCards(false)} className="position-absolute top-0 end-0 p-2 bg-transparent">
+          <h5>{currentProject.nomeProgetto} - Fasi</h5>
+          <Button className="close-button" onClick={() => setShowPhaseCards(false)}>
             <FaTimes size={20} color="#C69B7B" />
           </Button>
-          {fasiProgetto.map((fase) => (
+          {[
+            { num: "1", titolo: "FASE INIZIALE" },
+            { num: "2", titolo: "PROGETTAZIONE PRELIMINARE" },
+            { num: "3", titolo: "PROGETTAZIONE DEFINITIVA E AUTORIZZAZIONI" },
+            { num: "4", titolo: "PROGETTAZIONE ESECUTIVA & APPALTI" },
+            { num: "5", titolo: "DIREZIONE LAVORI & CANTIERE" },
+            { num: "6", titolo: "FINE LAVORI & AGGIORNAMENTI CATASTALI" },
+          ].map((fase) => (
             <Link key={fase.num} to={`/fase/${fase.num}`} state={{ project: currentProject }} className="text-decoration-none">
               <Card className="floating-card mb-3">
                 <Card.Body>
@@ -297,7 +371,6 @@ const Sidebar = () => {
                     </Col>
                     <Col md={10}>
                       <Card.Subtitle className="mb-2 text-muted">{fase.titolo}</Card.Subtitle>
-                      {fase.sottotitolo && <Card.Text className="text-secondary">{fase.sottotitolo}</Card.Text>}
                     </Col>
                   </Row>
                 </Card.Body>
@@ -307,13 +380,12 @@ const Sidebar = () => {
         </div>
       )}
 
-      {/* MODAL CONFERMA ELIMINAZIONE */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Conferma eliminazione</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Sei sicuro di voler eliminare il progetto <strong>{projectToDelete?.nomeProgetto}</strong>?
+          Eliminare <strong>{projectToDelete?.nomeProgetto}</strong>?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
@@ -321,10 +393,13 @@ const Sidebar = () => {
           </Button>
           <Button
             variant="danger"
-            onClick={() => {
-              dispatch(deleteProject(projectToDelete.id));
-              setShowDeleteModal(false);
-              setProjectToDelete(null);
+            onClick={async () => {
+              try {
+                await dispatch(deleteProject(projectToDelete.id));
+                setShowDeleteModal(false);
+              } catch (err) {
+                alert("Errore nell'eliminazione: " + err.message);
+              }
             }}
           >
             Elimina

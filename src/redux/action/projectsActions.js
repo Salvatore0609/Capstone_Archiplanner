@@ -1,47 +1,157 @@
-export const ADD_PROJECT = "ADD_PROJECT";
-export const DELETE_PROJECT = "DELETE_PROJECT";
-export const GEOLOCATION_ERROR = "GEOLOCATION_ERROR";
+import { getToken } from "../utils/authUtils";
+
+export const ADD_PROJECT_REQUEST = "ADD_PROJECT_REQUEST";
+export const ADD_PROJECT_SUCCESS = "ADD_PROJECT_SUCCESS";
+export const ADD_PROJECT_FAILURE = "ADD_PROJECT_FAILURE";
+export const FETCH_PROJECTS_REQUEST = "FETCH_PROJECTS_REQUEST";
+export const FETCH_PROJECTS_SUCCESS = "FETCH_PROJECTS_SUCCESS";
+export const FETCH_PROJECTS_FAILURE = "FETCH_PROJECTS_FAILURE";
+export const DELETE_PROJECT_REQUEST = "DELETE_PROJECT_REQUEST";
+export const DELETE_PROJECT_SUCCESS = "DELETE_PROJECT_SUCCESS";
+export const DELETE_PROJECT_FAILURE = "DELETE_PROJECT_FAILURE";
 export const UPDATE_TASK_DATA = "UPDATE_TASK_DATA";
 
+// Action Creator per Aggiungere un Progetto
 export const addProject = (projectData) => async (dispatch) => {
+  dispatch({ type: ADD_PROJECT_REQUEST });
   try {
-    if (!projectData?.indirizzo?.trim()) {
-      throw new Error("Indirizzo mancante nel progetto");
+    const token = getToken();
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/projects`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(projectData),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Errore nella creazione del progetto");
     }
 
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(projectData.indirizzo)}&key=${
-        import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-      }`
-    );
+    const newProject = await res.json();
 
-    const data = await response.json();
+    dispatch({
+      type: ADD_PROJECT_SUCCESS,
+      payload: newProject,
+    });
 
-    if (data.status === "OK" && data.results[0]?.geometry?.location) {
-      const { lat, lng } = data.results[0].geometry.location;
-      const newProject = {
-        ...projectData,
-        lat,
-        lng,
-        id: Date.now(),
-        phases: {},
-      };
+    dispatch(fetchProjects()); // Aggiorna la lista progetti
 
-      dispatch({ type: ADD_PROJECT, payload: newProject });
-    } else {
-      dispatch({ type: GEOLOCATION_ERROR, payload: "Indirizzo non valido" });
-    }
-  } catch (error) {
-    dispatch({ type: GEOLOCATION_ERROR, payload: error.message });
+    return newProject;
+  } catch (err) {
+    dispatch({
+      type: ADD_PROJECT_FAILURE,
+      payload: err.message,
+    });
+    throw err;
   }
 };
 
-export const deleteProject = (projectId) => ({
-  type: DELETE_PROJECT,
-  payload: projectId,
-});
+// Action Creator per Recuperare i Progetti
+export const fetchProjects = () => async (dispatch) => {
+  try {
+    const token = getToken();
 
-export const updateTaskData = (projectId, phaseKey, taskId, data) => ({
-  type: UPDATE_TASK_DATA,
-  payload: { projectId, phaseKey, taskId, data },
-});
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/projects`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Verifica che la risposta sia un array
+    if (!Array.isArray(data)) {
+      throw new Error("Formato dati non valido");
+    }
+
+    //Salvo subito in localStorage, così al refresh del browser
+    //posso ricostruire lo stato projects senza dover rifare la fetch
+    localStorage.setItem("projects", JSON.stringify(data));
+
+    dispatch({
+      type: FETCH_PROJECTS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    console.error("Fetch projects error:", error);
+    dispatch({
+      type: FETCH_PROJECTS_FAILURE,
+      payload: error.message,
+    });
+    return []; // Ritorna array vuoto in caso di errore
+  }
+};
+
+// Action Creator per Eliminare un Progetto
+export const deleteProject = (id) => async (dispatch) => {
+  dispatch({ type: DELETE_PROJECT_REQUEST });
+
+  try {
+    const token = getToken();
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/projects/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Errore nell'eliminazione del progetto");
+    }
+
+    dispatch({
+      type: DELETE_PROJECT_SUCCESS,
+      payload: id,
+    });
+
+    dispatch(fetchProjects()); // Aggiorna la lista progetti
+  } catch (error) {
+    dispatch({
+      type: DELETE_PROJECT_FAILURE,
+      payload: error.message,
+    });
+    throw error;
+  }
+};
+
+export const updateTaskData = (projectId, phaseKey, taskId, data) => async (dispatch) => {
+  try {
+    const token = getToken();
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/tasks/${taskId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Errore nell'aggiornamento del task");
+    }
+
+    const updatedTask = await response.json();
+
+    dispatch({
+      type: UPDATE_TASK_DATA,
+      payload: {
+        projectId,
+        phaseKey,
+        taskId,
+        data: updatedTask,
+      },
+    });
+  } catch (error) {
+    console.error("Update task error:", error);
+    throw error;
+  }
+};

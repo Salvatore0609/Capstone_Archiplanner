@@ -56,7 +56,6 @@ export default function LoginNormalReducer(state = initialState, action) {
       };
 
     case LOGIN_NORMAL_FAILURE:
-      console.log("Reducer LOGIN_NORMAL_SUCCESS payload:", action.payload);
       return {
         ...state,
         loginLoading: false,

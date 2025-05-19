@@ -1,33 +1,32 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Container, Row, Col } from "react-bootstrap";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { Container, Row, Col, Spinner } from "react-bootstrap";
+import { useEffect, useMemo } from "react";
 import Sidebar from "../components/Dashboard/Sidebar";
 import Topbar from "../components/Dashboard/Topbar";
 import GoogleMapView from "../components/commons/GoogleMapView";
+import { useSelector } from "react-redux";
 
 const Project = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { projectId } = useParams();
+  const { id } = useParams();
+  const projects = useSelector((state) => state.projects.items || []);
+  const project = useMemo(() => {
+    return Array.isArray(projects) ? projects.find((p) => p.id === Number(id)) : null;
+  }, [projects, id]);
 
-  // Cerca il progetto in due modi:
-  // 1. Dallo state della navigazione (se arriviamo da un link interno)
-  // 2. Dallo store Redux tramite ID (se la pagina viene ricaricata)
-  const projectFromState = location.state?.project;
-  const projectFromStore = useSelector((state) => state.projects.find((p) => p.id === Number(projectId)));
+  const isLoading = useSelector((state) => state.projects.loading);
 
-  // Unifica i due risultati
-  const project = projectFromState || projectFromStore;
-
-  // Effetto per il redirect se il progetto non esiste
   useEffect(() => {
-    if (!project) {
+    if (!isLoading && projects.length >= 0 && !project) {
+      console.error("Progetto non trovato");
+      // Se il progetto non esiste, reindirizza alla dashboard
       navigate("/dashboard");
     }
-  }, [project, navigate]);
+  }, [project, projects, navigate, isLoading]);
 
-  if (!project) return null;
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <Container fluid>

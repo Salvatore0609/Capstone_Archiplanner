@@ -109,17 +109,25 @@ export const FETCH_PROFILE_REQUEST = "auth/FETCH_PROFILE_REQUEST";
 export const FETCH_PROFILE_SUCCESS = "auth/FETCH_PROFILE_SUCCESS";
 export const FETCH_PROFILE_FAILURE = "auth/FETCH_PROFILE_FAILURE";
 
-export const fetchProfile = () => async (dispatch) => {
+export const fetchProfile = () => async (dispatch, getState) => {
+  const currentUser = getState().loginGoogle.user || getState().loginNormal.user;
+  if (currentUser?.avatar) return;
   dispatch({ type: FETCH_PROFILE_REQUEST });
+
+  const token = getToken();
   try {
     const res = await fetch(`${import.meta.env.VITE_API_URL}/utenti/current-user`, {
       headers: {
-        Authorization: `Bearer ${getToken()}`,
+        Authorization: `Bearer ${token}`,
       },
     });
+
     if (!res.ok) throw new Error("Impossibile caricare il profilo");
     const user = await res.json();
-    dispatch({ type: FETCH_PROFILE_SUCCESS, payload: user });
+
+    if (JSON.stringify(user) !== JSON.stringify(currentUser)) {
+      dispatch({ type: FETCH_PROFILE_SUCCESS, payload: user });
+    }
   } catch (err) {
     dispatch({ type: FETCH_PROFILE_FAILURE, payload: err.message });
   }

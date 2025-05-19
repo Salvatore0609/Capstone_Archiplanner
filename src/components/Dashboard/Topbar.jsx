@@ -5,15 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearUserData, removeToken } from "../../redux/utils/authUtils";
 import { logoutGoogle, logoutNormal } from "../../redux/action/LoginActions";
+import { useState } from "react";
 
 const Topbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [localAvatarError, setLocalAvatarError] = useState(false);
   const activeUser = useSelector((state) => state.loginGoogle.user || state.loginNormal.user);
-  console.log("User in Topbar:", activeUser);
-  const wholeState = useSelector((state) => state);
-  console.log("Stato redux completo top:", wholeState);
-
   const getAvatarUrl = () => activeUser?.avatar;
   const avatarUrl = getAvatarUrl();
 
@@ -38,18 +36,25 @@ const Topbar = () => {
         <IoMdNotificationsOutline size={30} color="#C69B7B" />
         <Dropdown>
           <Dropdown.Toggle variant="link" id="user-dropdown-toggle" className="text-decoration-none">
-            {avatarUrl ? (
+            {localAvatarError || !avatarUrl ? (
+              <FaRegUserCircle size={30} className="text-secondary" />
+            ) : (
               <img
                 src={avatarUrl}
                 alt="Avatar"
-                style={{ width: "40px", height: "40px", objectFit: "cover", border: "2px solid #C69B7B", borderRadius: "50%" }}
+                className="avatar-image"
                 onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/default-avatar.jpg";
+                  setLocalAvatarError(true);
+                  e.target.onerror = null; // Importante per prevenire loop
+                }}
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                  border: "2px solid #C69B7B",
                 }}
               />
-            ) : (
-              <FaRegUserCircle size={30} className="text-secondary" />
             )}
           </Dropdown.Toggle>
 

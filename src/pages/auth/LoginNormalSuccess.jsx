@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { /* getNormalUserData */ saveToken /* saveNormalUserData  */ } from "../../redux/utils/authUtils";
+import { /* getNormalUserData */ saveNormalUserData, saveToken /* saveNormalUserData  */ } from "../../redux/utils/authUtils";
 import { loginNormalSuccess } from "../../redux/action/LoginActions";
 import { Spinner } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
+import { fetchProjects } from "../../redux/action/projectsActions";
 
 function NormalLoginSuccess() {
   const dispatch = useDispatch();
@@ -18,26 +19,19 @@ function NormalLoginSuccess() {
           window.location.href = "/";
           return;
         }
-        console.log("Token ricevuto:", token);
+
         // Salva il token
         saveToken(token);
 
-        /* // Salva tutto in localStorage
-        saveNormalUserData(userData); */
-
-        // Fetch dati COMPLETI utente
         const response = await fetch(`${import.meta.env.VITE_API_URL}/utenti/current-user`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        if (!response.ok) throw new Error("Failed to fetch profile");
-
+        if (!response.ok) throw new Error("Impossibile caricare il profilo");
         const userData = await response.json();
-        console.log("Dati utente ricevuti:", userData);
-
-        // Dispatch completo per login normale
         dispatch(loginNormalSuccess(userData, token));
-        console.log("Dispatch eseguito con successo!");
+        saveNormalUserData({ ...userData, token });
+
+        await dispatch(fetchProjects());
 
         setTimeout(() => {
           window.location.href = "/dashboard";

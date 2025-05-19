@@ -35,7 +35,7 @@ function Register({ show, onClose }) {
       username: form.username.value,
       email: form.email.value,
       password: form.password.value,
-      annoNascita: parseInt(form.annoNascita.value, 10),
+      dataNascita: form.dataNascita.value,
       luogoNascita: form.luogoNascita.value,
       residenza: form.residenza.value,
       nomeCompagnia: form.nomeCompagnia.value,
@@ -100,8 +100,8 @@ function Register({ show, onClose }) {
 
             <Col md={6}>
               <FormGroup className="mb-3">
-                <Form.Label>Anno di Nascita *</Form.Label>
-                <Form.Control type="number" name="annoNascita" min="1900" max={new Date().getFullYear() - 18} required />
+                <Form.Label>La tua data di Nascita *</Form.Label>
+                <Form.Control type="date" name="dataNascita" required />
               </FormGroup>
 
               <FormGroup className="mb-3">
@@ -125,7 +125,6 @@ function Register({ show, onClose }) {
                   {Object.entries(languageMap).map(([code, label]) => (
                     <option key={code} value={code}>
                       {" "}
-                      {/* Usa code invece del nome completo */}
                       {label}
                     </option>
                   ))}

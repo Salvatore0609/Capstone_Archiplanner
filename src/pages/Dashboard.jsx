@@ -3,17 +3,29 @@ import Sidebar from "../components/Dashboard/Sidebar";
 import Topbar from "../components/Dashboard/Topbar";
 import ProjectStatus from "../components/Dashboard/ProjectStatus";
 import CountdownBox from "../components/Dashboard/CountdownBox";
-import ChatWidget from "../components/Dashboard/ChatWidget";
+/* import ChatWidget from "../components/Dashboard/ChatWidget"; */
 import ProjectMap from "../components/Dashboard/ProjectMap";
 import PersonalyCalendar from "../components/Dashboard/PersonalyCalendar";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
-  const projects = useSelector((state) => state.projects);
+
+  const projects = useSelector((state) => state.projects?.items || []);
+  // Estrai solo le informazioni necessarie per la mappa
+  const projectLocations = useMemo(
+    () =>
+      projects.map(({ id, indirizzo, lat, lng }) => ({
+        id,
+        indirizzo,
+        lat,
+        lng,
+      })),
+    [projects]
+  );
 
   const totalSlides = 2;
 
@@ -38,15 +50,15 @@ const Dashboard = () => {
               <Row className="mt-5 d-flex justify-content-center">
                 <Col md={3}>
                   <ProjectStatus />
-                  <CountdownBox />
                 </Col>
                 <Col md={3}>
-                  <ChatWidget />
+                  {/* <ChatWidget /> */}
+                  <CountdownBox />
                 </Col>
               </Row>
               <Row className="mt-5 d-flex justify-content-center">
                 <Col md={6}>
-                  <ProjectMap projects={projects} />
+                  <ProjectMap projects={projectLocations} />
                 </Col>
               </Row>
             </Carousel.Item>
