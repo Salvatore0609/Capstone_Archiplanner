@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { saveToken, saveUserData } from "../../redux/utils/authUtils";
-import { loginGoogleSuccess } from "../../redux/action/LoginActions";
+import { fetchProfile, loginGoogleSuccess } from "../../redux/action/LoginActions";
 import { Spinner } from "react-bootstrap";
+import { fetchProjects } from "../../redux/action/projectsActions";
 
-function LoginSuccess() {
+function LoginGoogleSuccess() {
   const [showContent, setShowContent] = useState(true);
   const dispatch = useDispatch();
 
@@ -28,6 +29,9 @@ function LoginSuccess() {
     saveToken(userData.token);
     saveUserData(userData);
     dispatch(loginGoogleSuccess(userData));
+
+    dispatch(fetchProfile());
+    dispatch(fetchProjects());
 
     const timer = setTimeout(() => {
       setShowContent(false);
@@ -75,4 +79,4 @@ function LoginSuccess() {
   );
 }
 
-export default LoginSuccess;
+export default LoginGoogleSuccess;

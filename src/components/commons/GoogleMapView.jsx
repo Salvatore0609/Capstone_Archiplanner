@@ -35,6 +35,7 @@ const GoogleMapView = ({ projects }) => {
         streetViewControl: true,
         mapTypeControl: true,
         fullscreenControl: true,
+        mapTypeId: "satellite",
       }}
     >
       {projects?.map(

@@ -8,6 +8,9 @@ import {
   ADD_PROJECT_FAILURE,
   DELETE_PROJECT_REQUEST,
   DELETE_PROJECT_FAILURE,
+  UPDATE_PROJECT_REQUEST,
+  UPDATE_PROJECT_SUCCESS,
+  UPDATE_PROJECT_FAILURE,
 } from "../action/projectsActions";
 
 const initialState = {
@@ -21,6 +24,7 @@ const projectsReducer = (state = initialState, action) => {
     // CASI DI CARICAMENTO
     case FETCH_PROJECTS_REQUEST:
     case ADD_PROJECT_REQUEST:
+    case UPDATE_PROJECT_REQUEST:
     case DELETE_PROJECT_REQUEST:
       return { ...state, loading: true, error: null };
 
@@ -39,6 +43,14 @@ const projectsReducer = (state = initialState, action) => {
         loading: false,
       };
 
+    case UPDATE_PROJECT_SUCCESS:
+      return {
+        ...state,
+        // sostituisce il progetto aggiornato nell’array
+        items: state.items.map((project) => (project.id === action.payload.id ? action.payload : project)),
+        loading: false,
+      };
+
     case DELETE_PROJECT_SUCCESS:
       return {
         ...state,
@@ -50,6 +62,7 @@ const projectsReducer = (state = initialState, action) => {
     case FETCH_PROJECTS_FAILURE:
     case ADD_PROJECT_FAILURE:
     case DELETE_PROJECT_FAILURE:
+    case UPDATE_PROJECT_FAILURE:
       return {
         ...state,
         loading: false,

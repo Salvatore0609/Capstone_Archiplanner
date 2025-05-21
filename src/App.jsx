@@ -6,7 +6,7 @@ import Login from "./pages/auth/Login";
 import ProfileDetails from "./pages/ProfileDetails";
 import { getNormalUserData, getToken, getUserData } from "./redux/utils/authUtils";
 import { useDispatch, useSelector } from "react-redux";
-import LoginSuccess from "./pages/auth/LoginSuccess";
+import LoginSuccess from "./pages/auth/LoginGoogleSuccess";
 import LoginNormalSuccess from "./pages/auth/LoginNormalSuccess";
 import { useEffect } from "react";
 import { fetchProfile, loginGoogleSuccess, loginNormalSuccess } from "./redux/action/LoginActions";
@@ -17,8 +17,8 @@ const App = () => {
   const token = getToken();
 
   useEffect(() => {
-    fetchProfile();
-    fetchProjects();
+    /* dispatch(fetchProfile());
+    dispatch(fetchProjects()); */
     const restoreSession = async () => {
       const normalUser = getNormalUserData();
       const googleUser = getUserData();
@@ -29,9 +29,10 @@ const App = () => {
         await dispatch(fetchProfile());
       } else if (googleUser?.token) {
         await dispatch(loginGoogleSuccess(googleUser, googleUser.token));
+        await dispatch(fetchProfile());
       }
 
-      /* dispatch(fetchProjects()); */
+      dispatch(fetchProjects());
     };
 
     restoreSession();

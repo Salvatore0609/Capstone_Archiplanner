@@ -1,17 +1,14 @@
-// src/components/StepsProject/TaskCard.jsx
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, ListGroup, Form, Modal } from "react-bootstrap";
+import { Button, Card, ListGroup, Form } from "react-bootstrap";
 import { TiDeleteOutline } from "react-icons/ti";
 import { fetchStepDataByProject, saveStepData, uploadStepFile } from "../../redux/action/stepDataActions";
+import BooleanPill from "../commons/BooleanPill";
 
 const TaskCard = ({ task, project, phase }) => {
   const dispatch = useDispatch();
 
-  // 1) Prendo tutti gli StepData salvati per questo progetto dal Redux store
   const stepDataItems = useSelector((state) => state.stepData.items || []);
-
-  // 2) Costruisco un oggetto “taskState” indicizzato su `step-<stepId>` per accesso rapido
   const taskState = {};
   stepDataItems
     .filter((sd) => sd.projectId === project.id && sd.taskId === task.id)
@@ -19,13 +16,10 @@ const TaskCard = ({ task, project, phase }) => {
       taskState[`step-${sd.stepId}`] = sd;
     });
 
-  // 3) Stato locale: bozza (draft) dei campi modificati dall’utente
   const [localData, setLocalData] = useState({});
+  const [activeModalStep, setActiveModalStep] = useState(null);
+  const [modalTextareaValue, setModalTextareaValue] = useState("");
 
-  // 4) Handler per mostrare un eventuale iframe in modal (solo per i link)
-  const [activeIframe, setActiveIframe] = useState(null);
-
-  // Funzione che aggiorna solo il draft in locale, senza chiamare subito il backend
   const handleFieldChange = (stepKey, newPartialData) => {
     setLocalData((prev) => ({
       ...prev,
@@ -36,20 +30,15 @@ const TaskCard = ({ task, project, phase }) => {
     }));
   };
 
-  // 5) Ad ogni cambio di `project`, ricarico gli StepData da backend
   useEffect(() => {
     if (project?.id) {
       dispatch(fetchStepDataByProject(project.id));
     }
   }, [dispatch, project]);
 
-  // 6) Salvataggio “JSON” di checkbox / dropdown / textarea per un singolo step
   const handleSaveStep = async (stepIndex) => {
     const step = task.steps?.[stepIndex];
-    if (!step || !step.id) {
-      console.error("Step non trovato per stepIndex:", stepIndex);
-      return;
-    }
+    if (!step || !step.id) return;
 
     const realStepId = step.id;
     const stepKey = `step-${realStepId}`;
@@ -79,14 +68,9 @@ const TaskCard = ({ task, project, phase }) => {
     }
   };
 
-  // 8) Upload automatico del file: appena scelto, invia a backend e ricarica i dati
   const handleFileUpload = (stepIndex, file) => {
     const realStepId = task.steps[stepIndex].id;
-    const realTaskId = task.id;
-    const realFaseId = phase.id;
-    const realProjectId = project.id;
-
-    dispatch(uploadStepFile(realProjectId, realFaseId, realTaskId, realStepId, file)).catch((err) => {
+    dispatch(uploadStepFile(project.id, phase.id, task.id, realStepId, file)).catch((err) => {
       console.error("Errore upload:", err);
     });
   };
@@ -100,97 +84,117 @@ const TaskCard = ({ task, project, phase }) => {
             {task.steps.map((step, idx) => {
               const realStepId = step.id;
               const stepKey = `step-${realStepId}`;
-
-              // Dati già salvati sul server per questo step
               const savedData = taskState[stepKey] || {};
-              // Bozza “draft” in locale
               const draft = localData[stepKey] || {};
 
               return (
-                <ListGroup.Item
-                  key={realStepId} // ← qui uso `step.id` come chiave univoca
-                  className="border-0 px-0 py-2 bg-transparent"
-                >
-                  <div className="d-flex justify-content-between align-items-center">
+                <ListGroup.Item key={realStepId} className="border-0 px-0 py-2 bg-transparent">
+                  <div className="d-flex justify-content-between align-items-center gap-5 flex-wrap">
                     <span className="task-label-pill">{step.label}</span>
 
                     {step.type.includes("boolean") && (
-                      <Form.Check
-                        type="switch"
+                      <BooleanPill
+                        label={step.label}
                         checked={draft.checkboxValue ?? savedData.checkboxValue ?? false}
-                        onChange={(e) =>
-                          handleFieldChange(stepKey, {
-                            checkboxValue: e.target.checked,
-                          })
-                        }
+                        onChange={(val) => handleFieldChange(stepKey, { checkboxValue: val })}
                       />
                     )}
 
                     {step.type.includes("dropdown") && (
-                      <Form.Select
-                        value={draft.dropdownSelected ?? savedData.dropdownSelected ?? ""}
-                        onChange={(e) =>
-                          handleFieldChange(stepKey, {
-                            dropdownSelected: e.target.value,
-                          })
-                        }
-                      >
-                        <option value="">Seleziona…</option>
-                        {step.options &&
-                          step.options.map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                              {opt.label}
-                            </option>
-                          ))}
-                      </Form.Select>
+                      <>
+                        <Form.Select
+                          value={draft.dropdownSelected ?? savedData.dropdownSelected ?? ""}
+                          onChange={(e) =>
+                            handleFieldChange(stepKey, {
+                              dropdownSelected: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="">Seleziona…</option>
+                          {step.options &&
+                            step.options.map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                        </Form.Select>
+                        <Button
+                          size="sm"
+                          className="ms-auto btn-link-custom"
+                          onClick={() => {
+                            const selectedArea = draft.dropdownSelected ?? savedData.dropdownSelected ?? null;
+                            if (!selectedArea) {
+                              alert("Seleziona prima un'area.");
+                              return;
+                            }
+                            window.open("https://www.urbismap.com", "_blank");
+                          }}
+                        >
+                          UrbisMap
+                        </Button>
+                      </>
                     )}
 
                     {step.type.includes("textarea") && (
-                      <Form.Control
-                        as="textarea"
-                        value={draft.textareaValue ?? savedData.textareaValue ?? ""}
-                        onChange={(e) =>
-                          handleFieldChange(stepKey, {
-                            textareaValue: e.target.value,
-                          })
-                        }
-                        placeholder={step.placeholder || "Inserisci il testo…"}
-                        style={{ width: "60%", marginRight: "8px" }}
-                      />
+                      <Button
+                        size="sm"
+                        className="btn-commenta-custom"
+                        onClick={() => {
+                          setActiveModalStep(stepKey);
+                          setModalTextareaValue(draft.textareaValue ?? savedData.textareaValue ?? "");
+                        }}
+                      >
+                        Commenta
+                      </Button>
                     )}
 
                     {step.type.includes("file") && (
-                      <Form.Control
-                        type="file"
-                        accept={step.accept}
-                        onChange={(e) => {
-                          const chosen = e.target.files?.[0];
-                          if (chosen) {
-                            handleFileUpload(idx, chosen);
-                          }
-                        }}
-                      />
+                      <div className="d-flex flex-column align-items-start">
+                        <Form.Label className="btn btn-outline-secondary btn-sm">
+                          Scegli file
+                          <Form.Control
+                            type="file"
+                            accept={step.accept}
+                            onChange={(e) => {
+                              const chosen = e.target.files?.[0];
+                              if (chosen) handleFileUpload(idx, chosen);
+                            }}
+                            style={{ display: "none" }}
+                          />
+                        </Form.Label>
+                        {savedData.fileName && (
+                          <div className="d-flex align-items-center">
+                            <small className="text-success">{savedData.fileName}</small>
+                            <Button
+                              variant="link"
+                              size="sm"
+                              className="text-danger p-0"
+                              onClick={() => handleFieldChange(stepKey, { fileName: null })}
+                            >
+                              <TiDeleteOutline />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
                     )}
 
                     {step.type.includes("link") && (
                       <Button
-                        variant="outline-primary"
                         size="sm"
-                        onClick={() =>
-                          setActiveIframe({
-                            src: step.modalSrc,
-                            title: step.modalTitle,
-                          })
-                        }
+                        className="btn-link-custom"
+                        onClick={() => {
+                          const urlToOpen = step.modalSrc || "https://sister.agenziaentrate.gov.it";
+                          window.open(urlToOpen, "_blank");
+                        }}
                       >
-                        Apri
+                        Apri Portale
                       </Button>
                     )}
 
                     {(step.type.includes("boolean") || step.type.includes("dropdown") || step.type.includes("textarea")) && (
                       <Button
                         size="sm"
-                        variant="success"
+                        className="btn-save-custom"
                         onClick={() => handleSaveStep(idx)}
                         disabled={!localData[stepKey] || Object.keys(localData[stepKey]).length === 0}
                       >
@@ -198,15 +202,6 @@ const TaskCard = ({ task, project, phase }) => {
                       </Button>
                     )}
                   </div>
-
-                  {savedData.fileName && (
-                    <div className="d-flex align-items-center gap-2 mt-2">
-                      <small className="text-success">{savedData.fileName}</small>
-                      <Button variant="link" size="sm" className="text-danger p-0" onClick={() => handleFieldChange(stepKey, { fileName: null })}>
-                        <TiDeleteOutline />
-                      </Button>
-                    </div>
-                  )}
                 </ListGroup.Item>
               );
             })}
@@ -214,15 +209,38 @@ const TaskCard = ({ task, project, phase }) => {
         </Card.Body>
       </Card>
 
-      {activeIframe && (
-        <Modal size="lg" show={!!activeIframe} onHide={() => setActiveIframe(null)} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>{activeIframe.title}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body style={{ padding: 0, height: "70vh" }}>
-            <iframe src={activeIframe.src} title={activeIframe.title} style={{ width: "100%", height: "100%", border: "none" }} allowFullScreen />
-          </Modal.Body>
-        </Modal>
+      {/* MODALE COMMENTA */}
+      {activeModalStep && (
+        <div className="modal d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Commenta</h5>
+                <button type="button" className="btn-close" onClick={() => setActiveModalStep(null)}></button>
+              </div>
+              <div className="modal-body">
+                <Form.Control
+                  as="textarea"
+                  rows={6}
+                  value={modalTextareaValue}
+                  onChange={(e) => setModalTextareaValue(e.target.value)}
+                  placeholder="Scrivi qui il tuo commento…"
+                />
+              </div>
+              <div className="modal-footer">
+                <Button
+                  className="btn-save-custom"
+                  onClick={() => {
+                    handleFieldChange(activeModalStep, { textareaValue: modalTextareaValue });
+                    setActiveModalStep(null);
+                  }}
+                >
+                  Salva
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

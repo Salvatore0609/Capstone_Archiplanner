@@ -6,6 +6,9 @@ export const ADD_PROJECT_FAILURE = "ADD_PROJECT_FAILURE";
 export const FETCH_PROJECTS_REQUEST = "FETCH_PROJECTS_REQUEST";
 export const FETCH_PROJECTS_SUCCESS = "FETCH_PROJECTS_SUCCESS";
 export const FETCH_PROJECTS_FAILURE = "FETCH_PROJECTS_FAILURE";
+export const UPDATE_PROJECT_REQUEST = "UPDATE_PROJECT_REQUEST";
+export const UPDATE_PROJECT_SUCCESS = "UPDATE_PROJECT_SUCCESS";
+export const UPDATE_PROJECT_FAILURE = "UPDATE_PROJECT_FAILURE";
 export const DELETE_PROJECT_REQUEST = "DELETE_PROJECT_REQUEST";
 export const DELETE_PROJECT_SUCCESS = "DELETE_PROJECT_SUCCESS";
 export const DELETE_PROJECT_FAILURE = "DELETE_PROJECT_FAILURE";
@@ -86,6 +89,45 @@ export const fetchProjects = () => async (dispatch) => {
       payload: error.message,
     });
     return [];
+  }
+};
+
+// Action Creator per Aggiornare un Progetto (ad esempio per il campo “completato”)
+export const updateProject = (projectId, updateData) => async (dispatch) => {
+  dispatch({ type: UPDATE_PROJECT_REQUEST });
+  try {
+    const token = getToken();
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/projects/${projectId}`, {
+      method: "PUT", // o "PATCH" se preferisci endpoint parziale
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updateData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Errore nell'aggiornamento del progetto");
+    }
+
+    const updatedProject = await response.json();
+
+    dispatch({
+      type: UPDATE_PROJECT_SUCCESS,
+      payload: updatedProject,
+    });
+
+    // Ricarica la lista progetti per aggiornare lo stato globale
+    dispatch(fetchProjects());
+
+    return updatedProject;
+  } catch (err) {
+    dispatch({
+      type: UPDATE_PROJECT_FAILURE,
+      payload: err.message,
+    });
+    throw err;
   }
 };
 

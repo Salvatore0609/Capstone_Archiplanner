@@ -5,9 +5,9 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Image } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { addProject, deleteProject, fetchProjects } from "../../redux/action/projectsActions";
+import { addProject, fetchProjects } from "../../redux/action/projectsActions";
 import GoogleMapView from "../commons/GoogleMapView";
-import { TiDeleteOutline } from "react-icons/ti";
+
 import { getToken } from "../../redux/utils/authUtils";
 
 const Sidebar = () => {
@@ -16,8 +16,6 @@ const Sidebar = () => {
   const [showModal, setShowModal] = useState(false);
   const [showPhaseCards, setShowPhaseCards] = useState(false);
   const [showProjectList, setShowProjectList] = useState(false);
-  const [projectToDelete, setProjectToDelete] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [loadingProjects, setLoadingProjects] = useState(false);
 
   // Stato per il nuovo progetto e geocoding
@@ -315,23 +313,16 @@ const Sidebar = () => {
                 >
                   <Card.Body>
                     <Row className="align-items-center">
-                      <Col md={2}>
-                        <Card.Title>{index + 1}</Card.Title>
+                      <Col xs={4} md={2}>
+                        <Card.Title className="project-list-number">{index + 1}</Card.Title>
                       </Col>
-                      <Col md={8} className="d-flex align-items-center">
-                        <Card.Subtitle className="text-muted">{proj.nomeProgetto}</Card.Subtitle>
-                        <TiDeleteOutline
-                          size={25}
-                          className="text-danger ms-auto"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setProjectToDelete(proj);
-                            setShowDeleteModal(true);
-                          }}
-                        />
-                      </Col>
-                      <Col md={12}>
-                        <Card.Text className="text-secondary">{proj.indirizzo}</Card.Text>
+                      <Col xs={8} md={10}>
+                        <div className="d-flex justify-content-between align-items-start w-100">
+                          <div>
+                            <Card.Subtitle className="text-muted">{proj.nomeProgetto}</Card.Subtitle>
+                            <Card.Text className="text-secondary">{proj.indirizzo}</Card.Text>
+                          </div>
+                        </div>
                       </Col>
                     </Row>
                   </Card.Body>
@@ -360,7 +351,7 @@ const Sidebar = () => {
                 <Card.Body>
                   <Row className="align-items-center">
                     <Col md={2}>
-                      <Card.Title>{fase.num}</Card.Title>
+                      <Card.Title className="phases-list-number">{fase.num}</Card.Title>
                     </Col>
                     <Col md={10}>
                       <Card.Subtitle className="mb-2 text-muted">{fase.titolo}</Card.Subtitle>
@@ -372,33 +363,6 @@ const Sidebar = () => {
           ))}
         </div>
       )}
-
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Conferma eliminazione</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Eliminare <strong>{projectToDelete?.nomeProgetto}</strong>?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-            Annulla
-          </Button>
-          <Button
-            variant="danger"
-            onClick={async () => {
-              try {
-                await dispatch(deleteProject(projectToDelete.id));
-                setShowDeleteModal(false);
-              } catch (err) {
-                alert("Errore nell'eliminazione: " + err.message);
-              }
-            }}
-          >
-            Elimina
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

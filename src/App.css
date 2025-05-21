@@ -50,6 +50,50 @@ button {
   border-radius: 25px;
 }
 
+/* boolean pill */
+.boolean-pill {
+  background-color: #ffffff;
+  box-shadow: 0px 5px 25px 2px #00000030;
+  color: #ababab;
+  border-radius: 20px;
+  padding: 1em;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50px;
+}
+
+.boolean-pill.unchecked .circle {
+  border: 2px solid #84c284;
+  background-color: white;
+  margin-left: 1em;
+}
+
+.boolean-pill.checked {
+  background-color: #84c284;
+  color: white;
+}
+
+.boolean-pill.checked .circle {
+  background-color: #fff;
+  color: #84c284;
+  border: none;
+  margin-left: 1em;
+}
+
+.boolean-pill .circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /*===============================*/
 /*   POSIZIONE FRECCE SLIDE      */
 /*===============================*/
@@ -249,6 +293,24 @@ button {
   padding: 0.5rem;
 }
 
+.dropdown-search {
+  z-index: 1000;
+  position: absolute;
+  width: 45%;
+  height: auto;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 5px 25px 2px #00000030;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+.dropdown-search div:hover p {
+  background-color: #9a99987e;
+  color: #ffffff;
+  cursor: pointer;
+}
+
 .search-bar input {
   border: none;
   border-radius: 25px;
@@ -312,8 +374,6 @@ button {
 }
 
 .time-segment {
-  display: inline-block;
-  width: 2ch;
   background-image: linear-gradient(180deg, rgba(198, 155, 123, 1) 0%, rgba(255, 207, 171, 1) 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -494,15 +554,15 @@ button {
 }
 
 .task-label-pill {
-  background-color: #c69b7b;
-  color: white;
+  background-color: #ffffff;
+  box-shadow: 0px 5px 25px 2px #00000030;
+  color: #ababab;
   border-radius: 20px;
-  padding: 4px 12px;
+  padding: 0.8em;
   font-size: 0.9rem;
   font-weight: 500;
   display: inline-block;
   margin-right: 10px;
-  white-space: nowrap;
 }
 
 .avatar-image {
@@ -511,4 +571,47 @@ button {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #c69b7b;
+}
+
+.phases-list-number {
+  font-size: 3rem;
+  font-weight: bold;
+  display: inline-block;
+  background-image: linear-gradient(180deg, rgba(198, 155, 123, 1) 0%, rgba(255, 207, 171, 1) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ====================== */
+/*    LIST DEI PROGETTI   */
+/* ====================== */
+
+.project-list-number {
+  font-size: 3rem;
+  font-weight: bold;
+  display: inline-block;
+  background-image: linear-gradient(180deg, rgba(198, 155, 123, 1) 0%, rgba(255, 207, 171, 1) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ------------- */
+.btn-save-custom {
+  background-color: #7bc682 !important;
+  color: white !important;
+  border: none;
+}
+
+.btn-link-custom {
+  background-color: #c69b7b !important;
+  color: white !important;
+  border: none;
+}
+
+.btn-commenta-custom {
+  background-color: #ffbc02 !important;
+  color: white !important;
+  border: none;
 }
