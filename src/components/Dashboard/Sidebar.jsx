@@ -1,5 +1,5 @@
 import { Button, Card, Col, Form, Modal, Nav, Row } from "react-bootstrap";
-import { FaCog, FaPlus, FaHeart, FaRegUserCircle, FaChevronLeft, FaLayerGroup, FaTimes, FaListUl } from "react-icons/fa";
+import { FaPlus, FaRegUserCircle, FaChevronLeft, FaLayerGroup, FaTimes, FaListUl } from "react-icons/fa";
 import { FiSidebar } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -9,6 +9,7 @@ import { addProject, fetchProjects } from "../../redux/action/projectsActions";
 import GoogleMapView from "../commons/GoogleMapView";
 
 import { getToken } from "../../redux/utils/authUtils";
+import { TiPinOutline } from "react-icons/ti";
 
 const Sidebar = () => {
   // Stati per la gestione dell'UI
@@ -182,16 +183,9 @@ const Sidebar = () => {
 
           <Nav.Link className={`my-3 d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}>
             <div className="icon-hover">
-              <FaHeart size={20} color="#C69B7B" />
+              <TiPinOutline size={30} color="#C69B7B" />
             </div>
-            {expanded && <span className="ms-2">Preferiti</span>}
-          </Nav.Link>
-
-          <Nav.Link className={`my-3 d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}>
-            <div className="icon-hover">
-              <FaCog size={20} color="#C69B7B" />
-            </div>
-            {expanded && <span className="ms-2">Impostazioni</span>}
+            {expanded && <span className="ms-2">Lavori in corso</span>}
           </Nav.Link>
         </Nav>
 

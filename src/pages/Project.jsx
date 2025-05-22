@@ -5,7 +5,7 @@ import Sidebar from "../components/Dashboard/Sidebar";
 import Topbar from "../components/Dashboard/Topbar";
 import GoogleMapView from "../components/commons/GoogleMapView";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchProjects, updateProject } from "../redux/action/projectsActions"; // import updateProject
+import { fetchProjects, updateProject } from "../redux/action/projectsActions";
 import { deleteStepDataById, fetchStepDataByProject } from "../redux/action/stepDataActions";
 import { deleteProject } from "../redux/action/projectsActions";
 import { FaRegMap } from "react-icons/fa";
@@ -19,21 +19,6 @@ import { phase5Tasks as p5 } from "../components/StepsProject/phase5Tasks";
 import { phase6Tasks as p6 } from "../components/StepsProject/phase6Tasks";
 import BooleanPill from "../components/commons/BooleanPill";
 
-// Tutti i task uniti in un unico array
-const allTasks = [...p1, ...p2, ...p3, ...p4, ...p5, ...p6];
-
-// Funzione di utilità per ottenere titolo task e label dello step
-const getStepInfo = (taskId, stepId) => {
-  const task = allTasks.find((t) => Number(t.id) === Number(taskId));
-  if (!task) return { taskTitle: "Task non trovata", stepLabel: "Step non trovato" };
-
-  const step = task.steps.find((s) => String(s.id) === String(stepId));
-  return {
-    taskTitle: task.title || "Task senza titolo",
-    stepLabel: step?.label || "Step senza etichetta",
-  };
-};
-
 const Project = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
@@ -42,10 +27,39 @@ const Project = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
+  // Tutti i task uniti in un unico array
+  const allTasks = [...p1, ...p2, ...p3, ...p4, ...p5, ...p6];
+
+  // Funzione di utilità per ottenere titolo task e label dello step
+  const getStepInfo = (taskId, stepId) => {
+    const task = allTasks.find((t) => Number(t.id) === Number(taskId));
+    if (!task) return { taskTitle: "Task non trovata", stepLabel: "Step non trovato" };
+
+    const step = task.steps.find((s) => String(s.id) === String(stepId));
+    return {
+      taskTitle: task.title || "Task senza titolo",
+      stepLabel: step?.label || "Step senza etichetta",
+    };
+  };
+
+  const handleDownload = (fileUrl, fileName) => {
+    console.log(fileUrl, fileName);
+    if (!fileUrl) {
+      alert("Nessun file disponibile per il download");
+      return;
+    }
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.download = fileName || "file";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const projects = useSelector((state) => state.projects.items || []);
   const isLoadingProjects = useSelector((state) => state.projects.loading);
   const { items: stepDataItems, loading: isLoadingStepData } = useSelector((state) => state.stepData);
-
+  console.log("stepDataItems:", stepDataItems);
   const project = useMemo(() => {
     return Array.isArray(projects) ? projects.find((p) => p.id === Number(id)) : null;
   }, [projects, id]);
@@ -91,8 +105,7 @@ const Project = () => {
   const handleToggle = async () => {
     const newValue = !checked;
     try {
-      // dispatch(updateProject) invia PUT /projects/:id con { completato: newValue }
-      await dispatch(
+      dispatch(
         updateProject(project.id, {
           nomeProgetto: project.nomeProgetto,
           progettista: project.progettista,
@@ -100,7 +113,7 @@ const Project = () => {
           indirizzo: project.indirizzo,
           lat: project.lat,
           lng: project.lng,
-          completato: newValue, // aggiorno solo il campo "completato"
+          completato: newValue,
         })
       );
       setChecked(newValue);
@@ -157,90 +170,97 @@ const Project = () => {
               </Card.Header>
             </Card>
 
-            <div className="mt-5">
-              <h5 style={{ color: "#C69B7B" }}>Dati task/step per questo progetto</h5>
-              {isLoadingStepData ? (
-                <Spinner />
-              ) : (
-                <div>
-                  {stepDataItems.length === 0 ? (
-                    <p>Nessun dato salvato finora.</p>
-                  ) : (
-                    stepDataItems.map((sd) => {
-                      const { taskTitle, stepLabel } = getStepInfo(sd.taskId, sd.stepId);
-                      return (
-                        <Row key={sd.id} className="mb-3 align-items-center border-bottom pb-2">
-                          <Col md={3}>
-                            <p className="mb-1">
-                              <strong>Fase:</strong> {sd.phaseId}
-                            </p>
-                            <p className="mb-1">
-                              <strong>Task:</strong> {taskTitle}
-                            </p>
-                            <p className="mb-1">
-                              <strong>Step:</strong> {stepLabel}
-                            </p>
-                          </Col>
+            <Card className="card mt-4">
+              <div className="p-3">
+                <h5 style={{ color: "#C69B7B" }}>Dati task/step per questo progetto</h5>
 
-                          <Col md={3}>
-                            {sd.fileName ? (
+                {isLoadingStepData ? (
+                  <Spinner />
+                ) : (
+                  <div>
+                    {stepDataItems.length === 0 ? (
+                      <p>Nessun dato salvato finora.</p>
+                    ) : (
+                      stepDataItems.map((sd) => {
+                        const { taskTitle, stepLabel } = getStepInfo(sd.taskId, sd.stepId);
+                        return (
+                          <Row key={sd.id} className="mb-3 align-items-center border-bottom pb-2">
+                            <Col md={3} className="fw-bold">
                               <div>
-                                <p className="mb-1">
-                                  <strong>File:</strong>
-                                </p>
-                                <a href={sd.fileName} target="_blank" rel="noopener noreferrer">
-                                  Scarica allegato
-                                </a>
+                                <strong>Fase:</strong> <span style={{ color: "#ababab" }}>{sd.faseId}</span>
                               </div>
-                            ) : (
-                              <p className="mb-1">
+                              <div>
+                                <strong>Task:</strong> <span style={{ color: "#ababab" }}>{taskTitle}</span>
+                              </div>
+                              <div>
+                                <strong>Step:</strong> <span style={{ color: "#ababab" }}>{stepLabel}</span>
+                              </div>
+                            </Col>
+
+                            <Col md={3} className="fw-bold">
+                              {sd.fileName && sd.fileUrl ? (
+                                <div>
+                                  <strong>File:</strong>
+                                  {console.log("fileUrl:", sd.fileUrl, "fileName:", sd.fileName)}
+                                  <Button
+                                    size="sm"
+                                    variant="link"
+                                    style={{ color: "#C69B7B", textDecoration: "none" }}
+                                    onClick={() => {
+                                      handleDownload(sd.fileUrl, sd.fileName);
+                                    }}
+                                  >
+                                    Scarica allegato
+                                  </Button>
+                                </div>
+                              ) : (
                                 <em>No file</em>
-                              </p>
-                            )}
-                          </Col>
+                              )}
+                            </Col>
 
-                          <Col md={4}>
-                            {sd.textareaValue && (
-                              <p className="mb-1">
-                                <strong>Commento:</strong> {sd.textareaValue}
-                              </p>
-                            )}
-                            {sd.dropdownSelected && (
-                              <p className="mb-1">
-                                <strong>Selezione:</strong> {sd.dropdownSelected}
-                              </p>
-                            )}
-                            {sd.checkboxValue !== null && (
-                              <p className="mb-1">
-                                <strong>Checkbox:</strong> {sd.checkboxValue ? "Sì" : "No"}
-                              </p>
-                            )}
-                          </Col>
+                            <Col md={3}>
+                              {sd.textareaValue && (
+                                <p className="mb-1">
+                                  <strong>Commento:</strong> {sd.textareaValue}
+                                </p>
+                              )}
+                              {sd.dropdownSelected && (
+                                <p className="mb-1">
+                                  <strong>Selezione:</strong> {sd.dropdownSelected}
+                                </p>
+                              )}
+                              {sd.checkboxValue !== null && (
+                                <p className="mb-1">
+                                  <strong>Checkbox:</strong> {sd.checkboxValue ? "Sì" : "No"}
+                                </p>
+                              )}
+                            </Col>
 
-                          <Col md={1}>
-                            <p className="mb-1 text-muted small">{new Date(sd.updatedAt).toLocaleString("it-IT")}</p>
-                          </Col>
+                            <Col md={1} className="ms-auto">
+                              <p className="mb-1 text-muted small">{new Date(sd.updatedAt).toLocaleString("it-IT")}</p>
+                            </Col>
 
-                          <Col md={1}>
-                            <Button
-                              style={{
-                                backgroundColor: "#C67B7B",
-                                borderColor: "#C67B7B",
-                                color: "white",
-                              }}
-                              size="sm"
-                              onClick={() => dispatch(deleteStepDataById(sd.id, project.id))}
-                            >
-                              Elimina
-                            </Button>
-                          </Col>
-                        </Row>
-                      );
-                    })
-                  )}
-                </div>
-              )}
-            </div>
+                            <Col md={1}>
+                              <Button
+                                style={{
+                                  backgroundColor: "#C67B7B",
+                                  borderColor: "#C67B7B",
+                                  color: "white",
+                                }}
+                                size="sm"
+                                onClick={() => dispatch(deleteStepDataById(sd.id, project.id))}
+                              >
+                                Elimina
+                              </Button>
+                            </Col>
+                          </Row>
+                        );
+                      })
+                    )}
+                  </div>
+                )}
+              </div>
+            </Card>
           </div>
         </Col>
       </Row>

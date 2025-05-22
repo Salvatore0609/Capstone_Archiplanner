@@ -62,7 +62,7 @@ const ProjectStatus = () => {
         </div>
 
         {statuses.map((s, idx) => (
-          <div key={idx} className="d-flex justify-content-between align-items-center mb-4">
+          <div key={idx} className="d-flex justify-content-between align-items-center mb-4 border-bottom">
             <p className="mb-0">{s.label}</p>
             <small className="text-muted">{s.count}</small>
           </div>

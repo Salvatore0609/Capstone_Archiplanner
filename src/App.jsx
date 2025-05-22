@@ -6,7 +6,7 @@ import Login from "./pages/auth/Login";
 import ProfileDetails from "./pages/ProfileDetails";
 import { getNormalUserData, getToken, getUserData } from "./redux/utils/authUtils";
 import { useDispatch, useSelector } from "react-redux";
-import LoginSuccess from "./pages/auth/LoginGoogleSuccess";
+import LoginGoogleSuccess from "./pages/auth/LoginGoogleSuccess";
 import LoginNormalSuccess from "./pages/auth/LoginNormalSuccess";
 import { useEffect } from "react";
 import { fetchProfile, loginGoogleSuccess, loginNormalSuccess } from "./redux/action/LoginActions";
@@ -48,7 +48,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
         <Route path="/login-normal-success" element={<LoginNormalSuccess />} />
-        <Route path="/login-success" element={<LoginSuccess />} />
+        <Route path="/login-google-success" element={<LoginGoogleSuccess />} />
         <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
         <Route path="/profile-details" element={isAuthenticated ? <ProfileDetails /> : <Navigate to="/" replace />} />
         <Route path="/project/:id" element={isAuthenticated ? <Project /> : <Navigate to="/" replace />} />

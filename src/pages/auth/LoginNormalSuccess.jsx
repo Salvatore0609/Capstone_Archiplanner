@@ -1,19 +1,19 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { /* getNormalUserData */ saveNormalUserData, saveToken /* saveNormalUserData  */ } from "../../redux/utils/authUtils";
+import { /* getNormalUserData */ getToken, saveNormalUserData, saveToken /* saveNormalUserData  */ } from "../../redux/utils/authUtils";
 import { loginNormalSuccess } from "../../redux/action/LoginActions";
 import { Spinner } from "react-bootstrap";
-import { useSearchParams } from "react-router-dom";
+/* import { useSearchParams } from "react-router-dom"; */
 import { fetchProjects } from "../../redux/action/projectsActions";
 
 function NormalLoginSuccess() {
   const dispatch = useDispatch();
-  const [searchParams] = useSearchParams();
+  /*  const [searchParams] = useSearchParams(); */
 
   useEffect(() => {
     const handleLogin = async () => {
       try {
-        const token = searchParams.get("token");
+        const token = /* searchParams.get("token") */ getToken();
 
         if (!token) {
           window.location.href = "/";
@@ -23,19 +23,25 @@ function NormalLoginSuccess() {
         // Salva il token
         saveToken(token);
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/utenti/current-user`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!response.ok) throw new Error("Impossibile caricare il profilo");
-        const userData = await response.json();
-        dispatch(loginNormalSuccess(userData, token));
-        saveNormalUserData({ ...userData, token });
-
-        await dispatch(fetchProjects());
-
         setTimeout(() => {
           window.location.href = "/dashboard";
         }, 5000);
+
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/utenti/current-user`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.ok) alert("Impossibile caricare il profilo", response.status, response.statusText);
+        const userData = await response.json();
+        console.log("User data:", userData);
+
+        dispatch(loginNormalSuccess(userData, token));
+        saveNormalUserData({ ...userData, token });
+
+        dispatch(fetchProjects());
+
+        /*  setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 5000); */
       } catch (error) {
         console.error("Login error:", error);
         window.location.href = "/";
@@ -43,7 +49,7 @@ function NormalLoginSuccess() {
     };
 
     handleLogin();
-  }, [dispatch, searchParams]);
+  }, [dispatch /* searchParams */]);
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center" style={{ height: "98vh" }}>

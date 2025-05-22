@@ -24,6 +24,15 @@ body {
   background-position: center bottom, center bottom;
 }
 
+.main-wrapper,
+.main-container,
+.content-wrapper {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+}
+
 .card {
   border-radius: 15px;
   box-shadow: 0px 5px 25px 2px #00000030;
