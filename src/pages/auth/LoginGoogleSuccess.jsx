@@ -4,26 +4,28 @@ import { saveToken, saveUserData } from "../../redux/utils/authUtils";
 import { fetchProfile, loginGoogleSuccess } from "../../redux/action/LoginActions";
 import { Spinner } from "react-bootstrap";
 import { fetchProjects } from "../../redux/action/projectsActions";
+import { useNavigate } from "react-router-dom";
 
 function LoginGoogleSuccess() {
   const [showContent, setShowContent] = useState(true);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const encoded = params.get("data");
-    if (!encoded) return (window.location.href = "/");
+    if (!encoded) return navigate("/");
 
     let userData;
     try {
       const json = atob(decodeURIComponent(encoded));
       userData = JSON.parse(json);
     } catch {
-      return (window.location.href = "/");
+      return navigate("/");
     }
 
     if (!userData.token) {
-      return (window.location.href = "/");
+      return navigate("/");
     }
 
     saveToken(userData.token);
@@ -35,11 +37,11 @@ function LoginGoogleSuccess() {
 
     const timer = setTimeout(() => {
       setShowContent(false);
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [dispatch]);
+  }, [dispatch, navigate]);
 
   if (!showContent) return null;
 

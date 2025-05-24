@@ -5,9 +5,11 @@ import { loginNormalSuccess } from "../../redux/action/LoginActions";
 import { Spinner } from "react-bootstrap";
 /* import { useSearchParams } from "react-router-dom"; */
 import { fetchProjects } from "../../redux/action/projectsActions";
+import { useNavigate } from "react-router-dom";
 
 function NormalLoginSuccess() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleLogin = async () => {
@@ -15,7 +17,7 @@ function NormalLoginSuccess() {
         const token = getToken();
 
         if (!token) {
-          window.location.href = "/";
+          navigate("/");
           return;
         }
 
@@ -23,7 +25,7 @@ function NormalLoginSuccess() {
         saveToken(token);
 
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          navigate("/dashboard");
         }, 5000);
 
         const response = await fetch(`${import.meta.env.VITE_API_URL}/utenti/current-user`, {
@@ -48,7 +50,7 @@ function NormalLoginSuccess() {
     };
 
     handleLogin();
-  }, [dispatch /* searchParams */]);
+  }, [dispatch, navigate]);
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center" style={{ height: "98vh" }}>
