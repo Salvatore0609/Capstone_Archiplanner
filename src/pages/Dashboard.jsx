@@ -36,7 +36,7 @@ const Dashboard = () => {
   };
 
   return (
-    <Container fluid>
+    <Container fluid className="dashboard">
       <Row>
         <Col sm={1} className="sidebar-container">
           <Sidebar />
