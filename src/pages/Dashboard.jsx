@@ -3,7 +3,6 @@ import Sidebar from "../components/Dashboard/Sidebar";
 import Topbar from "../components/Dashboard/Topbar";
 import ProjectStatus from "../components/Dashboard/ProjectStatus";
 import CountdownBox from "../components/Dashboard/CountdownBox";
-/* import ChatWidget from "../components/Dashboard/ChatWidget"; */
 import ProjectMap from "../components/Dashboard/ProjectMap";
 import PersonalyCalendar from "../components/Dashboard/PersonalyCalendar";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -15,7 +14,6 @@ const Dashboard = () => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const projects = useSelector((state) => state.projects?.items || []);
-  // Estrai solo le informazioni necessarie per la mappa
   const projectLocations = useMemo(
     () =>
       projects.map(({ id, indirizzo, lat, lng }) => ({
@@ -28,7 +26,6 @@ const Dashboard = () => {
   );
 
   const totalSlides = 2;
-
   const changeSlide = (newIndex) => {
     if (newIndex < 0 || newIndex >= totalSlides) return;
     setActiveIndex(newIndex);
@@ -36,42 +33,50 @@ const Dashboard = () => {
   };
 
   return (
-    <Container fluid className="dashboard">
+    <Container fluid>
       <Row>
-        <Col sm={1} className="sidebar-container">
+        <Col sm={1}>
           <Sidebar />
         </Col>
 
-        <Col sm={11} className="main-dashboard">
+        <Col sm={12} className="main-dashboard">
           <Topbar />
 
-          <Carousel activeIndex={activeIndex} onSelect={changeSlide} controls={false} indicators={false} interval={null}>
-            <Carousel.Item className="mt-5">
-              <Row className="mt-5 d-flex justify-content-center">
-                <Col md={3}>
-                  <ProjectStatus />
-                </Col>
-                <Col md={3}>
-                  {/* <ChatWidget /> */}
-                  <CountdownBox />
-                </Col>
-              </Row>
-              <Row className="mt-5 d-flex justify-content-center">
-                <Col md={6}>
-                  <ProjectMap projects={projectLocations} />
-                </Col>
-              </Row>
-            </Carousel.Item>
+          {/* WRAPPER che dà altezza fissa e centra il Carousel */}
+          <div className="carousel-wrapper">
+            <Carousel activeIndex={activeIndex} onSelect={changeSlide} controls={false} indicators={false} interval={null}>
+              {/* Slide 1 */}
+              <Carousel.Item>
+                {/* RIGA 1: ProjectStatus + CountdownBox */}
+                <Row className="justify-content-center align-items-center">
+                  <Col md={3}>
+                    <ProjectStatus />
+                  </Col>
+                  <Col md={3}>
+                    <CountdownBox />
+                  </Col>
+                </Row>
 
-            <Carousel.Item>
-              <Row className="mt-5 justify-content-center">
-                <Col md={8}>
-                  <PersonalyCalendar key={refreshKey} />
-                </Col>
-              </Row>
-            </Carousel.Item>
-          </Carousel>
+                {/* RIGA 2: ProjectMap */}
+                <Row className="mt-4 justify-content-center">
+                  <Col md={6}>
+                    <ProjectMap projects={projectLocations} />
+                  </Col>
+                </Row>
+              </Carousel.Item>
 
+              {/* Slide 2 */}
+              <Carousel.Item>
+                <Row className="justify-content-center">
+                  <Col md={6}>
+                    <PersonalyCalendar key={refreshKey} />
+                  </Col>
+                </Row>
+              </Carousel.Item>
+            </Carousel>
+          </div>
+
+          {/* Frecce posizionate con assoluto rispetto a .main-dashboard */}
           <div className="carousel-arrow">
             {activeIndex > 0 && (
               <button onClick={() => changeSlide(activeIndex - 1)} className="carousel-control" aria-label="Previous">

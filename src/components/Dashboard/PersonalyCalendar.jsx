@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import { Card, Button, Modal, Form, Row, Col } from "react-bootstrap";
+import { Card, Button, Modal, Form, Row, Col, Container } from "react-bootstrap";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -197,14 +197,14 @@ const PersonalyCalendar = ({ refreshKey }) => {
   };
 
   return (
-    <div className="p-3">
+    <Container fluid>
       <Card className="bg-transparent glass-card">
         <Card.Body className="bg-transparent">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <Button style={{ backgroundColor: "#C69B7B", border: "none" }} onClick={() => setCurrentDate((d) => subDays(d, 2))}>
               <FaArrowLeft className="d-flex" />
             </Button>
-            <h5 className="mb-0 text-center w-100" style={{ color: "#555" }}>
+            <h5 className="text-center w-100" style={{ color: "#555" }}>
               {format(currentDate, "EEE dd/MM", { itLocale })} - {format(addDays(currentDate, 1), "EEE dd/MM yyyy", { itLocale })}
             </h5>
             <Button style={{ backgroundColor: "#C69B7B", border: "none" }} onClick={() => setCurrentDate((d) => addDays(d, 2))}>
@@ -234,7 +234,7 @@ const PersonalyCalendar = ({ refreshKey }) => {
         <FaPlus />
       </Button>
       {renderModal()}
-    </div>
+    </Container>
   );
 };
 

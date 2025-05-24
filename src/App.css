@@ -9,10 +9,6 @@
   padding: 0;
 }
 
-*::-webkit-scrollbar-track {
-  display: none;
-}
-
 html {
   height: 100%;
 }
@@ -30,27 +26,12 @@ body {
   background-position: center bottom, center bottom;
 }
 
-.main-wrapper,
-.main-container,
-.content-wrapper {
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  width: 100%;
-}
-
-.card {
-  border-radius: 15px;
-  box-shadow: 0px 5px 25px 2px #00000030;
-}
-/* Link e bottoni */
-a,
-a:hover,
-button {
-  transition: color 0.2s, background-color 0.2s;
-}
-
+/*===============================*/
+/*        SCROLLBAR              */
+/*===============================*/
+*::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
+  display: none;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: transparent;
 }
@@ -65,7 +46,30 @@ button {
   border-radius: 25px;
 }
 
-/* boolean pill */
+/*===============================*/
+/*        LAYOUT CONTAINERS      */
+/*===============================*/
+.main-dashboard {
+  position: relative;
+}
+
+/*===============================*/
+/*        COMPONENTI BASE        */
+/*===============================*/
+.card {
+  border-radius: 15px;
+  box-shadow: 0px 5px 25px 2px #00000030;
+}
+
+a,
+a:hover,
+button {
+  transition: color 0.2s, background-color 0.2s;
+}
+
+/*===============================*/
+/*        BOOLEAN PILL           */
+/*===============================*/
 .boolean-pill {
   background-color: #ffffff;
   box-shadow: 0px 5px 25px 2px #00000030;
@@ -109,13 +113,16 @@ button {
   justify-content: center;
 }
 
-/* .dashboard {
-  height: calc(100vh - 200px);
-} */
+/*===============================*/
+/*        CAROUSEL               */
+/*===============================*/
 
-/*===============================*/
-/*   POSIZIONE FRECCE SLIDE      */
-/*===============================*/
+.carousel-wrapper {
+  position: relative;
+  top: 20%;
+  height: 100vh;
+}
+
 .carousel-arrow {
   position: absolute;
   top: 50%;
@@ -133,16 +140,9 @@ button {
   outline: none;
 }
 
-.carousel-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-/*===========================*/
-/*           SIDEBAR         */
-/*===========================*/
+/*===============================*/
+/*        SIDEBAR                */
+/*===============================*/
 .sidebar {
   background: #ffffff;
   box-shadow: 0px 4px 25px 2px rgba(0, 0, 0, 0.188);
@@ -155,7 +155,6 @@ button {
   z-index: 1000;
 }
 
-/* Stati sidebar */
 .sidebar.sidebar-collapsed {
   width: 90px;
 }
@@ -165,7 +164,6 @@ button {
   z-index: 1000;
 }
 
-/* Link menu */
 .sidebar a {
   color: #c69b7b;
   transition: color 0.3s;
@@ -183,6 +181,7 @@ button {
   border-radius: 50%;
   transition: background-color 0.2s ease;
 }
+
 .icon-hover:hover {
   background-color: #d9d9d9;
 }
@@ -190,6 +189,7 @@ button {
 .sidebar-expanded .nav-link:hover span {
   text-decoration: underline;
 }
+
 .sidebar-expanded .nav-link span {
   color: #ababab;
   font-weight: 600;
@@ -228,9 +228,9 @@ button {
   box-shadow: 0 0 0 2px rgba(198, 155, 123, 0.5);
 }
 
-/*========================================*/
-/*    STILE MODALE/CARD NUOVOPROGETTO     */
-/*========================================*/
+/*===============================*/
+/*        MODALI & CARD          */
+/*===============================*/
 .modal-dialog {
   width: 100%;
 }
@@ -252,7 +252,7 @@ button {
 .btn-primary:hover {
   background-color: #629f68;
 }
-/* card sospese */
+
 .floating-cards-container {
   position: fixed;
   overflow: auto;
@@ -267,7 +267,7 @@ button {
   backdrop-filter: blur(8px);
   animation: slideIn 0.3s ease-out;
 }
-/* animazione card */
+
 @keyframes slideIn {
   from {
     transform: translateX(100%);
@@ -301,12 +301,12 @@ button {
 }
 
 .sidebar-expanded + .floating-cards-container {
-  left: 290px; /* Deve corrispondere alla larghezza della sidebar espansa */
+  left: 290px;
 }
 
-/* ====================== */
-/*         TOPBAR         */
-/* ====================== */
+/*===============================*/
+/*        TOPBAR                 */
+/*===============================*/
 .topbar {
   position: fixed;
   top: 0;
@@ -339,6 +339,7 @@ button {
   padding: 0.5rem;
   margin-top: 0.5rem;
 }
+
 .dropdown-search div:hover p {
   background-color: #9a99987e;
   color: #ffffff;
@@ -360,10 +361,9 @@ button {
   display: none;
 }
 
-/* ====================== */
-/*  CARDSTATUS PROGETTI   */
-/* ====================== */
-
+/*===============================*/
+/*        PROGETTI & STATI       */
+/*===============================*/
 .project-status .status-card {
   background-color: #ffffff;
   border: 1px solid #e0dcd7;
@@ -386,10 +386,9 @@ button {
   color: #7a6c5f;
 }
 
-/* ====================== */
-/*      TIMER COFFE       */
-/* ====================== */
-
+/*===============================*/
+/*        TIMER CAFFÈ            */
+/*===============================*/
 .countdown-box {
   background-color: #ffffff;
   border: 1px solid #e0dcd7;
@@ -422,10 +421,9 @@ button {
   color: transparent;
 }
 
-/* ====================== */
-/*     CHAT CO-WORKING    */
-/* ====================== */
-/* Card con effetto vetro */
+/*===============================*/
+/*        CHAT                   */
+/*===============================*/
 .chat-widget {
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(20px);
@@ -437,13 +435,11 @@ button {
   padding: 1rem;
 }
 
-/* Liste dei messaggi */
 .chat-list {
   max-height: 250px;
   overflow-y: auto;
 }
 
-/* Pillola per il messaggio */
 .message-content {
   background: #c69b7b;
   border: none;
@@ -457,7 +453,6 @@ button {
   margin-top: 0.3rem;
 }
 
-/* Nome utente sopra il messaggio */
 .message-user {
   font-size: 0.8rem;
   font-weight: 600;
@@ -466,7 +461,6 @@ button {
   margin-top: 0.5rem;
 }
 
-/* Orario del messaggio */
 .message-time {
   font-size: 0.7rem;
   color: #a89b8f;
@@ -487,75 +481,71 @@ button {
   color: #c69b7b;
 }
 
-/* ====================== */
-/*         MAPS           */
-/* ====================== */
-
+/*===============================*/
+/*        MAPPE                  */
+/*===============================*/
 .map-header {
   font-weight: 500;
   color: #c69b7b;
 }
+
 .map-body {
   padding: 0;
   position: relative;
   z-index: 5;
 }
+
 .map-container {
   width: 100%;
-  height: 400px;
+  height: 300px;
   border-radius: 15px;
 }
 
-/* ====================== */
-/*        CALENDAR        */
-/* ====================== */
-/* Styling generale per la classe .fullcalendar */
+/*===============================*/
+/*        CALENDARIO             */
+/*===============================*/
 .fc {
   background-color: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(8px);
   border-radius: 10px;
-  max-height: 800px;
+  max-height: 600px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
 }
-/* Gestione dello scroller */
-/* .fc-scroller {
-  overflow-y: hidden !important;
-} */
-/* Link senza sottolineatura */
+
 .fc a {
   color: #9a9998;
   text-decoration: none;
 }
-/* Altezze degli slot di tempo */
+
 .fc .fc-timegrid-slot {
   height: 4em;
 }
-/* Styling e hover per gli slot vuoti (liberi) nel calendario */
+
 .fc-timegrid .fc-timegrid-slot {
   transition: opacity 0.3s;
-  cursor: pointer; /* Cambia il cursore per indicare che è cliccabile */
+  cursor: pointer;
 }
-/* Hover sugli slot vuoti */
+
 .fc-timegrid .fc-timegrid-slot:not(.fc-event):hover {
   opacity: 0.7;
-  background-color: rgba(198, 155, 123, 0.3); /* Colore di trasparenza simile al background delle frecce */
+  background-color: rgba(198, 155, 123, 0.3);
 }
-/* Non modificare gli slot occupati da eventi */
+
 .fc .fc-event {
   background-color: #c69b7b;
   border: none;
 }
-/* Modifica l'aspetto delle etichette delle ore (grigio) */
+
 .fc .fc-timegrid-slot-label {
   font-weight: 500;
   color: #9a9998;
 }
-/* Rimuove il giallo dal giorno corrente */
+
 .fc .fc-day-today {
   background-color: rgba(0, 128, 0, 0.107) !important;
 }
-/* Styling per il pulsante + */
+
 .button-plus {
   bottom: 30px;
   right: 30px;
@@ -570,17 +560,15 @@ button {
   transition: all 0.3s ease;
 }
 
-/* Hover sul pulsante + */
 .button-plus:hover {
   background: rgba(98, 159, 104, 0.6);
   transform: scale(1.1);
   border: none;
 }
 
-/* ====================== */
-/*     TASK DELLE FASI    */
-/* ====================== */
-
+/*===============================*/
+/*        TASK & FASI            */
+/*===============================*/
 .task-card {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(8px);
@@ -618,10 +606,9 @@ button {
   color: transparent;
 }
 
-/* ====================== */
-/*    LIST DEI PROGETTI   */
-/* ====================== */
-
+/*===============================*/
+/*        LISTA PROGETTI         */
+/*===============================*/
 .project-list-number {
   font-size: 3rem;
   font-weight: bold;
@@ -632,7 +619,9 @@ button {
   color: transparent;
 }
 
-/* ------------- */
+/*===============================*/
+/*        BOTTONI CUSTOM         */
+/*===============================*/
 .btn-save-custom {
   background-color: #7bc682 !important;
   color: white !important;
@@ -649,4 +638,64 @@ button {
   background-color: #ffbc02 !important;
   color: white !important;
   border: none;
+}
+
+/*===============================*/
+/*        RESPONSIVE             */
+/*===============================*/
+@media (max-width: 1600px) {
+  .main-wrapper,
+  .main-container,
+  .content-wrapper {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .sidebar.sidebar-expanded + .floating-cards-container {
+    left: 270px;
+  }
+}
+
+@media (max-width: 992px) {
+  .countdown-timer {
+    font-size: 3rem;
+  }
+
+  .map-container {
+    height: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 0.5rem;
+  }
+
+  .sidebar {
+    width: 80px;
+  }
+
+  .sidebar.sidebar-expanded {
+    width: 240px;
+  }
+
+  .floating-cards-container {
+    width: 250px;
+    left: 100px;
+  }
+}
+
+@media (max-width: 576px) {
+  .countdown-timer {
+    font-size: 2.5rem;
+  }
+
+  .fc {
+    max-height: 500px;
+  }
+
+  .map-container {
+    height: 250px;
+  }
 }
