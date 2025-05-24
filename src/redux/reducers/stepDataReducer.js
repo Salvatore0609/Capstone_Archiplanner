@@ -27,7 +27,11 @@ const stepDataReducer = (state = initialState, action) => {
       return { ...state, items: action.payload, loading: false };
 
     case SAVE_STEPDATA_SUCCESS:
-      return { ...state, loading: false };
+      return {
+        ...state,
+        items: state.items.map((item) => (item.id === action.payload.id ? action.payload : item)),
+        loading: false,
+      };
     // NON aggiungiamo direttamente `action.payload` a items,
     // perché stiamo rifacendo `fetchStepDataByProject` subito dopo.
 

@@ -4,13 +4,13 @@ export const phase4Tasks = [
     title: "Progettazione Esecutiva",
     steps: [
       {
-        id: 26,
+        id: 27,
         label: "Carica disegni esecutivi con misurazioni e dettagli",
         type: ["file"],
         accept: ".pdf,.dwg",
       },
       {
-        id: 27,
+        id: 28,
         label: "Definisci gli schemi per impianti e strutture",
         type: ["file"],
         accept: ".pdf,.dwg",
@@ -22,13 +22,13 @@ export const phase4Tasks = [
     title: "Preparazione del Computo Metrico Definitivo",
     steps: [
       {
-        id: 28,
+        id: 29,
         label: "Carica computo metrico definitivo",
         type: ["file"],
         accept: ".xls,.xlsx,.pdf",
       },
       {
-        id: 29,
+        id: 30,
         label: "Note sui preventivi ricevuti dalle imprese",
         type: ["textarea", "file"],
         placeholder: "Inserisci considerazioni o allega documenti…",
@@ -41,13 +41,13 @@ export const phase4Tasks = [
     title: "Scelta dell’Impresa Esecutrice",
     steps: [
       {
-        id: 30,
+        id: 31,
         label: "Carica valutazione e schede imprese selezionate",
         type: ["file"],
         accept: ".pdf,.docx",
       },
       {
-        id: 31,
+        id: 32,
         label: "Stipula del contratto d’appalto",
         type: ["file"],
         accept: ".pdf",
@@ -59,13 +59,13 @@ export const phase4Tasks = [
     title: "Piano di Sicurezza e Coordinamento (PSC)",
     steps: [
       {
-        id: 32,
+        id: 33,
         label: "Carica documento PSC per il cantiere",
         type: ["file"],
         accept: ".pdf",
       },
       {
-        id: 33,
+        id: 34,
         label: "Nomina del Coordinatore per la Sicurezza",
         type: ["file"],
         accept: ".pdf",

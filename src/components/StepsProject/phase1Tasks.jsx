@@ -1,4 +1,3 @@
-// src/data/phase1Tasks.js
 export const phase1Tasks = [
   {
     id: 1,
@@ -33,12 +32,17 @@ export const phase1Tasks = [
         ],
       },
       {
-        id: 4,
+        id: 4, // nuovo id step, deve essere unico
+        label: "Seleziona la zona di interesse",
+        type: ["dropdown"],
+      },
+      {
+        id: 5,
         label: "Verifica vincoli paesaggistici, ambientali, storici",
         type: ["static"],
       },
       {
-        id: 5,
+        id: 6,
         label: "Conformità alle Normative Edilizie e Antisismiche",
         type: ["static"],
       },
@@ -49,20 +53,20 @@ export const phase1Tasks = [
     title: "Studio fattibilità tecnica ed economica",
     steps: [
       {
-        id: 6,
+        id: 7,
         label: "Analisi del lotto o dell’edificio esistente",
         type: ["file"],
         accept: ".pdf,.dwg",
       },
       {
-        id: 7,
+        id: 8,
         label: "Verifica conformità catastale",
         type: ["link"],
         modalTitle: "Portale SISTER",
         modalSrc: "https://iampe.agenziaentrate.gov.it/sam/UI/Login?realm=/agenziaentrate",
       },
       {
-        id: 8,
+        id: 9,
         label: "Carica un primo preventivo",
         type: ["file"],
         accept: ".pdf",
@@ -74,19 +78,19 @@ export const phase1Tasks = [
     title: "Rilievo e documentazione",
     steps: [
       {
-        id: 9,
+        id: 10,
         label: "Rilievo metrico dell’area o edificio",
         type: ["file"],
         accept: ".pdf,.dwg",
       },
       {
-        id: 10,
+        id: 11,
         label: "Fotografie stato di fatto",
         type: ["file"],
         accept: ".jpg,.png",
       },
       {
-        id: 11,
+        id: 12,
         label: "Acquisizione di visure catastali e planimetrie",
         type: ["file"],
         accept: ".pdf",

@@ -1,44 +1,223 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Card, ListGroup, Form } from "react-bootstrap";
 import { fetchStepDataByProject, saveStepData, uploadStepFile } from "../../redux/action/stepDataActions";
 import BooleanPill from "../commons/BooleanPill";
+import { getToken } from "../../redux/utils/authUtils";
 
-// TaskCard visualizza i dettagli di un singolo task, i suoi step,
-// e gestisce salvataggio JSON e upload file per ognuno step.
+// #region renderParametri
+const renderParametri = (parametri) => {
+  if (!parametri || parametri.length === 0) return null;
+  return (
+    <ul style={{ marginTop: 4 }}>
+      {parametri.map((p, i) => (
+        <li key={i}>
+          Indice Fondiario: {p.indiceFondiario} <br />
+          Altezza Massima: {p.altezzaMassima} <br />
+          Rapporto Copertura: {p.rapportoCopertura} <br />
+          Intensità Territoriale Massima: {p.intensitaTerritorialeMassima} <br />
+          Lotto Minimo: {p.lottoMinimo} <br />
+          Volume Massimo: {p.volumeMassimo} <br />
+          Indice Territoriale: {p.indiceTerritoriale} <br />
+          Volumetria: {p.volumetria?.join(", ")} <br />
+          Incremento: {p.incremento} <br />
+          Deroga: {p.deroga} <br />
+          Tipo: {p.tipo} <br />
+          Indice: {p.indice} <br />
+          Note: {p.note}
+        </li>
+      ))}
+    </ul>
+  );
+};
+// #endregion
+
+// #region renderUsiPermessi
+const renderUsiPermessi = (usiPermessi) => {
+  if (!usiPermessi || usiPermessi.length === 0) return null;
+  return (
+    <ul>
+      {usiPermessi.map((uso) => (
+        <li key={uso.id} style={{ marginBottom: 8 }}>
+          <strong>Zona:</strong> {uso.zona} <br />
+          <strong>Macrocategorie:</strong> {uso.macrocategorie} <br />
+          <strong>Descrizione:</strong> {uso.descrizione} <br />
+          <strong>Usi:</strong>
+          <ul>
+            {uso.usi?.map((u, i) => (
+              <li key={i}>{u}</li>
+            ))}
+          </ul>
+          {uso.note && (
+            <p>
+              <strong>Note:</strong> {uso.note}
+            </p>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+};
+// #endregion
+
+// renderizza il dettaglio completo dell’articolo
+const renderContent = (art) => {
+  if (!art) return null;
+  return (
+    <div
+      style={{
+        maxHeight: 400,
+        overflowY: "auto",
+        padding: 12,
+        border: "1px solid #ddd",
+        borderRadius: 4,
+      }}
+    >
+      <h5>{art.titolo}</h5>
+      {art.sezioni.map((sez) => (
+        <div key={sez.sezId} style={{ marginBottom: 16 }}>
+          <h6>Sezione: {sez.titolo}</h6>
+          {sez.contenuto?.map((c, i) => (
+            <p key={i}>{c}</p>
+          ))}
+          {sez.sottozona?.map((sz) => (
+            <div key={sz.sottozId} style={{ paddingLeft: 16, marginBottom: 8 }}>
+              <strong>Sottozona:</strong> {sz.nome}
+              <br />
+              <em>Descrizione:</em> {sz.descrizione}
+              {renderParametri(sz.parametri)}
+              {sz.note && (
+                <p>
+                  <strong>Note:</strong> {sz.note}
+                </p>
+              )}
+            </div>
+          ))}
+          {sez.categorie?.length > 0 && (
+            <p>
+              <strong>Categorie:</strong> {sez.categorie.join(", ")}
+            </p>
+          )}
+          {renderUsiPermessi(sez.usiPermessi)}
+          {sez.parametriUrbanistici && <pre style={{ background: "#f5f5f5", padding: 8 }}>{JSON.stringify(sez.parametriUrbanistici, null, 2)}</pre>}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const TaskCard = ({ task, project, phase }) => {
   const dispatch = useDispatch();
-
-  // Recupero da Redux tutti gli StepData già salvati per il progetto.
   const stepDataItems = useSelector((state) => state.stepData.items || []);
 
-  //  Costruisco un oggetto taskState in cui la chiave è "step-{stepId}"
-  //  e il valore è l’oggetto StepData corrispondente. In questo modo
-  //  posso facilmente accedere ai dati salvati per ciascuno step.
-  const taskState = {};
-  stepDataItems
-    .filter((sd) => sd.projectId === project.id && sd.taskId === task.id)
-    .forEach((sd) => {
-      taskState[`step-${sd.stepId}`] = sd;
-    });
+  // Ricompongo taskState con useMemo
+  const taskState = useMemo(() => {
+    const state = {};
+    stepDataItems
+      .filter((sd) => sd.projectId === project.id && sd.taskId === task.id)
+      .forEach((sd) => {
+        state[`step-${sd.stepId}`] = sd;
+      });
+    return state;
+  }, [stepDataItems, project.id, task.id]);
 
-  // Stato locale per eventuali modifiche (prima di salvare su DB)
-  //  Ogni chiave è "step-{stepId}" e il valore contiene i campi cambiati.
   const [localData, setLocalData] = useState({});
-
-  // Stati per gestire la finestra modale di commento
   const [activeModalStep, setActiveModalStep] = useState(null);
   const [modalTextareaValue, setModalTextareaValue] = useState("");
 
-  // useEffect iniziale: quando cambia project.id, richiamo fetchStepDataByProject
+  // elenco dei titoli + id degli articoli
+  // ogni elemento: { id: <numero>, titolo: <string> }
+  const [titles, setTitles] = useState([]);
+  // id dell’articolo selezionato (serve per fare il fetch del dettaglio e per il payload "artId")
+  const [selectedArticleId, setSelectedArticleId] = useState(null);
+  // titolo dell’articolo selezionato (viene salvato in localData per passo 4)
+  const [selectedArticleTitle, setSelectedArticleTitle] = useState("");
+  const [fullArticle, setFullArticle] = useState(null);
+  const [loading, setLoading] = useState({ titles: false, article: false });
+
+  // Carica tutti i stepData del progetto appena project cambia
   useEffect(() => {
     if (project?.id) {
       dispatch(fetchStepDataByProject(project.id));
     }
   }, [dispatch, project]);
 
-  // Funzione di utilità per aggiornare localData passo per passo
-  // stepKey è "step-{stepId}", newPartialData contiene solo i campi cambiati
+  // Inizializzo selectedArticleId e selectedArticleTitle se lo step 4 era già salvato
+  useEffect(() => {
+    const artStep = task.steps.find((s) => s.id === 4);
+    if (!artStep) return;
+
+    const saved = taskState[`step-${artStep.id}`];
+    if (saved?.artId) {
+      setSelectedArticleId(saved.artId);
+
+      // Il titolo salvato era in saved.dropdownSelected (se in passato avevamo già usato "titolo").
+      // Se non lo troviamo, dovremo cercarlo dentro titles in un secondo momento.
+      if (saved.dropdownSelected) {
+        setSelectedArticleTitle(saved.dropdownSelected);
+      }
+    }
+  }, [taskState, task]);
+
+  // Carico la lista completa di titoli articoli (solo se esiste passo id=4)
+  useEffect(() => {
+    if (!task.steps.some((s) => s.id === 4)) return;
+
+    setLoading((prev) => ({ ...prev, titles: true }));
+    fetch(`${import.meta.env.VITE_API_URL}/articoli`)
+      .then((res) => {
+        if (!res.ok) throw new Error(res.statusText);
+        return res.json();
+      })
+      .then((data) => {
+        // data = array di ArticoloResponse { id, titolo, ... }
+        setTitles(data.map((art) => ({ id: art.id, titolo: art.titolo })));
+
+        // Se avevamo un selectedArticleId ma non avevamo ancora impostato il titolo,
+        // proviamo a ricavarlo da questa lista:
+        if (!selectedArticleTitle && selectedArticleId) {
+          const found = data.find((art) => art.id === selectedArticleId);
+          if (found) {
+            setSelectedArticleTitle(found.titolo);
+          }
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoading((prev) => ({ ...prev, titles: false })));
+  }, [task, selectedArticleId, selectedArticleTitle]);
+
+  // Quando selectedArticleId cambia, carico il dettaglio completo e imposto selectedArticleTitle
+  useEffect(() => {
+    const loadFullArticle = async () => {
+      if (!selectedArticleId) {
+        setFullArticle(null);
+        setSelectedArticleTitle("");
+        return;
+      }
+      setLoading((prev) => ({ ...prev, article: true }));
+      try {
+        const token = getToken();
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/articoli/${selectedArticleId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Errore nel fetch articolo");
+        const data = await res.json();
+        setFullArticle(data);
+
+        // Imposto il titolo appena caricato
+        if (data.titolo) {
+          setSelectedArticleTitle(data.titolo);
+        }
+      } catch (err) {
+        console.error("Errore caricamento articolo:", err);
+      } finally {
+        setLoading((prev) => ({ ...prev, article: false }));
+      }
+    };
+
+    loadFullArticle();
+  }, [selectedArticleId]);
+
   const handleFieldChange = (stepKey, newPartialData) => {
     setLocalData((prev) => ({
       ...prev,
@@ -49,36 +228,31 @@ const TaskCard = ({ task, project, phase }) => {
     }));
   };
 
-  // Salvataggio JSON (dropdown, checkbox, textarea) per uno step
   const handleSaveStep = async (stepIndex) => {
     const step = task.steps?.[stepIndex];
     if (!step || !step.id) return;
 
     const realStepId = step.id;
     const stepKey = `step-${realStepId}`;
-
-    // Riferimento allo StepData salvato in Redux, se esiste
     const saved = taskState[stepKey] || {};
-
-    // Dati correnti presi da localData (bozza) o fallback a quelli salvati
     const draft = localData[stepKey] || {};
 
-    // Preparo il payload esattamente come lo StepDataRequest Java si aspetta
     const payload = {
-      id: saved.id || null, // se esiste un ID vuol dire che sto facendo update
+      id: saved.id || null,
       projectId: project.id,
       faseId: phase.id,
       taskId: task.id,
       stepId: realStepId,
       textareaValue: draft.textareaValue ?? saved.textareaValue ?? null,
+      // Per i dropdown generici:
       dropdownSelected: draft.dropdownSelected ?? saved.dropdownSelected ?? null,
       checkboxValue: typeof draft.checkboxValue !== "undefined" ? draft.checkboxValue : saved.checkboxValue ?? null,
+      // Per lo step 4: mandiamo solo artId, in backend salverà anche dropdownSelected=title
+      artId: step.id === 4 ? selectedArticleId : null,
     };
 
     try {
-      // Chiamo saveStepData(action) che invia JSON al backend
-      dispatch(saveStepData(payload.projectId, payload.faseId, payload.taskId, payload.stepId, payload));
-      // Dopo il salvataggio, rimuovo quella voce da localData
+      await dispatch(saveStepData(payload.projectId, payload.faseId, payload.taskId, payload.stepId, payload));
       setLocalData((prev) => {
         const copy = { ...prev };
         delete copy[stepKey];
@@ -89,16 +263,11 @@ const TaskCard = ({ task, project, phase }) => {
     }
   };
 
-  // Upload diretto di un file per lo step corrispondente
   const handleFileUpload = (stepIndex, file) => {
     const realStepId = task.steps[stepIndex].id;
-    // Chiamo uploadStepFile che:
-    //  carica il PDF su Cloudinary (uploadRaw)
-    //  salva/aggiorna lo StepData includendo fileName=rawUrl
     dispatch(uploadStepFile(project.id, phase.id, task.id, realStepId, file))
-      .then((res) => {
-        console.log("Upload riuscito:", res);
-        dispatch(fetchStepDataByProject(project.id)); // Ricarico gli StepData
+      .then(() => {
+        dispatch(fetchStepDataByProject(project.id));
       })
       .catch((err) => {
         console.error("Errore upload:", err);
@@ -110,70 +279,119 @@ const TaskCard = ({ task, project, phase }) => {
     <>
       <Card className="task-card p-4 shadow-sm rounded-4 mb-4">
         <Card.Body>
-          {/* Titolo del Task */}
           <div className="fw-bold fs-5 mb-3">{task.title}</div>
           <ListGroup variant="flush">
             {task.steps.map((step, idx) => {
               const realStepId = step.id;
               const stepKey = `step-${realStepId}`;
-
-              // Dati salvati in Redux per questo step, se esistono
               const savedData = taskState[stepKey] || {};
-              // Dati temporanei locali (bozza), se esistono
               const draft = localData[stepKey] || {};
 
               return (
                 <ListGroup.Item key={realStepId} className="border-0 px-0 py-2 bg-transparent">
                   <div className="d-flex justify-content-between align-items-center gap-5 flex-wrap">
-                    {/* Label dello step */}
                     <span className="task-label-pill">{step.label}</span>
 
-                    {/* Se lo step è di tipo boolean (checkbox) */}
+                    {/* ------------ BOOLEAN ------------ */}
                     {step.type.includes("boolean") && (
                       <BooleanPill
                         label={step.label}
                         checked={draft.checkboxValue ?? savedData.checkboxValue ?? false}
-                        onChange={(val) => handleFieldChange(stepKey, { checkboxValue: val })}
+                        onChange={(val) =>
+                          handleFieldChange(stepKey, {
+                            checkboxValue: val,
+                          })
+                        }
                       />
                     )}
 
-                    {/* Se lo step è di tipo dropdown */}
+                    {/* ------------ DROPDOWN ------------ */}
                     {step.type.includes("dropdown") && (
                       <>
-                        <Form.Select
-                          value={draft.dropdownSelected ?? savedData.dropdownSelected ?? ""}
-                          onChange={(e) =>
-                            handleFieldChange(stepKey, {
-                              dropdownSelected: e.target.value,
-                            })
-                          }
-                        >
-                          <option value="">Seleziona…</option>
-                          {step.options &&
-                            step.options.map((opt) => (
-                              <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                              </option>
-                            ))}
-                        </Form.Select>
-                        <Button
-                          size="sm"
-                          className="ms-auto btn-link-custom"
-                          onClick={() => {
-                            const selectedArea = draft.dropdownSelected ?? savedData.dropdownSelected ?? null;
-                            if (!selectedArea) {
-                              alert("Seleziona prima un'area.");
-                              return;
-                            }
-                            window.open("https://www.urbismap.com", "_blank");
-                          }}
-                        >
-                          UrbisMap
-                        </Button>
+                        {step.id === 4 ? (
+                          // Se è lo step 4, mostro la lista degli articoli
+                          loading.titles ? (
+                            <div>Caricamento titoli...</div>
+                          ) : (
+                            <>
+                              <Form.Select
+                                value={
+                                  // primo tentativo: titolo in stato
+                                  selectedArticleTitle ||
+                                  // se non ci fosse, magari savedData.dropdownSelected
+                                  savedData.dropdownSelected ||
+                                  ""
+                                }
+                                onChange={(e) => {
+                                  const titoloSelezionato = e.target.value;
+                                  // salvo la stringa titolo in localData
+                                  handleFieldChange(stepKey, {
+                                    dropdownSelected: titoloSelezionato,
+                                  });
+
+                                  // cerco l’ID corrispondente nell’array "titles"
+                                  const found = titles.find((t) => t.titolo === titoloSelezionato);
+                                  if (found) {
+                                    setSelectedArticleId(found.id);
+                                    setSelectedArticleTitle((trovatoTitolo) => trovatoTitolo || titoloSelezionato);
+                                  } else {
+                                    setSelectedArticleId(null);
+                                    setSelectedArticleTitle("");
+                                  }
+                                }}
+                              >
+                                <option value="">Seleziona articolo…</option>
+                                {titles.map((t) => (
+                                  <option key={t.id} value={t.titolo}>
+                                    {t.titolo}
+                                  </option>
+                                ))}
+                              </Form.Select>
+
+                              {loading.article && <div className="mt-2">Caricamento dettaglio articolo…</div>}
+
+                              {fullArticle && renderContent(fullArticle)}
+                            </>
+                          )
+                        ) : (
+                          // Dropdown generico per gli altri step
+                          <>
+                            <Form.Select
+                              value={draft.dropdownSelected ?? savedData.dropdownSelected ?? ""}
+                              onChange={(e) =>
+                                handleFieldChange(stepKey, {
+                                  dropdownSelected: e.target.value,
+                                })
+                              }
+                            >
+                              <option value="">Seleziona…</option>
+                              {step.options &&
+                                step.options.map((opt) => (
+                                  <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </option>
+                                ))}
+                            </Form.Select>
+                            <Button
+                              size="sm"
+                              className="ms-auto btn-link-custom"
+                              onClick={() => {
+                                const selectedArea = draft.dropdownSelected ?? savedData.dropdownSelected ?? null;
+                                if (!selectedArea) {
+                                  alert("Seleziona prima un'area.");
+                                  return;
+                                }
+                                window.open("https://www.urbismap.com", "_blank");
+                              }}
+                            >
+                              UrbisMap
+                            </Button>
+                          </>
+                        )}
                       </>
                     )}
 
-                    {/* Se lo step è di tipo textarea */}
+                    {/* ------------ TEXTAREA (commento) ------------ */}
                     {step.type.includes("textarea") && (
                       <Button
                         size="sm"
@@ -187,10 +405,9 @@ const TaskCard = ({ task, project, phase }) => {
                       </Button>
                     )}
 
-                    {/* Se lo step è di tipo file (PDF, ecc.) */}
+                    {/* ------------ FILE UPLOAD ------------ */}
                     {step.type.includes("file") && (
                       <div className="d-flex flex-column align-items-start">
-                        {/* Bottone che apre il file picker */}
                         <Form.Label className="btn btn-outline-secondary btn-sm">
                           Scegli file
                           <Form.Control
@@ -203,10 +420,8 @@ const TaskCard = ({ task, project, phase }) => {
                             style={{ display: "none" }}
                           />
                         </Form.Label>
-                        {/* Se esiste già un file salvato, mostro l’URL e l’icona per rimuoverlo */}
                         {savedData.fileName && (
                           <div className="d-flex align-items-center gap-2">
-                            {/* Link al file usando fileUrl */}
                             {savedData.fileUrl ? (
                               <a href={savedData.fileUrl} target="_blank" rel="noopener noreferrer" className="text-success">
                                 {savedData.fileName}
@@ -219,7 +434,7 @@ const TaskCard = ({ task, project, phase }) => {
                       </div>
                     )}
 
-                    {/* Se lo step è di tipo link */}
+                    {/* ------------ LINK ESTERNO ------------ */}
                     {step.type.includes("link") && (
                       <Button
                         size="sm"
@@ -233,7 +448,7 @@ const TaskCard = ({ task, project, phase }) => {
                       </Button>
                     )}
 
-                    {/* Bottone Salva (per boolean, dropdown, textarea) */}
+                    {/* ------------ PULSANTE SALVA ------------ */}
                     {(step.type.includes("boolean") || step.type.includes("dropdown") || step.type.includes("textarea")) && (
                       <Button
                         size="sm"
@@ -252,14 +467,14 @@ const TaskCard = ({ task, project, phase }) => {
         </Card.Body>
       </Card>
 
-      {/* Modale per inserire/modificare il commento (textarea) di uno step */}
+      {/* Modal per commentare (textarea) */}
       {activeModalStep && (
         <div className="modal d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Commenta</h5>
-                <button type="button" className="btn-close" onClick={() => setActiveModalStep(null)}></button>
+                <button type="button" className="btn-close" onClick={() => setActiveModalStep(null)} />
               </div>
               <div className="modal-body">
                 <Form.Control
@@ -274,7 +489,9 @@ const TaskCard = ({ task, project, phase }) => {
                 <Button
                   className="btn-save-custom"
                   onClick={() => {
-                    handleFieldChange(activeModalStep, { textareaValue: modalTextareaValue });
+                    handleFieldChange(activeModalStep, {
+                      textareaValue: modalTextareaValue,
+                    });
                     setActiveModalStep(null);
                   }}
                 >

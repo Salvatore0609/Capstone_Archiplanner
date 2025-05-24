@@ -50,6 +50,7 @@ export const saveStepData = (projectId, faseId, taskId, stepId, fields) => async
       textareaValue: fields.textareaValue || null,
       dropdownSelected: fields.dropdownSelected || null,
       checkboxValue: typeof fields.checkboxValue !== "undefined" ? fields.checkboxValue : null,
+      artId: fields.artId || null,
     };
 
     const res = await fetch(`${import.meta.env.VITE_API_URL}/project/step-data`, {

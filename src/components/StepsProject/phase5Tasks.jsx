@@ -6,13 +6,13 @@ export const phase5Tasks = [
     title: "Apertura del Cantiere",
     steps: [
       {
-        id: 34,
+        id: 35,
         label: "Comunicazione dell’inizio dei lavori al Comune (CILA/SCIA)",
         type: ["file"],
         accept: ".pdf",
       },
       {
-        id: 35,
+        id: 36,
         label: "Nomina del Direttore dei Lavori",
         type: ["file"],
         accept: ".pdf",
@@ -24,14 +24,14 @@ export const phase5Tasks = [
     title: "Supervisione e Controllo dei Lavori",
     steps: [
       {
-        id: 36,
+        id: 37,
         label: "Report di monitoraggio lavori in corso",
         type: ["textarea", "file"],
         accept: ".pdf,.docx",
         placeholder: "Descrivi lo stato di avanzamento dei lavori...",
       },
       {
-        id: 37,
+        id: 38,
         label: "Aggiornamento computo metrico (SAL)",
         type: ["file"],
         accept: ".xls,.xlsx,.pdf",
@@ -43,12 +43,12 @@ export const phase5Tasks = [
     title: "Sicurezza in Cantiere",
     steps: [
       {
-        id: 38,
+        id: 39,
         label: "Verifica utilizzo DPI e misure di sicurezza",
         type: "boolean",
       },
       {
-        id: 39,
+        id: 40,
         label: "Documentazione sul rispetto normative sicurezza (D.Lgs. 81/08)",
         type: ["file"],
         accept: ".pdf",
@@ -60,13 +60,13 @@ export const phase5Tasks = [
     title: "Certificazioni e Collaudi",
     steps: [
       {
-        id: 40,
+        id: 41,
         label: "Collaudo strutturale e impiantistico",
         type: ["file"],
         accept: ".pdf",
       },
       {
-        id: 41,
+        id: 42,
         label: "Attestato di Prestazione Energetica (APE) e certificazioni varie",
         type: ["file"],
         accept: ".pdf",

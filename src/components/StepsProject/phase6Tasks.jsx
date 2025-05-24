@@ -5,13 +5,13 @@ export const phase6Tasks = [
     title: "Comunicazione di Fine Lavori",
     steps: [
       {
-        id: 42,
+        id: 43,
         label: "Notifica ufficiale di fine lavori al Comune",
         type: ["file"],
         accept: ".pdf",
       },
       {
-        id: 43,
+        id: 44,
         label: "Deposito della documentazione finale",
         type: ["file"],
         accept: ".pdf,.zip",
@@ -23,13 +23,13 @@ export const phase6Tasks = [
     title: "Aggiornamento Catastale e Richiesta di Agibilità",
     steps: [
       {
-        id: 44,
+        id: 45,
         label: "Documento di aggiornamento catastale",
         type: ["file"],
         accept: ".pdf,.xml",
       },
       {
-        id: 45,
+        id: 46,
         label: "Richiesta di certificazione di agibilità",
         type: ["file"],
         accept: ".pdf",
@@ -41,13 +41,13 @@ export const phase6Tasks = [
     title: "Consegna del Progetto al Cliente",
     steps: [
       {
-        id: 46,
+        id: 47,
         label: "Documentazione tecnica e legale",
         type: ["file"],
         accept: ".pdf,.zip",
       },
       {
-        id: 47,
+        id: 46,
         label: "Manuali d’uso, manutenzione e garanzie",
         type: ["file"],
         accept: ".pdf,.zip",

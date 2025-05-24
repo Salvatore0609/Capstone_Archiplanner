@@ -11,7 +11,7 @@ import { deleteProject } from "../redux/action/projectsActions";
 import { FaRegMap } from "react-icons/fa";
 
 // Import fasi
-import { phase1Tasks as p1 } from "../components/StepsProject/phase1Tasks";
+import { phase1Tasks as p1 } from "../components/StepsProject/phase1Tasks.jsx";
 import { phase2Tasks as p2 } from "../components/StepsProject/phase2Tasks";
 import { phase3Tasks as p3 } from "../components/StepsProject/phase3Tasks";
 import { phase4Tasks as p4 } from "../components/StepsProject/phase4Tasks";
@@ -43,7 +43,6 @@ const Project = () => {
   };
 
   const handleDownload = (fileUrl, fileName) => {
-    console.log(fileUrl, fileName);
     if (!fileUrl) {
       alert("Nessun file disponibile per il download");
       return;
@@ -59,7 +58,7 @@ const Project = () => {
   const projects = useSelector((state) => state.projects.items || []);
   const isLoadingProjects = useSelector((state) => state.projects.loading);
   const { items: stepDataItems, loading: isLoadingStepData } = useSelector((state) => state.stepData);
-  console.log("stepDataItems:", stepDataItems);
+
   const project = useMemo(() => {
     return Array.isArray(projects) ? projects.find((p) => p.id === Number(id)) : null;
   }, [projects, id]);
@@ -201,7 +200,7 @@ const Project = () => {
                               {sd.fileName && sd.fileUrl ? (
                                 <div>
                                   <strong>File:</strong>
-                                  {console.log("fileUrl:", sd.fileUrl, "fileName:", sd.fileName)}
+
                                   <Button
                                     size="sm"
                                     variant="link"
