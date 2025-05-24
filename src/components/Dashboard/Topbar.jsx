@@ -45,7 +45,7 @@ const Topbar = () => {
   };
 
   return (
-    <div className="topbar d-flex justify-content-between align-items-center px-3 py-3">
+    <div className="topbar ">
       <div className="w-50 ms-auto me-auto">
         <InputGroup className="search-bar">
           <InputGroup.Text className="border border-0 bg-transparent" role="button" onClick={handleSearch}>

@@ -48,7 +48,7 @@ export const loginNormalSuccess = (userData, token) => {
 export const loginNormalFailure = (error) => ({ type: LOGIN_NORMAL_FAILURE, payload: error });
 export const logoutNormal = () => ({ type: LOGOUT_NORMAL });
 
-export const loginUser = (username, password, navigate) => async (dispatch) => {
+export const loginUser = (username, password) => async (dispatch) => {
   dispatch(loginNormalRequest());
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/utenti/login`, {
@@ -67,7 +67,7 @@ export const loginUser = (username, password, navigate) => async (dispatch) => {
     saveToken(token);
 
     // Reindirizza alla pagina di successo specifica per login normale
-    navigate(`/login-normal-success?token=${token}`);
+    window.location.href = `/login-normal-success?token=${token}`;
   } catch (error) {
     dispatch(loginNormalFailure(error.message));
     alert(error.message);
