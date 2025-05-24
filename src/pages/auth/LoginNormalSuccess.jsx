@@ -8,12 +8,11 @@ import { fetchProjects } from "../../redux/action/projectsActions";
 
 function NormalLoginSuccess() {
   const dispatch = useDispatch();
-  /*  const [searchParams] = useSearchParams(); */
 
   useEffect(() => {
     const handleLogin = async () => {
       try {
-        const token = /* searchParams.get("token") */ getToken();
+        const token = getToken();
 
         if (!token) {
           window.location.href = "/";

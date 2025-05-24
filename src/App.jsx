@@ -17,8 +17,6 @@ const App = () => {
   const token = getToken();
 
   useEffect(() => {
-    /* dispatch(fetchProfile());
-    dispatch(fetchProjects()); */
     const restoreSession = async () => {
       const normalUser = getNormalUserData();
       const googleUser = getUserData();
