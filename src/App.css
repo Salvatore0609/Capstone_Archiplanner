@@ -255,6 +255,7 @@ button {
 /* card sospese */
 .floating-cards-container {
   position: fixed;
+  overflow: auto;
   left: 130px;
   top: 120px;
   bottom: 20px;

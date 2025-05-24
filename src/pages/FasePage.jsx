@@ -47,7 +47,7 @@ const FasePage = () => {
         <Col sm={11} className="main-dashboard">
           <Topbar />
 
-          <Row className="justify-content-center m-5" style={{ overflowY: "auto", height: "calc(85vh - 180px)" }}>
+          <Row className="justify-content-center m-5" style={{ overflowY: "auto", height: "calc(100vh - 180px)" }}>
             <h5 className="mt-3">{title}</h5>
             {tasks.map((task) => (
               <Col key={task.id} md={12}>

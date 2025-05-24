@@ -24,9 +24,9 @@ function NormalLoginSuccess() {
         // Salva il token
         saveToken(token);
 
-        setTimeout(() => {
+        /*  setTimeout(() => {
           navigate("/dashboard");
-        }, 5000);
+        }, 5000); */
 
         const response = await fetch(`${import.meta.env.VITE_API_URL}/utenti/current-user`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -40,9 +40,9 @@ function NormalLoginSuccess() {
 
         dispatch(fetchProjects());
 
-        /*  setTimeout(() => {
+        setTimeout(() => {
           window.location.href = "/dashboard";
-        }, 5000); */
+        }, 5000);
       } catch (error) {
         console.error("Login error:", error);
         window.location.href = "/";
