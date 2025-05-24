@@ -96,6 +96,10 @@ const Project = () => {
   }
 
   const handleDeleteProject = () => {
+    if (stepDataItems.length > 0) {
+      alert("Non puoi eliminare il progetto finché ci sono step salvati. Elimina prima tutti gli step.");
+      return;
+    }
     setProjectToDelete(project);
     setShowDeleteModal(true);
   };
