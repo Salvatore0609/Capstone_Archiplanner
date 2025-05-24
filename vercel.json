@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/(login-normal-success|login-google-success|dashboard|...)",
+      "destination": "/index.html"
+    }
+  ]
+}
