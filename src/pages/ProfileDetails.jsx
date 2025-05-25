@@ -85,7 +85,7 @@ export default function ProfileDetails() {
 
   if (loadingNormal || loadingGoogle) {
     return (
-      <Container className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+      <Container className="d-flex justify-content-center align-items-center">
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Caricamento...</span>
         </Spinner>
@@ -96,20 +96,15 @@ export default function ProfileDetails() {
   return (
     <Container fluid>
       <Row>
-        <Col sm={1} className="p-0">
+        <Col sm={1}>
           <Sidebar />
         </Col>
-        <Col sm={11} className="p-0">
+        <Col sm={10}>
           <Topbar />
-          <Container className="p-5 d-flex flex-column justify-content-center">
-            <Row className="mb-4">
-              <Col>
-                <h1 className="text-center">Il Tuo Profilo</h1>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={4} className="d-flex flex-column align-items-center mb-4">
-                <div className="position-relative">
+          <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+            <Container fluid>
+              <Row>
+                <Col md={4} className="d-flex flex-column align-items-center">
                   <div
                     className="rounded-circle d-flex justify-content-center align-items-center"
                     style={{
@@ -132,68 +127,69 @@ export default function ProfileDetails() {
                       <FaRegUserCircle size={80} className="text-secondary" />
                     )}
                   </div>
-                </div>
-              </Col>
-              <Col md={8}>
-                <Form>
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control name="username" value={formData.username} onChange={handleInputChange} />
-                      </Form.Group>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Nome</Form.Label>
-                        <Form.Control name="nome" value={formData.nome} onChange={handleInputChange} />
-                      </Form.Group>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Cognome</Form.Label>
-                        <Form.Control name="cognome" value={formData.cognome} onChange={handleInputChange} />
-                      </Form.Group>
-                      <Form.Group className="mb-3">
-                        <Form.Label>La tua data di Nascita</Form.Label>
-                        <Form.Control type="date" name="dataNascita" value={formData.dataNascita} onChange={handleInputChange} />
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control type="email" name="email" value={formData.email} onChange={handleInputChange} />
-                      </Form.Group>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Luogo di Nascita</Form.Label>
-                        <Form.Control name="luogoNascita" value={formData.luogoNascita} onChange={handleInputChange} />
-                      </Form.Group>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Indirizzo di Residenza</Form.Label>
-                        <Form.Control name="residenza" value={formData.residenza} onChange={handleInputChange} />
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Nome Compagnia</Form.Label>
-                        <Form.Control name="nomeCompagnia" value={formData.nomeCompagnia} onChange={handleInputChange} />
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group className="mb-4">
-                        <Form.Label>Lingua Preferita</Form.Label>
-                        <Form.Select name="lingua" value={formData.lingua} onChange={handleInputChange}>
-                          {Object.entries(languageMap).map(([code, label]) => (
-                            <option key={code} value={code}>
-                              {label}
-                            </option>
-                          ))}
-                        </Form.Select>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                </Form>
-              </Col>
-            </Row>
-          </Container>
+                </Col>
+                <Col md={8}>
+                  <Form>
+                    <Row>
+                      <h3 className="text-start">Il Tuo Profilo</h3>
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Username</Form.Label>
+                          <Form.Control name="username" value={formData.username} onChange={handleInputChange} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Nome</Form.Label>
+                          <Form.Control name="nome" value={formData.nome} onChange={handleInputChange} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Cognome</Form.Label>
+                          <Form.Control name="cognome" value={formData.cognome} onChange={handleInputChange} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>La tua data di Nascita</Form.Label>
+                          <Form.Control type="date" name="dataNascita" value={formData.dataNascita} onChange={handleInputChange} />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Email</Form.Label>
+                          <Form.Control type="email" name="email" value={formData.email} onChange={handleInputChange} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Luogo di Nascita</Form.Label>
+                          <Form.Control name="luogoNascita" value={formData.luogoNascita} onChange={handleInputChange} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Indirizzo di Residenza</Form.Label>
+                          <Form.Control name="residenza" value={formData.residenza} onChange={handleInputChange} />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Società</Form.Label>
+                          <Form.Control name="nomeCompagnia" value={formData.nomeCompagnia} onChange={handleInputChange} />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group className="mb-4">
+                          <Form.Label>Lingua Preferita</Form.Label>
+                          <Form.Select name="lingua" value={formData.lingua} onChange={handleInputChange}>
+                            {Object.entries(languageMap).map(([code, label]) => (
+                              <option key={code} value={code}>
+                                {label}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                  </Form>
+                </Col>
+              </Row>
+            </Container>
+          </div>
         </Col>
       </Row>
     </Container>

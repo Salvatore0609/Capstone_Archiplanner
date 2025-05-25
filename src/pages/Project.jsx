@@ -131,12 +131,12 @@ const Project = () => {
         <Col sm={1}>
           <Sidebar />
         </Col>
-        <Col sm={11} style={{ overflowY: "auto", height: "95vh" }}>
+        <Col sm={10} style={{ overflowY: "auto" }} className="pt-5 mx-auto">
           <Topbar />
-          <div className="p-5">
-            <div className="d-flex align-items-center mb-4">
+          <Container fluid className="pt-5">
+            <div className="d-flex align-items-center">
               <h4 className="me-auto">{project.nomeProgetto}</h4>
-              <div className="d-flex align-items-center gap-2">
+              <div className="d-flex gap-2">
                 <BooleanPill label="Completato" checked={checked} onChange={handleToggle} />
                 <Button
                   size="sm"
@@ -148,7 +148,7 @@ const Project = () => {
               </div>
             </div>
 
-            <Col className="d-flex justify-content-between gap-3" style={{ color: "#C69B7B", fontWeight: "bold" }}>
+            <Col className="d-flex justify-content-between gap-3 mt-3" style={{ color: "#C69B7B", fontWeight: "bold" }}>
               <div className="d-flex">
                 <span>Progettista:&nbsp;</span>
                 <p>{project.progettista || "Non specificato"}</p>
@@ -264,7 +264,7 @@ const Project = () => {
                 )}
               </div>
             </Card>
-          </div>
+          </Container>
         </Col>
       </Row>
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
