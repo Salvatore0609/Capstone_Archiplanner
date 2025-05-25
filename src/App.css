@@ -120,7 +120,7 @@ button {
 .carousel-wrapper {
   position: relative;
   top: 35%;
-  height: 100vh;
+  height: calc(100vh - 30rem);
 }
 
 .carousel-arrow {

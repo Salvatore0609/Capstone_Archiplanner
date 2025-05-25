@@ -49,10 +49,10 @@ const Dashboard = () => {
               <Carousel.Item>
                 {/* RIGA 1: ProjectStatus + CountdownBox */}
                 <Row className="justify-content-center align-items-center">
-                  <Col md={3} className="mt-3">
+                  <Col md={3}>
                     <ProjectStatus />
                   </Col>
-                  <Col md={3} className="mt-3">
+                  <Col md={3}>
                     <CountdownBox />
                   </Col>
                 </Row>
