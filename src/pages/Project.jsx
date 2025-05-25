@@ -131,7 +131,7 @@ const Project = () => {
         <Col sm={1}>
           <Sidebar />
         </Col>
-        <Col sm={10} style={{ overflowY: "auto" }} className="pt-5 mx-auto">
+        <Col sm={10} className="pt-5 mx-auto">
           <Topbar />
           <Container fluid className="pt-5">
             <div className="d-flex align-items-center">
