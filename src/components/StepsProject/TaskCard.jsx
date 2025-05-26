@@ -277,7 +277,7 @@ const TaskCard = ({ task, project, phase }) => {
 
   return (
     <>
-      <Card className="task-card p-4 shadow-sm rounded-4 mb-4">
+      <Card className="task-card p-4 rounded-4 mb-3">
         <Card.Body>
           <div className="fw-bold fs-5 mb-3">{task.title}</div>
           <ListGroup variant="flush">
@@ -289,7 +289,7 @@ const TaskCard = ({ task, project, phase }) => {
 
               return (
                 <ListGroup.Item key={realStepId} className="border-0 px-0 py-2 bg-transparent">
-                  <div className="d-flex justify-content-between align-items-center gap-5 flex-wrap">
+                  <div className="d-flex justify-content-between align-items-center gap-3 flex-wrap">
                     <span className="task-label-pill">{step.label}</span>
 
                     {/* ------------ BOOLEAN ------------ */}
@@ -452,7 +452,7 @@ const TaskCard = ({ task, project, phase }) => {
                     {(step.type.includes("boolean") || step.type.includes("dropdown") || step.type.includes("textarea")) && (
                       <Button
                         size="sm"
-                        className="btn-save-custom"
+                        className="btn-save-custom ms-auto"
                         onClick={() => handleSaveStep(idx)}
                         disabled={!localData[stepKey] || Object.keys(localData[stepKey]).length === 0}
                       >

@@ -19,6 +19,9 @@ import { phase5Tasks as p5 } from "../components/StepsProject/phase5Tasks";
 import { phase6Tasks as p6 } from "../components/StepsProject/phase6Tasks";
 import BooleanPill from "../components/commons/BooleanPill";
 
+// Import icone pin
+import { TiPinOutline, TiPin } from "react-icons/ti";
+
 const Project = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
@@ -70,10 +73,12 @@ const Project = () => {
     }
   }, [dispatch, projects.length]);
 
-  // All’avvio e quando cambia `project`, popolo `checked` dal campo `completato` del progetto
+  // All’avvio e quando cambia `project`, popolo `checked` dal campo `completato` e setto lo stato del pin da `inProgress`
   useEffect(() => {
     if (project) {
       setChecked(project.completato === true);
+      // Se serve, potresti anche avere uno stato locale per far vedere subito l'icona pin,
+      // ma non è necessario: basterà leggere project.inProgress direttamente.
     }
   }, [project]);
 
@@ -117,11 +122,34 @@ const Project = () => {
           lat: project.lat,
           lng: project.lng,
           completato: newValue,
+          // non tocchiamo inProgress qui: rimane invariato
         })
       );
       setChecked(newValue);
     } catch (err) {
       console.error("Errore aggiornamento completato:", err);
+    }
+  };
+
+  // al click del pin faccio il toggle di `inProgress` per questo progetto
+  const handlePinToggle = async () => {
+    try {
+      dispatch(
+        updateProject(project.id, {
+          nomeProgetto: project.nomeProgetto,
+          progettista: project.progettista,
+          impresaCostruttrice: project.impresaCostruttrice,
+          indirizzo: project.indirizzo,
+          lat: project.lat,
+          lng: project.lng,
+          completato: project.completato, // rimane invariato
+          inProgress: !project.inProgress, // inverto il valore
+        })
+      );
+      // Non serve un setState locale: appena Redux aggiorna project.inProgress,
+      // il componente verrà re-renderizzato con l’icona corretta.
+    } catch (err) {
+      console.error("Errore aggiornamento inProgress:", err);
     }
   };
 
@@ -136,12 +164,34 @@ const Project = () => {
           <Container fluid className="pt-5">
             <div className="d-flex align-items-center">
               <h4 className="me-auto">{project.nomeProgetto}</h4>
-              <div className="d-flex gap-2">
+              <div className="d-flex gap-2 align-items-center">
+                {/* Icona PIN */}
+                <Button
+                  onClick={handlePinToggle}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  title={project.inProgress ? "Rimuovi da Lavori in corso" : "Aggiungi a Lavori in corso"}
+                >
+                  {project.inProgress ? <TiPin size={24} color="#C69B7B" /> : <TiPinOutline size={24} color="#C69B7B" />}
+                </Button>
+                {/* BooleanPill per “Completato” */}
                 <BooleanPill label="Completato" checked={checked} onChange={handleToggle} />
+                {/* Bottone “Elimina progetto” */}
                 <Button
                   size="sm"
                   onClick={handleDeleteProject}
-                  style={{ backgroundColor: "#C67B7B", borderRadius: "50px", borderColor: "#C67B7B", padding: "1em" }}
+                  style={{
+                    backgroundColor: "#C67B7B",
+                    borderRadius: "50px",
+                    borderColor: "#C67B7B",
+                    padding: "1em",
+                  }}
                 >
                   Elimina progetto
                 </Button>
@@ -160,6 +210,10 @@ const Project = () => {
               <div className="d-flex">
                 <span>Indirizzo:&nbsp;</span>
                 <p>{project.indirizzo}</p>
+              </div>
+              <div className="d-flex">
+                <span>Creato:&nbsp;</span>
+                <p>{new Date(project.createdAt).toLocaleDateString() || "Non specificata"}</p>
               </div>
             </Col>
 
@@ -204,16 +258,18 @@ const Project = () => {
                               {sd.fileName && sd.fileUrl ? (
                                 <div>
                                   <strong>File:</strong>
-
                                   <Button
                                     size="sm"
                                     variant="link"
-                                    style={{ color: "#C69B7B", textDecoration: "none" }}
+                                    style={{
+                                      color: "#C69B7B",
+                                      textDecoration: "none",
+                                    }}
                                     onClick={() => {
                                       handleDownload(sd.fileUrl, sd.fileName);
                                     }}
                                   >
-                                    Scarica allegato
+                                    {sd.fileName}
                                   </Button>
                                 </div>
                               ) : (
@@ -267,6 +323,8 @@ const Project = () => {
           </Container>
         </Col>
       </Row>
+
+      {/* ─── MODAL ELIMINA PROGETTO ─── */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Conferma eliminazione</Modal.Title>

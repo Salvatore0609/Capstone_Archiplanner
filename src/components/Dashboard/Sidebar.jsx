@@ -1,22 +1,22 @@
 import { Button, Card, Col, Form, Modal, Nav, Row } from "react-bootstrap";
 import { FaPlus, FaRegUserCircle, FaChevronLeft, FaLayerGroup, FaTimes, FaListUl } from "react-icons/fa";
 import { FiSidebar } from "react-icons/fi";
+import { TiPinOutline } from "react-icons/ti"; // Icona statica per "Lavori in corso"
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Image } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { addProject, fetchProjects } from "../../redux/action/projectsActions";
 import GoogleMapView from "../commons/GoogleMapView";
-
 import { getToken } from "../../redux/utils/authUtils";
-import { TiPinOutline } from "react-icons/ti";
 
 const Sidebar = () => {
-  // Stati per la gestione dell'UI
+  // Stati per la UI
   const [expanded, setExpanded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showPhaseCards, setShowPhaseCards] = useState(false);
   const [showProjectList, setShowProjectList] = useState(false);
+  const [showInProgressList, setShowInProgressList] = useState(false);
   const [loadingProjects, setLoadingProjects] = useState(false);
 
   // Stato per il nuovo progetto e geocoding
@@ -32,25 +32,27 @@ const Sidebar = () => {
 
   // Redux e routing
   const dispatch = useDispatch();
+  // Prendo tutti i progetti da Redux
   const projects = useSelector((state) => state.projects?.items || []);
   const navigate = useNavigate();
-  //
   const location = useLocation();
   const { id } = useParams();
+  // currentProject serve per decidere se mostrare "Fasi progetto"
   const currentProject = location.state?.project || projects.find((p) => p.id === Number(id));
 
-  // Utente autenticato
+  // Utente autenticato (avatar)
   const [localAvatarError, setLocalAvatarError] = useState(false);
   const activeUser = useSelector((state) => state.loginGoogle.user || state.loginNormal.user);
   const avatarUrl = activeUser?.avatar;
 
+  // Ogni volta che apro il modal, resetto il form
   useEffect(() => {
     if (showModal) {
       resetForm();
     }
   }, [showModal]);
 
-  // Funzioni
+  // Funzioni per il form di creazione nuovo progetto
   const resetForm = () => {
     setNewProject({
       nomeProgetto: "",
@@ -102,11 +104,12 @@ const Sidebar = () => {
       ...newProject,
       lat: previewCoordinates.lat,
       lng: previewCoordinates.lng,
+      inProgress: false,
+      completato: false,
     };
     try {
       const addedProject = dispatch(addProject(completeProject));
       dispatch(fetchProjects());
-
       navigate(`/project/${addedProject.id}`);
       setShowModal(false);
     } catch (error) {
@@ -120,6 +123,7 @@ const Sidebar = () => {
       await dispatch(fetchProjects());
       setShowProjectList(true);
       setShowPhaseCards(false);
+      setShowInProgressList(false);
     } catch (error) {
       console.error("Errore caricamento progetti:", error);
     } finally {
@@ -127,18 +131,24 @@ const Sidebar = () => {
     }
   };
 
+  // Filtra tutti i progetti che hanno inProgress === true
+  const inProgressProjects = projects.filter((p) => p.inProgress);
+
   return (
     <>
+      {/* ─────────────────────────────────────── SIDEBAR ─────────────────────────────────────── */}
       <div className={`d-flex flex-column align-items-center sidebar ${expanded ? "sidebar-expanded" : "sidebar-collapsed"}`}>
         <button onClick={() => setExpanded(!expanded)} className="sidebar-toggle btn btn-link p-1">
           {expanded ? <FaChevronLeft size={25} /> : <FiSidebar size={25} />}
         </button>
 
         <Nav className="flex-column text-center w-100">
+          {/* Logo che rimanda a /dashboard */}
           <Link to="/dashboard" className="text-decoration-none p-0">
             <Image src="../assets/logo1.jpg" alt="logo" roundedCircle fluid className="h-50" />
           </Link>
 
+          {/* Nuovo progetto */}
           <Nav.Link
             className={`d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}
             onClick={() => setShowModal(true)}
@@ -149,6 +159,7 @@ const Sidebar = () => {
             {expanded && <span className="ms-2">Nuovo progetto</span>}
           </Nav.Link>
 
+          {/* Tutti i progetti */}
           <Nav.Link
             className={`my-3 d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}
             onClick={handleLoadProjects}
@@ -166,12 +177,14 @@ const Sidebar = () => {
             {expanded && <span className="ms-2">Progetti</span>}
           </Nav.Link>
 
+          {/* Fasi progetto (visibile solo se currentProject esiste) */}
           {currentProject && (
             <Nav.Link
               className={`my-3 d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}
               onClick={() => {
                 setShowPhaseCards(true);
                 setShowProjectList(false);
+                setShowInProgressList(false);
               }}
             >
               <div className="icon-hover">
@@ -181,7 +194,15 @@ const Sidebar = () => {
             </Nav.Link>
           )}
 
-          <Nav.Link className={`my-3 d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}>
+          {/* Lavori in corso (apre/chiude solo la lista) */}
+          <Nav.Link
+            className={`my-3 d-flex ${expanded ? "justify-content-start ps-2" : "justify-content-center"} align-items-center`}
+            onClick={() => {
+              setShowInProgressList((prev) => !prev);
+              setShowProjectList(false);
+              setShowPhaseCards(false);
+            }}
+          >
             <div className="icon-hover">
               <TiPinOutline size={30} color="#C69B7B" />
             </div>
@@ -189,6 +210,7 @@ const Sidebar = () => {
           </Nav.Link>
         </Nav>
 
+        {/* Avatar utente */}
         <div className="mt-auto mb-3 d-flex flex-column align-items-center">
           {localAvatarError || !avatarUrl ? (
             <FaRegUserCircle size={30} className="text-secondary" />
@@ -213,6 +235,7 @@ const Sidebar = () => {
         </div>
       </div>
 
+      {/* ─────────────────────────────────────── MODAL CREAZIONE PROGETTO ─────────────────────────────────────── */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Crea nuovo progetto</Modal.Title>
@@ -237,7 +260,12 @@ const Sidebar = () => {
               <Form.Label>Impresa costruttrice</Form.Label>
               <Form.Control
                 value={newProject.impresaCostruttrice}
-                onChange={(e) => setNewProject({ ...newProject, impresaCostruttrice: e.target.value })}
+                onChange={(e) =>
+                  setNewProject({
+                    ...newProject,
+                    impresaCostruttrice: e.target.value,
+                  })
+                }
                 required
               />
             </Form.Group>
@@ -280,6 +308,7 @@ const Sidebar = () => {
         </Form>
       </Modal>
 
+      {/* ─────────────────────────────────────── LISTA PROGETTI “TUTTI” ─────────────────────────────────────── */}
       {showProjectList && (
         <div className="floating-cards-container">
           <h5>Progetti ({projects.length})</h5>
@@ -311,12 +340,8 @@ const Sidebar = () => {
                         <Card.Title className="project-list-number">{index + 1}</Card.Title>
                       </Col>
                       <Col xs={8} md={10}>
-                        <div className="d-flex justify-content-between align-items-start w-100">
-                          <div>
-                            <Card.Subtitle className="text-muted">{proj.nomeProgetto}</Card.Subtitle>
-                            <Card.Text className="text-secondary">{proj.indirizzo}</Card.Text>
-                          </div>
-                        </div>
+                        <Card.Subtitle className="text-muted">{proj.nomeProgetto}</Card.Subtitle>
+                        <Card.Text className="text-secondary">{proj.indirizzo}</Card.Text>
                       </Col>
                     </Row>
                   </Card.Body>
@@ -326,6 +351,52 @@ const Sidebar = () => {
         </div>
       )}
 
+      {/* ─────────────────────────────────────── LISTA “LAVORI IN CORSO” ─────────────────────────────────────── */}
+      {showInProgressList && (
+        <div className="floating-cards-container">
+          <h5>Lavori in corso ({inProgressProjects.length})</h5>
+          <Button className="btn-close" onClick={() => setShowInProgressList(false)}>
+            <FaTimes size={20} color="#C69B7B" />
+          </Button>
+
+          {loadingProjects ? (
+            <div className="text-center p-3">
+              <div className="spinner-border text-secondary" role="status">
+                <span className="visually-hidden">Caricamento...</span>
+              </div>
+            </div>
+          ) : inProgressProjects.length === 0 ? (
+            <p className="p-3">Nessun progetto in corso al momento.</p>
+          ) : (
+            inProgressProjects
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .map((proj, idx) => (
+                <Card
+                  key={proj.id}
+                  className="floating-card mb-3"
+                  onClick={() => {
+                    navigate(`/project/${proj.id}`);
+                    setShowInProgressList(false);
+                  }}
+                >
+                  <Card.Body>
+                    <Row className="align-items-center">
+                      <Col xs={4} md={2}>
+                        <Card.Title className="project-list-number">{idx + 1}</Card.Title>
+                      </Col>
+                      <Col xs={8} md={10}>
+                        <Card.Subtitle className="text-muted">{proj.nomeProgetto}</Card.Subtitle>
+                        <Card.Text className="text-secondary">{proj.indirizzo}</Card.Text>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              ))
+          )}
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────── LISTA FASI PROGETTO ─────────────────────────────────────── */}
       {showPhaseCards && currentProject && (
         <div className="floating-cards-container">
           <h5>{currentProject.nomeProgetto} - Fasi</h5>

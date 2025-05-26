@@ -19,7 +19,6 @@ export default function ProfileDetails() {
   const loadingNormal = useSelector((state) => state.loginNormal.loginLoading);
   const loadingGoogle = useSelector((state) => state.loginGoogle.loginLoading);
   const activeUser = useSelector((state) => state.loginGoogle.user || state.loginNormal.user);
-  console.log("Active User:", activeUser);
   const dispatch = useDispatch();
   // Stato del form
   const [formData, setFormData] = useState({
@@ -71,7 +70,7 @@ export default function ProfileDetails() {
           dispatch(fetchProfile());
         } catch (error) {
           if (isMounted) {
-            console.error("Error fetching profile:", error);
+            error;
             setAvatarError(true);
           }
         }
