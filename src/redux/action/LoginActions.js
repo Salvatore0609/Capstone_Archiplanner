@@ -123,3 +123,62 @@ export const fetchProfile = () => async (dispatch, getState) => {
     dispatch({ type: FETCH_PROFILE_FAILURE, payload: err.message });
   }
 };
+
+// UPDATE PROFILE ACTIONS
+export const UPDATE_PROFILE_REQUEST = "auth/UPDATE_PROFILE_REQUEST";
+export const UPDATE_PROFILE_SUCCESS = "auth/UPDATE_PROFILE_SUCCESS";
+export const UPDATE_PROFILE_FAILURE = "auth/UPDATE_PROFILE_FAILURE";
+
+export const updateProfileRequest = () => ({ type: UPDATE_PROFILE_REQUEST });
+export const updateProfileSuccess = (userData) => ({
+  type: UPDATE_PROFILE_SUCCESS,
+  payload: userData,
+});
+export const updateProfileFailure = (error) => ({
+  type: UPDATE_PROFILE_FAILURE,
+  payload: error,
+});
+
+export const updateProfile = (profileData) => async (dispatch) => {
+  dispatch(updateProfileRequest());
+  const token = getToken();
+
+  try {
+    const formData = new FormData();
+
+    formData.append("id", profileData.id);
+    formData.append("username", profileData.username);
+    formData.append("email", profileData.email);
+    formData.append("nome", profileData.nome);
+    formData.append("cognome", profileData.cognome);
+    formData.append("dataNascita", profileData.dataNascita);
+    formData.append("luogoNascita", profileData.luogoNascita);
+    formData.append("residenza", profileData.residenza);
+    formData.append("nomeCompagnia", profileData.nomeCompagnia);
+    formData.append("lingua", profileData.lingua);
+
+    // Se esiste un file avatar, lo appendo con chiave "avatar"
+    if (profileData.avatar && profileData.avatar instanceof File) {
+      formData.append("avatar", profileData.avatar);
+    }
+
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/utenti/${profileData.id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(errText || "Aggiornamento profilo fallito");
+    }
+
+    const updatedUser = await response.json();
+    dispatch(updateProfileSuccess(updatedUser));
+  } catch (error) {
+    dispatch(updateProfileFailure(error.message));
+    throw error;
+  }
+};

@@ -1,4 +1,3 @@
-// src/redux/reducers/LoginNormalReducer.js
 import {
   LOGIN_NORMAL_REQUEST,
   LOGIN_NORMAL_SUCCESS,
@@ -10,6 +9,9 @@ import {
   FETCH_PROFILE_REQUEST,
   FETCH_PROFILE_SUCCESS,
   FETCH_PROFILE_FAILURE,
+  UPDATE_PROFILE_REQUEST,
+  UPDATE_PROFILE_SUCCESS,
+  UPDATE_PROFILE_FAILURE,
 } from "../action/LoginActions";
 import { getToken, clearNormalUserData, saveNormalUserData } from "../utils/authUtils";
 
@@ -20,6 +22,8 @@ const initialState = {
   isAuthenticated: !!getToken(),
   loginLoading: false,
   registerLoading: false,
+  updateLoading: false,
+  updateError: null,
 };
 
 export default function LoginNormalReducer(state = initialState, action) {
@@ -85,6 +89,31 @@ export default function LoginNormalReducer(state = initialState, action) {
         error: action.payload,
         isAuthenticated: false,
       };
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // UPDATE PROFILE (Normale)
+    case UPDATE_PROFILE_REQUEST:
+      return {
+        ...state,
+        updateLoading: true,
+        updateError: null,
+      };
+
+    case UPDATE_PROFILE_SUCCESS:
+      saveNormalUserData(action.payload);
+      return {
+        ...state,
+        user: action.payload,
+        updateLoading: false,
+      };
+
+    case UPDATE_PROFILE_FAILURE:
+      return {
+        ...state,
+        updateLoading: false,
+        updateError: action.payload,
+      };
+    // ─────────────────────────────────────────────────────────────────────────────
 
     // LOGOUT
     case LOGOUT_NORMAL:

@@ -1,14 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Container, Row, Col, Spinner, Card, Button, Modal } from "react-bootstrap";
+import { Container, Row, Col, Spinner, Card, Button, Modal, Form } from "react-bootstrap";
 import { useEffect, useMemo, useState } from "react";
 import Sidebar from "../components/Dashboard/Sidebar";
 import Topbar from "../components/Dashboard/Topbar";
 import GoogleMapView from "../components/commons/GoogleMapView";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchProjects, updateProject } from "../redux/action/projectsActions";
+import { fetchProjects, updateProject, deleteProject } from "../redux/action/projectsActions";
 import { deleteStepDataById, fetchStepDataByProject } from "../redux/action/stepDataActions";
-import { deleteProject } from "../redux/action/projectsActions";
-import { FaRegMap } from "react-icons/fa";
+import { FaRegMap, FaEdit } from "react-icons/fa";
 
 // Import fasi
 import { phase1Tasks as p1 } from "../components/StepsProject/phase1Tasks.jsx";
@@ -26,6 +25,12 @@ const Project = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
   const [checked, setChecked] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editData, setEditData] = useState({
+    progettista: "",
+    impresaCostruttrice: "",
+    indirizzo: "",
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -37,7 +42,6 @@ const Project = () => {
   const getStepInfo = (taskId, stepId) => {
     const task = allTasks.find((t) => Number(t.id) === Number(taskId));
     if (!task) return { taskTitle: "Task non trovata", stepLabel: "Step non trovato" };
-
     const step = task.steps.find((s) => String(s.id) === String(stepId));
     return {
       taskTitle: task.title || "Task senza titolo",
@@ -73,12 +77,16 @@ const Project = () => {
     }
   }, [dispatch, projects.length]);
 
-  // All’avvio e quando cambia `project`, popolo `checked` dal campo `completato` e setto lo stato del pin da `inProgress`
+  // All’avvio e quando cambia `project`, popolo `checked` dal campo `completato`
+  // e imposto i dati iniziali per l’editModal
   useEffect(() => {
     if (project) {
       setChecked(project.completato === true);
-      // Se serve, potresti anche avere uno stato locale per far vedere subito l'icona pin,
-      // ma non è necessario: basterà leggere project.inProgress direttamente.
+      setEditData({
+        progettista: project.progettista || "",
+        impresaCostruttrice: project.impresaCostruttrice || "",
+        indirizzo: project.indirizzo || "",
+      });
     }
   }, [project]);
 
@@ -100,6 +108,8 @@ const Project = () => {
     return <Spinner />;
   }
 
+  // ────────────────────────────────────────────────────────────
+  // GESTIONE DELETE PROGETTO
   const handleDeleteProject = () => {
     if (stepDataItems.length > 0) {
       alert("Non puoi eliminare il progetto finché ci sono step salvati. Elimina prima tutti gli step.");
@@ -109,7 +119,20 @@ const Project = () => {
     setShowDeleteModal(true);
   };
 
-  // Al toggle della checkbox, aggiorno "completato" sul backend e in Redux
+  // Al click in conferma, eseguo l'azione di delete
+  const confirmDelete = async () => {
+    try {
+      dispatch(deleteProject(projectToDelete.id));
+      setShowDeleteModal(false);
+      navigate("/dashboard");
+    } catch (err) {
+      alert("Errore nell'eliminazione: " + err.message);
+    }
+  };
+  // ────────────────────────────────────────────────────────────
+
+  // ────────────────────────────────────────────────────────────
+  // GESTIONE TOGGLE COMPLETATO
   const handleToggle = async () => {
     const newValue = !checked;
     try {
@@ -122,7 +145,7 @@ const Project = () => {
           lat: project.lat,
           lng: project.lng,
           completato: newValue,
-          // non tocchiamo inProgress qui: rimane invariato
+          inProgress: project.inProgress, // mantengo invariato
         })
       );
       setChecked(newValue);
@@ -130,8 +153,10 @@ const Project = () => {
       console.error("Errore aggiornamento completato:", err);
     }
   };
+  // ────────────────────────────────────────────────────────────
 
-  // al click del pin faccio il toggle di `inProgress` per questo progetto
+  // ────────────────────────────────────────────────────────────
+  // GESTIONE TOGGLE PIN (inProgress)
   const handlePinToggle = async () => {
     try {
       dispatch(
@@ -142,16 +167,51 @@ const Project = () => {
           indirizzo: project.indirizzo,
           lat: project.lat,
           lng: project.lng,
-          completato: project.completato, // rimane invariato
+          completato: project.completato,
           inProgress: !project.inProgress, // inverto il valore
         })
       );
-      // Non serve un setState locale: appena Redux aggiorna project.inProgress,
-      // il componente verrà re-renderizzato con l’icona corretta.
+      // Redux ricarica project con inProgress aggiornato
     } catch (err) {
       console.error("Errore aggiornamento inProgress:", err);
     }
   };
+  // ────────────────────────────────────────────────────────────
+
+  // ────────────────────────────────────────────────────────────
+  // GESTIONE EDIT MODAL: apertura/chiusura e submit
+  const openEditModal = () => setShowEditModal(true);
+  const closeEditModal = () => setShowEditModal(false);
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(
+        updateProject(project.id, {
+          nomeProgetto: project.nomeProgetto, // nome non cambia qui
+          progettista: editData.progettista,
+          impresaCostruttrice: editData.impresaCostruttrice,
+          indirizzo: editData.indirizzo,
+          lat: project.lat, // lat/lng restano invariati
+          lng: project.lng,
+          completato: project.completato, // completato non cambia
+          inProgress: project.inProgress, // inProgress non cambia
+        })
+      );
+      closeEditModal();
+    } catch (err) {
+      console.error("Errore aggiornamento progetto:", err);
+    }
+  };
+  // ────────────────────────────────────────────────────────────
 
   return (
     <Container fluid>
@@ -164,7 +224,7 @@ const Project = () => {
           <Container fluid className="pt-5">
             <div className="d-flex align-items-center">
               <h4 className="me-auto">{project.nomeProgetto}</h4>
-              <div className="d-flex gap-2 align-items-center">
+              <div className="d-flex gap-4 align-items-center">
                 {/* Icona PIN */}
                 <Button
                   onClick={handlePinToggle}
@@ -180,8 +240,26 @@ const Project = () => {
                 >
                   {project.inProgress ? <TiPin size={24} color="#C69B7B" /> : <TiPinOutline size={24} color="#C69B7B" />}
                 </Button>
+
+                {/* Icona EDIT */}
+                <Button
+                  onClick={openEditModal}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  title="Modifica dati progetto"
+                >
+                  <FaEdit size={24} color="#C69B7B" />
+                </Button>
+
                 {/* BooleanPill per “Completato” */}
                 <BooleanPill label="Completato" checked={checked} onChange={handleToggle} />
+
                 {/* Bottone “Elimina progetto” */}
                 <Button
                   size="sm"
@@ -198,6 +276,8 @@ const Project = () => {
               </div>
             </div>
 
+            {/* ──────────────────────────────────────────────────────────── */}
+            {/* Dettagli progetto */}
             <Col className="d-flex justify-content-between gap-3 mt-3" style={{ color: "#C69B7B", fontWeight: "bold" }}>
               <div className="d-flex">
                 <span>Progettista:&nbsp;</span>
@@ -213,9 +293,10 @@ const Project = () => {
               </div>
               <div className="d-flex">
                 <span>Creato:&nbsp;</span>
-                <p>{new Date(project.createdAt).toLocaleDateString() || "Non specificata"}</p>
+                <p>{new Date(project.createdAt).toLocaleDateString()}</p>
               </div>
             </Col>
+            {/* ──────────────────────────────────────────────────────────── */}
 
             <Card className="map-card">
               <Card.Header className="map-header d-flex flex-column" style={{ color: "#C69B7B" }}>
@@ -336,21 +417,41 @@ const Project = () => {
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             Annulla
           </Button>
-          <Button
-            variant="danger"
-            onClick={async () => {
-              try {
-                dispatch(deleteProject(projectToDelete.id));
-                setShowDeleteModal(false);
-                navigate("/dashboard");
-              } catch (err) {
-                alert("Errore nell'eliminazione: " + err.message);
-              }
-            }}
-          >
+          <Button variant="danger" onClick={confirmDelete}>
             Elimina
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      {/* ─── MODAL MODIFICA PROGETTO ─── */}
+      <Modal show={showEditModal} onHide={closeEditModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Modifica progetto</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleEditSubmit}>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>Progettista</Form.Label>
+              <Form.Control name="progettista" value={editData.progettista} onChange={handleEditChange} required />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Impresa costruttrice</Form.Label>
+              <Form.Control name="impresaCostruttrice" value={editData.impresaCostruttrice} onChange={handleEditChange} required />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Indirizzo</Form.Label>
+              <Form.Control name="indirizzo" value={editData.indirizzo} onChange={handleEditChange} required />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={closeEditModal}>
+              Annulla
+            </Button>
+            <Button type="submit">Salva modifiche</Button>
+          </Modal.Footer>
+        </Form>
       </Modal>
     </Container>
   );
