@@ -1,11 +1,12 @@
-import { Dropdown, FormControl, InputGroup } from "react-bootstrap";
+import { Badge, Dropdown, FormControl, InputGroup, Spinner } from "react-bootstrap";
 import { FaRegUserCircle, FaSearch } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearUserData, removeToken } from "../../redux/utils/authUtils";
 import { logoutGoogle, logoutNormal } from "../../redux/action/LoginActions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchNotifications, fetchUnreadNotificationsCount, markNotificationAsRead } from "../../redux/action/NotificationActions";
 
 const Topbar = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,17 @@ const Topbar = () => {
 
   const activeUser = useSelector((state) => state.loginGoogle.user || state.loginNormal.user);
   const projects = useSelector((state) => state.projects?.items || []);
+
+  /* notifiche */
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notifications = useSelector((state) => state.notifications.all || []);
+  const unreadCount = useSelector((state) => state.notifications.unreadCount);
+  const loadingNotifications = useSelector((state) => state.notifications.loading);
+
+  useEffect(() => {
+    dispatch(fetchNotifications());
+    dispatch(fetchUnreadNotificationsCount());
+  }, [dispatch]);
 
   const avatarUrl = activeUser?.avatar;
 
@@ -42,6 +54,15 @@ const Topbar = () => {
     } else {
       alert("Nessun progetto trovato.");
     }
+  };
+
+  /* notifiche */
+  const toggleNotifications = () => {
+    setShowNotifications((prev) => !prev);
+  };
+
+  const handleNotificationClick = (notifId) => {
+    dispatch(markNotificationAsRead(notifId));
   };
 
   return (
@@ -86,8 +107,61 @@ const Topbar = () => {
         )}
       </div>
 
-      <div className="user-info d-flex align-items-center ms-3">
-        <IoMdNotificationsOutline size={30} color="#C69B7B" />
+      <div className="user-info d-flex align-items-center ms-3 position-relative">
+        {/* Icona campanella con badge */}
+        <div className="position-relative me-3" style={{ cursor: "pointer" }} onClick={toggleNotifications}>
+          <IoMdNotificationsOutline size={30} color="#C69B7B" />
+          {unreadCount > 0 && (
+            <Badge pill bg="danger" className="position-absolute top-0 start-100 translate-middle text-white">
+              {unreadCount}
+            </Badge>
+          )}
+        </div>
+        {/* Dropdown notifiche */}
+        {showNotifications && (
+          <div
+            className="position-absolute bg-white border rounded"
+            style={{
+              zIndex: 1000,
+              right: 0,
+              top: "40px",
+              width: "300px",
+            }}
+          >
+            <div className="p-2 border-bottom d-flex justify-content-between align-items-center">
+              <strong>Notifiche</strong>
+              {loadingNotifications && <Spinner animation="border" size="sm" />}
+            </div>
+
+            {notifications.length === 0 && !loadingNotifications && <div className="p-2 text-center text-muted">Nessuna notifica</div>}
+
+            <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+              {notifications.map((notif) => (
+                <div
+                  key={notif.id}
+                  className={`p-2 d-flex justify-content-between align-items-start ${!notif.isRead ? "bg-light" : ""}`}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleNotificationClick(notif.id)}
+                >
+                  <div style={{ flex: 1 }}>
+                    <small className="d-block text-muted">
+                      {new Date(notif.createdAt).toLocaleString("it-IT", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </small>
+                    <span>{notif.message}</span>
+                  </div>
+                  {!notif.isRead && <Badge bg="primary" pill style={{ height: 12, width: 12, marginLeft: 8 }} />}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {/*  */}
         <Dropdown>
           <Dropdown.Toggle variant="link" id="user-dropdown-toggle" className="text-decoration-none">
             {localAvatarError || !avatarUrl ? (

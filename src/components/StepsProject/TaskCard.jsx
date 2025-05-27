@@ -7,7 +7,6 @@ import { getToken } from "../../redux/utils/authUtils";
 
 // #region renderParametri
 const renderParametri = (parametri) => {
-  if (!parametri || parametri.length === 0) return null;
   return (
     <ul style={{ marginTop: 4 }}>
       {parametri.map((p, i) => (
@@ -34,7 +33,6 @@ const renderParametri = (parametri) => {
 
 // #region renderUsiPermessi
 const renderUsiPermessi = (usiPermessi) => {
-  if (!usiPermessi || usiPermessi.length === 0) return null;
   return (
     <ul>
       {usiPermessi.map((uso) => (
@@ -80,7 +78,7 @@ const renderContent = (art) => {
           {sez.contenuto?.map((c, i) => (
             <p key={i}>{c}</p>
           ))}
-          {sez.sottozona?.map((sz) => (
+          {sez.sottozone?.map((sz) => (
             <div key={sz.sottozId} style={{ paddingLeft: 16, marginBottom: 8 }}>
               <strong>Sottozona:</strong> {sz.nome}
               <br />

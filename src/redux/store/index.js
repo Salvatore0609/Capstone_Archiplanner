@@ -4,6 +4,7 @@ import calendarReducer from "../reducers/calendarReducer";
 import loginNormalReducer from "../reducers/LoginNormalReducer";
 import loginGoogleReducer from "../reducers/LoginGoogleReducer";
 import stepDataReducer from "../reducers/stepDataReducer";
+import { notificationReducer } from "../reducers/NotificationReducer";
 
 const preloadedState = {
   projects: JSON.parse(localStorage.getItem("projects")) || [],
@@ -16,6 +17,7 @@ export const store = configureStore({
     loginNormal: loginNormalReducer,
     loginGoogle: loginGoogleReducer,
     stepData: stepDataReducer,
+    notifications: notificationReducer,
   },
   preloadedState,
 });
