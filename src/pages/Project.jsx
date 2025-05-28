@@ -222,80 +222,60 @@ const Project = () => {
         <Col sm={10} className="pt-5 mx-auto">
           <Topbar />
           <Container fluid className="pt-5">
-            <div className="d-flex align-items-center">
-              <h4 className="me-auto">{project.nomeProgetto}</h4>
-              <div className="d-flex gap-4 align-items-center">
-                {/* Icona PIN */}
-                <Button
-                  onClick={handlePinToggle}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 0,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                  title={project.inProgress ? "Rimuovi da Lavori in corso" : "Aggiungi a Lavori in corso"}
-                >
-                  {project.inProgress ? <TiPin size={24} color="#C69B7B" /> : <TiPinOutline size={24} color="#C69B7B" />}
-                </Button>
-
-                {/* Icona EDIT */}
-                <Button
-                  onClick={openEditModal}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 0,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                  title="Modifica dati progetto"
-                >
-                  <FaEdit size={24} color="#C69B7B" />
-                </Button>
-
-                {/* BooleanPill per “Completato” */}
-                <BooleanPill label="Completato" checked={checked} onChange={handleToggle} />
-
-                {/* Bottone “Elimina progetto” */}
-                <Button
-                  size="sm"
-                  onClick={handleDeleteProject}
-                  style={{
-                    backgroundColor: "#C67B7B",
-                    borderRadius: "50px",
-                    borderColor: "#C67B7B",
-                    padding: "1em",
-                  }}
-                >
-                  Elimina progetto
-                </Button>
-              </div>
-            </div>
-
             {/* ──────────────────────────────────────────────────────────── */}
             {/* Dettagli progetto */}
-            <Col className="d-flex justify-content-between gap-3 mt-3" style={{ color: "#C69B7B", fontWeight: "bold" }}>
-              <div className="d-flex">
-                <span>Progettista:&nbsp;</span>
-                <p>{project.progettista || "Non specificato"}</p>
-              </div>
-              <div className="d-flex">
-                <span>Impresa costruttrice:&nbsp;</span>
-                <p>{project.impresaCostruttrice || "Non specificata"}</p>
-              </div>
-              <div className="d-flex">
-                <span>Indirizzo:&nbsp;</span>
-                <p>{project.indirizzo}</p>
-              </div>
-              <div className="d-flex">
-                <span>Creato:&nbsp;</span>
-                <p>{new Date(project.createdAt).toLocaleDateString()}</p>
+            <Col md={12}>
+              <div className="d-flex align-items-center">
+                <h4 className="me-auto fs-5">{project.nomeProgetto}</h4>
+                <div className="d-flex gap-4 align-items-center">
+                  {/* Icona PIN */}
+                  <Button
+                    onClick={handlePinToggle}
+                    className="pinBtn"
+                    title={project.inProgress ? "Rimuovi da Lavori in corso" : "Aggiungi a Lavori in corso"}
+                  >
+                    {project.inProgress ? <TiPin size={24} color="#C69B7B" /> : <TiPinOutline size={24} color="#C69B7B" />}
+                  </Button>
+
+                  {/* Icona EDIT */}
+                  <Button onClick={openEditModal} className="editBtn" title="Modifica dati progetto">
+                    <FaEdit size={24} color="#C69B7B" />
+                  </Button>
+
+                  {/* BooleanPill per “Completato” */}
+                  <BooleanPill label="Completato" checked={checked} onChange={handleToggle} />
+
+                  {/* Bottone “Elimina progetto” */}
+                  <Button size="sm" onClick={handleDeleteProject} className="deleteProjectBtn">
+                    Elimina progetto
+                  </Button>
+                </div>
               </div>
             </Col>
+            <Col md={12} className="mt-3">
+              <Row className="projectDetails gx-3 gy-2" style={{ color: "#C69B7B", fontWeight: "bold" }}>
+                <Col xs={12} sm={6} lg={3} className="d-flex">
+                  <span>Progettista:&nbsp;</span>
+                  <span className="m-0">{project.progettista || "Non specificato"}</span>
+                </Col>
+
+                <Col xs={12} sm={6} lg={3} className="d-flex">
+                  <span>Impresa costruttrice:&nbsp;</span>
+                  <span className="m-0">{project.impresaCostruttrice || "Non specificata"}</span>
+                </Col>
+
+                <Col xs={12} sm={6} lg={3} className="d-flex">
+                  <span>Indirizzo:&nbsp;</span>
+                  <span className="m-0">{project.indirizzo}</span>
+                </Col>
+
+                <Col xs={12} sm={6} lg={3} className="d-flex">
+                  <span>Creato:&nbsp;</span>
+                  <span className="m-0">{new Date(project.createdAt).toLocaleDateString()}</span>
+                </Col>
+              </Row>
+            </Col>
+
             {/* ──────────────────────────────────────────────────────────── */}
 
             <Card className="map-card">

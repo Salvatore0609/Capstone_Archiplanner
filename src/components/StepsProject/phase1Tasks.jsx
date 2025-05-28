@@ -23,7 +23,7 @@ export const phase1Tasks = [
     steps: [
       {
         id: 3,
-        label: "Scegli l’area di interesse (collegamento al PRG)",
+        label: "Scegli l’area di interesse",
         type: ["dropdown"],
         options: [
           { label: "Sassari", value: "sassari" },
@@ -33,7 +33,7 @@ export const phase1Tasks = [
       },
       {
         id: 4, // nuovo id step, deve essere unico
-        label: "Seleziona la zona di interesse",
+        label: "Seleziona la zona di interesse  (collegamento al PUC di rifermento)",
         type: ["dropdown"],
       },
       {

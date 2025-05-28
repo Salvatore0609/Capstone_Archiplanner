@@ -288,7 +288,8 @@ const TaskCard = ({ task, project, phase }) => {
               return (
                 <ListGroup.Item key={realStepId} className="border-0 px-0 py-2 bg-transparent">
                   <div className="d-flex justify-content-between align-items-center gap-3 flex-wrap">
-                    <span className="task-label-pill">{step.label}</span>
+                    {/* Se non è boolean, mostro la label col pill classico */}
+                    {!step.type.includes("boolean") && <span className="task-label-pill">{step.label}</span>}
 
                     {/* ------------ BOOLEAN ------------ */}
                     {step.type.includes("boolean") && (
@@ -370,6 +371,29 @@ const TaskCard = ({ task, project, phase }) => {
                                   </option>
                                 ))}
                             </Form.Select>
+                            {(draft.dropdownSelected ?? savedData.dropdownSelected) && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  className="ms-auto btn-link-custom"
+                                  onClick={() => {
+                                    window.open("https://www.sardegnaimpresa.eu/it/sportello-unico", "_blank");
+                                  }}
+                                >
+                                  SUAPEE
+                                </Button>
+
+                                <Button
+                                  size="sm"
+                                  className="ms-auto btn-link-custom"
+                                  onClick={() => {
+                                    window.open("https://www.comune.sassari.it/.galleries/doc-documenti/edilizio_comunale.pdf", "_blank");
+                                  }}
+                                >
+                                  Comune di Sassari - Regolamento Edilizio
+                                </Button>
+                              </>
+                            )}
                             <Button
                               size="sm"
                               className="ms-auto btn-link-custom"
@@ -406,7 +430,7 @@ const TaskCard = ({ task, project, phase }) => {
                     {/* ------------ FILE UPLOAD ------------ */}
                     {step.type.includes("file") && (
                       <div className="d-flex flex-column align-items-start">
-                        <Form.Label className="btn btn-outline-secondary btn-sm">
+                        <Form.Label className="botton-file btn btn-sm">
                           Scegli file
                           <Form.Control
                             type="file"
@@ -442,7 +466,7 @@ const TaskCard = ({ task, project, phase }) => {
                           window.open(urlToOpen, "_blank");
                         }}
                       >
-                        Apri Portale
+                        Accedi al catasto
                       </Button>
                     )}
 

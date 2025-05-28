@@ -20,7 +20,7 @@ body {
   position: relative;
   min-height: 100vh;
   background: url("/assets/background1.png") no-repeat center center, linear-gradient(0deg, rgba(198, 155, 123, 1) 0%, rgba(255, 255, 255, 1) 100%);
-  background-size: auto 50%, cover;
+  background-size: auto 30%, cover;
   background-attachment: fixed;
   background-repeat: no-repeat, no-repeat;
   background-position: center bottom, center bottom;
@@ -368,8 +368,6 @@ button {
 .project-status .status-card {
   background-color: #ffffff;
   border: 1px solid #e0dcd7;
-  cursor: pointer;
-  transition: transform 0.2s;
 }
 
 .project-status .status-card:hover {
@@ -385,6 +383,29 @@ button {
 .status-label {
   font-size: 1rem;
   color: #7a6c5f;
+}
+
+.pinBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.editBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.deleteProjectBtn {
+  background-color: #c67b7b;
+  border-radius: 50px;
+  border-color: #c67b7b;
+  padding: 1em;
 }
 
 /*===============================*/
@@ -580,7 +601,7 @@ button {
 .task-label-pill {
   /* background-color: #ffffff; */
   /* box-shadow: 0px 5px 25px 2px #00000030; */
-  color: #ababab;
+  color: black;
   border-radius: 20px;
   padding: 0.8em;
   font-size: 0.9rem;
@@ -640,20 +661,18 @@ button {
   border: none;
 }
 
+.botton-file {
+  color: #c69b7b;
+  border: 1px solid #c69b7b;
+}
+.botton-file:hover {
+  background-color: #c69b7b;
+  color: white;
+}
+
 /*===============================*/
 /*        RESPONSIVE             */
 /*===============================*/
-/* =============================== */
-/*   FINO A 1600px DI LARGHEZZA    */
-/* =============================== */
-@media (max-width: 1600px) {
-  .main-wrapper,
-  .main-container,
-  .content-wrapper {
-    padding: 0 1.5rem;
-  }
-}
-
 /* =============================== */
 /*   FINO A 1200px DI LARGHEZZA    */
 /* =============================== */
@@ -662,19 +681,7 @@ button {
     left: 270px;
   }
   .fc {
-    max-height: 500px; /* se vuoi ridurlo anche sui tablet medi, altrimenti toglilo */
-  }
-}
-
-/* =============================== */
-/*   FINO A 992px DI LARGHEZZA     */
-/* =============================== */
-@media (max-width: 992px) {
-  .countdown-timer {
-    font-size: 3rem;
-  }
-  .map-container {
-    height: 350px;
+    max-height: 500px;
   }
 }
 
@@ -704,8 +711,51 @@ button {
   .countdown-timer {
     font-size: 2.5rem;
   }
-  /* rimosso duplicato di .fc */
+
   .map-container {
-    height: 250px;
+    min-height: 150px;
+  }
+
+  .search-bar {
+    display: none;
+  }
+
+  @media (max-width: 576px) {
+    .sidebar {
+      transform: translateX(-100%);
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      width: 100px;
+      transition: transform 0.3s ease-in-out;
+      z-index: 1050;
+    }
+
+    .sidebar.sidebar-visible {
+      transform: translateX(0);
+    }
+
+    .sidebar-toggle {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1100;
+    }
+  }
+
+  .card {
+    box-shadow: 0px 0px 0px 0px #00000000;
+    margin-top: 0.3em;
+  }
+
+  .boolean-pill {
+    padding: 1em;
+    font-size: 0rem;
+    font-weight: 500;
+  }
+  .deleteProjectBtn {
+    padding: 0.5em;
+    font-size: 0.8rem;
   }
 }

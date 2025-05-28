@@ -13,6 +13,8 @@ import { getToken } from "../../redux/utils/authUtils";
 const Sidebar = () => {
   // Stati per la UI
   const [expanded, setExpanded] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showPhaseCards, setShowPhaseCards] = useState(false);
   const [showProjectList, setShowProjectList] = useState(false);
@@ -131,17 +133,46 @@ const Sidebar = () => {
     }
   };
 
+  // Attivo/disattivo “mobile” in base alla finestra
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 576);
+    handleResize(); // inizializza
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  const toggleSidebar = () => {
+    if (isMobile) {
+      // su mobile: apro/chiudo off-canvas
+      setIsMobileSidebarOpen((prev) => !prev);
+    } else {
+      // su desktop: espando/riduco (collapsed/expanded)
+      setExpanded((prev) => !prev);
+    }
+  };
+
   // Filtra tutti i progetti che hanno inProgress === true
   const inProgressProjects = projects.filter((p) => p.inProgress);
 
   return (
     <>
       {/* ─────────────────────────────────────── SIDEBAR ─────────────────────────────────────── */}
-      <div className={`d-flex flex-column align-items-center sidebar ${expanded ? "sidebar-expanded" : "sidebar-collapsed"}`}>
-        <button onClick={() => setExpanded(!expanded)} className="sidebar-toggle btn btn-link p-1">
-          {expanded ? <FaChevronLeft size={25} /> : <FiSidebar size={25} />}
+      {isMobile && (
+        <button onClick={toggleSidebar} className="sidebar-toggle btn btn-link p-1">
+          {isMobileSidebarOpen ? <FaTimes size={25} /> : <FiSidebar size={25} />}
         </button>
-
+      )}
+      <div
+        className={`
+          d-flex flex-column align-items-center sidebar
+          ${isMobile ? (isMobileSidebarOpen ? "sidebar-visible" : "") : expanded ? "sidebar-expanded" : "sidebar-collapsed"}
+        `}
+      >
+        {!isMobile && (
+          <button onClick={toggleSidebar} className="sidebar-toggle btn btn-link p-1">
+            {expanded ? <FaChevronLeft size={25} /> : <FiSidebar size={25} />}
+          </button>
+        )}
+        {/*  */}
         <Nav className="flex-column text-center w-100">
           {/* Logo che rimanda a /dashboard */}
           <Link to="/dashboard" className="text-decoration-none p-0">

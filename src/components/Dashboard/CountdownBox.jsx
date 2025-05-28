@@ -80,7 +80,7 @@ const CountdownBox = () => {
           </Col>
         </Card.Title>
 
-        <div className="countdown-timer text-center fs-2 fw-bold">
+        <div className="countdown-timer text-center fs-4 fw-bold">
           <span className="time-segment">{nextBreak.hours}</span>
           <span className="time-separator mx-1">:</span>
           <span className="time-segment">{nextBreak.minutes}</span>

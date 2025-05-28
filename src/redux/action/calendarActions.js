@@ -25,71 +25,113 @@ export const fetchCalendarEvents = () => async (dispatch) => {
   }
 };
 
-// Post evento
-export const addCalendarEvent = (eventData) => async (dispatch) => {
-  try {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/calendar-event`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-      body: JSON.stringify(eventData),
-    });
+// Post evento (aggiornato per gestire toGoogle)
+export const addCalendarEvent =
+  (eventData, toGoogle = false) =>
+  async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
 
-    if (!res.ok) throw new Error("Errore nell'inserimento evento");
+      // Costruisco l’URL base
+      const baseUrl = `${import.meta.env.VITE_API_URL}/calendar-event`;
+      const url = new URL(baseUrl);
 
-    const saved = await res.json();
-    dispatch({ type: ADD_CALENDAR_EVENT, payload: saved });
-  } catch (err) {
-    dispatch({ type: CALENDAR_ERROR, payload: err.message });
-  }
-};
+      // Se toGoogle=true, aggiungo ?toGoogle=true
+      if (toGoogle) {
+        url.searchParams.append("toGoogle", "true");
+      }
 
-// Delete evento
-export const deleteCalendarEvent = (eventId) => async (dispatch) => {
-  try {
-    const token = localStorage.getItem("token");
+      const res = await fetch(url.toString(), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify(eventData),
+      });
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/calendar-event/${eventId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-    });
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Errore nell'inserimento evento: ${errorText}`);
+      }
 
-    if (!res.ok) throw new Error("Errore durante l'eliminazione evento");
+      const saved = await res.json();
+      dispatch({ type: ADD_CALENDAR_EVENT, payload: saved });
+    } catch (err) {
+      dispatch({ type: CALENDAR_ERROR, payload: err.message });
+    }
+  };
 
-    dispatch({
-      type: DELETE_CALENDAR_EVENT,
-      payload: eventId,
-    });
-  } catch (error) {
-    console.error("Errore durante l'eliminazione evento calendario:", error);
-    dispatch({ type: CALENDAR_ERROR, payload: error.message });
-  }
-};
+// Delete evento (esempio di estensione per Google)
+export const deleteCalendarEvent =
+  (eventId, deleteGoogle = false, googleEventId = null) =>
+  async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+      let urlStr = `${import.meta.env.VITE_API_URL}/calendar-event/${eventId}`;
 
-// Put (update) evento
-export const updateCalendarEvent = (eventId, updatedData) => async (dispatch) => {
-  try {
-    const token = localStorage.getItem("token");
+      // Se deleteGoogle=true e ho googleEventId, aggiungo i parametri
+      if (deleteGoogle && googleEventId) {
+        const url = new URL(urlStr);
+        url.searchParams.append("deleteGoogle", "true");
+        url.searchParams.append("googleEventId", googleEventId);
+        urlStr = url.toString();
+      }
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/calendar-event/${eventId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-      body: JSON.stringify(updatedData),
-    });
+      const res = await fetch(urlStr, {
+        method: "DELETE",
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
 
-    if (!res.ok) throw new Error("Errore durante l'aggiornamento evento");
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Errore durante l'eliminazione evento: ${errorText}`);
+      }
 
-    const updatedEvent = await res.json();
-    dispatch({ type: UPDATE_CALENDAR_EVENT, payload: updatedEvent });
-  } catch (err) {
-    dispatch({ type: CALENDAR_ERROR, payload: err.message });
-  }
-};
+      dispatch({
+        type: DELETE_CALENDAR_EVENT,
+        payload: eventId,
+      });
+    } catch (error) {
+      console.error("Errore durante l'eliminazione evento calendario:", error);
+      dispatch({ type: CALENDAR_ERROR, payload: error.message });
+    }
+  };
+
+// Put (update) evento (esempio di estensione per Google)
+export const updateCalendarEvent =
+  (eventId, updatedData, updateGoogle = false, googleEventId = null) =>
+  async (dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+      const baseUrl = `${import.meta.env.VITE_API_URL}/calendar-event/${eventId}`;
+      const url = new URL(baseUrl);
+
+      // Se updateGoogle=true e ho googleEventId, aggiungo i parametri
+      if (updateGoogle && googleEventId) {
+        url.searchParams.append("updateGoogle", "true");
+        url.searchParams.append("googleEventId", googleEventId);
+      }
+
+      const res = await fetch(url.toString(), {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Errore durante l'aggiornamento evento: ${errorText}`);
+      }
+
+      const updatedEvent = await res.json();
+      dispatch({ type: UPDATE_CALENDAR_EVENT, payload: updatedEvent });
+    } catch (err) {
+      dispatch({ type: CALENDAR_ERROR, payload: err.message });
+    }
+  };

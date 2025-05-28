@@ -13,7 +13,7 @@ export const phase5Tasks = [
       },
       {
         id: 36,
-        label: "Nomina del Direttore dei Lavori",
+        label: "Nomina del Direttore dei Lavori e CSE",
         type: ["file"],
         accept: ".pdf",
       },

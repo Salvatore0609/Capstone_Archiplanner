@@ -24,6 +24,12 @@ const PersonalyCalendar = ({ refreshKey }) => {
     setCurrentDate(new Date());
   }, [dispatch, refreshKey]);
 
+  useEffect(() => {
+    if (calendarRef.current) {
+      calendarRef.current.getApi().gotoDate(currentDate);
+    }
+  }, [currentDate]);
+
   const openModal = useCallback((data) => setModalData(data), []);
   const closeModal = useCallback(() => setModalData(null), []);
 
@@ -37,6 +43,7 @@ const PersonalyCalendar = ({ refreshKey }) => {
       startTime: time,
       endTime: format(addHours(date, 1), "HH:mm"),
       isFixedTime: true,
+      saveOnGoogle: false, // default: non salvare su Google
     });
   };
 
@@ -49,6 +56,7 @@ const PersonalyCalendar = ({ refreshKey }) => {
       startTime: "08:00",
       endTime: "09:00",
       isFixedTime: false,
+      saveOnGoogle: false, // default: non salvare su Google
     });
   };
 
@@ -64,34 +72,51 @@ const PersonalyCalendar = ({ refreshKey }) => {
   const handleFreeTime = () => handleSlot({ dateStr: new Date().toISOString(), isFixed: false });
 
   const validateAppointment = () => {
-    if (!modalData.startTime || !modalData.endTime || new Date(modalData.date) <= new Date()) {
-      alert("Inserisci una data e ora valide.");
+    if (!modalData.startTime || !modalData.endTime) {
+      alert("Inserisci un orario valido.");
       return false;
     }
+
+    const startDateTime = new Date(`${format(modalData.date, "yyyy-MM-dd")}T${modalData.startTime}`);
+    const endDateTime = new Date(`${format(modalData.date, "yyyy-MM-dd")}T${modalData.endTime}`);
+    const now = new Date();
+
+    if (startDateTime <= now) {
+      alert("L'orario di inizio deve essere nel futuro.");
+      return false;
+    }
+
+    if (endDateTime <= startDateTime) {
+      alert("L'orario di fine deve essere successivo all'orario di inizio.");
+      return false;
+    }
+
     return true;
   };
 
   const saveAppointment = () => {
     if (!validateAppointment()) return;
+    const startDateTime = `${format(modalData.date, "yyyy-MM-dd")}T${modalData.startTime}:00`;
+    const endDateTime = `${format(modalData.date, "yyyy-MM-dd")}T${modalData.endTime}:00`;
+
+    const appointmentToSave = {
+      ...modalData,
+      startTime: startDateTime,
+      endTime: endDateTime,
+    };
 
     if (modalData.id) {
-      dispatch(updateCalendarEvent(modalData.id, modalData));
+      //qui posso passare updateGoogle e googleEventId
+      dispatch(updateCalendarEvent(modalData.id, appointmentToSave));
     } else {
-      const startDateTime = `${format(modalData.date, "yyyy-MM-dd")}T${modalData.startTime}:00`;
-      const endDateTime = `${format(modalData.date, "yyyy-MM-dd")}T${modalData.endTime}:00`;
-
-      const appointmentToSave = {
-        ...modalData,
-        startTime: startDateTime,
-        endTime: endDateTime,
-      };
-
-      dispatch(addCalendarEvent(appointmentToSave));
+      // CREATE: passo il flag saveOnGoogle
+      dispatch(addCalendarEvent(appointmentToSave, modalData.saveOnGoogle));
     }
     closeModal();
   };
 
   const deleteAppointment = () => {
+    // Qui potrei aggiungere deleteGoogle e googleEventId come parametri
     dispatch(deleteCalendarEvent(modalData.id));
     closeModal();
   };
@@ -106,6 +131,15 @@ const PersonalyCalendar = ({ refreshKey }) => {
             description: apt.description || "",
             start: apt.startTime,
             end: apt.endTime,
+            //nuovo
+            extendedProps: {
+              source: apt.source || "internal",
+              googleEventId: apt.googleEventId || null,
+            },
+            color:
+              apt.source === "google"
+                ? "#4285F4" // azzurro per eventi Google
+                : undefined,
           };
         } else {
           console.error("Dati dell'appuntamento mancanti o malformati:", apt);
@@ -125,12 +159,24 @@ const PersonalyCalendar = ({ refreshKey }) => {
     openModal({
       ...appointment,
       date: new Date(appointment.startTime),
+      startTime: format(new Date(appointment.startTime), "HH:mm"),
+      endTime: format(new Date(appointment.endTime), "HH:mm"),
       isFixedTime: false,
+      saveOnGoogle: appointment.source === "internal+google", // se era già sincronizzato
     });
   };
 
   const renderModal = () => {
-    const { title = "", startTime = "", endTime = "", description = "", date = new Date(), isFixedTime = false } = modalData || {};
+    if (!modalData) return null;
+    const {
+      title = "",
+      startTime = "",
+      endTime = "",
+      description = "",
+      date = new Date(),
+      isFixedTime = false,
+      saveOnGoogle = false,
+    } = modalData || {};
 
     return (
       <Modal show={!!modalData} onHide={closeModal} centered>
@@ -180,6 +226,20 @@ const PersonalyCalendar = ({ refreshKey }) => {
                 onChange={(e) => setModalData((prev) => ({ ...prev, description: e.target.value }))}
               />
             </Form.Group>
+            {/* Checkbox per sincronizzare con Google */}
+            <Form.Group className="mb-3">
+              <Form.Check
+                type="checkbox"
+                label="Salva anche su Google Calendar"
+                checked={saveOnGoogle}
+                onChange={(e) =>
+                  setModalData((prev) => ({
+                    ...prev,
+                    saveOnGoogle: e.target.checked,
+                  }))
+                }
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -217,6 +277,7 @@ const PersonalyCalendar = ({ refreshKey }) => {
             initialView="timeGridTwoDay"
             views={{ timeGridTwoDay: { type: "timeGrid", duration: { days: 2 } } }}
             locale={itLocale}
+            timeZone="local"
             allDaySlot={false}
             slotMinTime="08:00:00"
             slotMaxTime="20:00:00"
@@ -225,7 +286,6 @@ const PersonalyCalendar = ({ refreshKey }) => {
             dateClick={handleDateClick}
             eventClick={handleOpenModalToUptDlt}
             headerToolbar={false}
-            initialDate={currentDate}
             height="auto"
           />
         </Card.Body>

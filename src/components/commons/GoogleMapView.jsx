@@ -2,8 +2,6 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { useEffect, useState } from "react";
 import { GOOGLE_MAPS_CONFIG, LIBRARIES } from "../commons/GoogleMapsConfig";
 
-/* const LIBRARIES = ["places"]; */
-
 const GoogleMapView = ({ projects }) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: GOOGLE_MAPS_CONFIG.apiKey,
