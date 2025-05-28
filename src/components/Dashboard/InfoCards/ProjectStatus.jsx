@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Card } from "react-bootstrap";
 import { VscGraph } from "react-icons/vsc";
 import { useSelector } from "react-redux";
-import { getToken } from "../../redux/utils/authUtils";
+import { getToken } from "../../../redux/utils/authUtils";
 
 const ProjectStatus = () => {
   // “Iniziati” viene dal Redux store

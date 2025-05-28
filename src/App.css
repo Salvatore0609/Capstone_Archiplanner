@@ -16,7 +16,7 @@ html {
 body {
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 1rem; /* rimane per desktop, verrà compensato in .main-dashboard */
   position: relative;
   min-height: 100vh;
   background: url("/assets/background1.png") no-repeat center center, linear-gradient(0deg, rgba(198, 155, 123, 1) 0%, rgba(255, 255, 255, 1) 100%);
@@ -51,6 +51,10 @@ body {
 /*===============================*/
 .main-dashboard {
   position: relative;
+  /* Compensa il padding di body, così i contenuti arrivano a filo */
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 3.5rem;
 }
 
 /*===============================*/
@@ -74,7 +78,7 @@ button {
   background-color: #ffffff;
   box-shadow: 0px 5px 25px 2px #00000030;
   color: #ababab;
-  border-radius: 20px;
+  border-radius: 50px;
   padding: 1em;
   font-size: 0.8rem;
   font-weight: 500;
@@ -83,7 +87,6 @@ button {
   justify-content: space-between;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  border-radius: 50px;
 }
 
 .boolean-pill.unchecked .circle {
@@ -116,7 +119,6 @@ button {
 /*===============================*/
 /*        CAROUSEL               */
 /*===============================*/
-
 .carousel-wrapper {
   position: relative;
   top: 35%;
@@ -148,10 +150,9 @@ button {
   box-shadow: 0px 4px 25px 2px rgba(0, 0, 0, 0.188);
   border-radius: 25px;
   height: calc(100vh - 2rem);
-  position: relative;
+  position: fixed;
   overflow: visible;
   transition: all 0.3s ease;
-  position: fixed;
   z-index: 1000;
 }
 
@@ -161,7 +162,6 @@ button {
 
 .sidebar.sidebar-expanded {
   width: 250px;
-  z-index: 1000;
 }
 
 .sidebar a {
@@ -385,14 +385,7 @@ button {
   color: #7a6c5f;
 }
 
-.pinBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-}
+.pinBtn,
 .editBtn {
   background: none;
   border: none;
@@ -401,6 +394,7 @@ button {
   display: flex;
   align-items: center;
 }
+
 .deleteProjectBtn {
   background-color: #c67b7b;
   border-radius: 50px;
@@ -517,10 +511,33 @@ button {
   z-index: 5;
 }
 
+/* Altezza adattiva della mappa */
 .map-container {
   width: 100%;
-  min-height: 400px;
+  min-height: 350px;
   border-radius: 15px;
+  overflow: hidden;
+}
+
+@media (max-width: 992px) {
+  /* schermi < 992px (tablet medi) */
+  .map-container {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* schermi < 768px (tablet piccoli) */
+  .map-container {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 576px) {
+  /* schermi < 576px (telefono) */
+  .map-container {
+    min-height: 180px;
+  }
 }
 
 /*===============================*/
@@ -568,6 +585,7 @@ button {
   background-color: rgba(0, 128, 0, 0.107) !important;
 }
 
+/* Pulsante + del calendario */
 .button-plus {
   bottom: 30px;
   right: 30px;
@@ -599,8 +617,6 @@ button {
 }
 
 .task-label-pill {
-  /* background-color: #ffffff; */
-  /* box-shadow: 0px 5px 25px 2px #00000030; */
   color: black;
   border-radius: 20px;
   padding: 0.8em;
@@ -610,6 +626,13 @@ button {
 }
 
 .avatar-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #c69b7b;
+}
+.avatar-image-sidebar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -673,9 +696,7 @@ button {
 /*===============================*/
 /*        RESPONSIVE             */
 /*===============================*/
-/* =============================== */
-/*   FINO A 1200px DI LARGHEZZA    */
-/* =============================== */
+/* ========== Fino a 1200px ========== */
 @media (max-width: 1200px) {
   .sidebar.sidebar-expanded + .floating-cards-container {
     left: 270px;
@@ -685,13 +706,34 @@ button {
   }
 }
 
-/* =============================== */
-/*   FINO A 768px DI LARGHEZZA     */
-/* =============================== */
+/* ========== Fino a 768px (tablet piccoli) ========== */
 @media (max-width: 768px) {
   body {
-    padding: 0.5rem;
+    padding: 0.5rem; /* meno padding laterale */
   }
+
+  .carousel-wrapper {
+    top: 20%;
+    height: calc(100vh - 25rem);
+  }
+
+  /* Riduci padding delle card */
+  .status-card .card-body,
+  .countdown-box .card-body {
+    padding: 0.75rem !important;
+  }
+
+  /* Countdown timer più piccolo */
+  .countdown-timer {
+    font-size: 3rem;
+  }
+
+  /* Mappa un po’ più bassa */
+  .map-container {
+    min-height: 250px;
+  }
+
+  /* Sidebar compatta su tablet */
   .sidebar {
     width: 80px;
   }
@@ -704,56 +746,88 @@ button {
   }
 }
 
-/* =============================== */
-/*   FINO A 576px DI LARGHEZZA     */
-/* =============================== */
+/* ========== Fino a 576px (mobile) ========== */
 @media (max-width: 576px) {
+  body {
+    padding: 0.5rem;
+  }
+  .avatar-image-sidebar {
+    display: none;
+  }
+
+  .carousel-wrapper {
+    top: 10%;
+    height: calc(100vh - 20rem);
+  }
+
+  /* Riduco ancora i padding delle card */
+  .status-card .card-body,
+  .countdown-box .card-body {
+    padding: 0.5rem !important;
+  }
+
+  /* Titoli delle card e mappa più piccoli */
+  .status-card .fs-5,
+  .countdown-label,
+  .map-header h5 {
+    font-size: 1rem;
+  }
+
+  /* Countdown timer molto più compatto */
   .countdown-timer {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
+  /* Mappa height ridotta su telefono */
   .map-container {
-    min-height: 150px;
+    min-height: 250px;
   }
 
+  /* Nascondo la search-bar */
   .search-bar {
     display: none;
   }
 
-  @media (max-width: 576px) {
-    .sidebar {
-      transform: translateX(-100%);
-      position: fixed;
-      left: 0;
-      top: 0;
-      height: 100vh;
-      width: 100px;
-      transition: transform 0.3s ease-in-out;
-      z-index: 1050;
-    }
-
-    .sidebar.sidebar-visible {
-      transform: translateX(0);
-    }
-
-    .sidebar-toggle {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 1100;
-    }
+  /* Sidebar a scomparsa su mobile */
+  .sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100px;
+    transition: transform 0.3s ease-in-out;
+    z-index: 1050;
+  }
+  .sidebar.sidebar-visible {
+    transform: translateX(0);
+  }
+  .sidebar-toggle {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1100;
+  }
+  .toggle-shifted {
+    left: 110px;
   }
 
+  .phases-list-number {
+    font-size: 3rem;
+  }
+
+  /* Rimuovo ombre e margini extra dalle card */
   .card {
-    box-shadow: 0px 0px 0px 0px #00000000;
+    box-shadow: none;
     margin-top: 0.3em;
   }
 
   .boolean-pill {
     padding: 1em;
-    font-size: 0rem;
+    font-size: 0.8rem;
     font-weight: 500;
   }
+
   .deleteProjectBtn {
     padding: 0.5em;
     font-size: 0.8rem;

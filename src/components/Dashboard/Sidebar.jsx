@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addProject, fetchProjects } from "../../redux/action/projectsActions";
 import GoogleMapView from "../commons/GoogleMapView";
 import { getToken } from "../../redux/utils/authUtils";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const Sidebar = () => {
   // Stati per la UI
@@ -157,8 +158,8 @@ const Sidebar = () => {
     <>
       {/* ─────────────────────────────────────── SIDEBAR ─────────────────────────────────────── */}
       {isMobile && (
-        <button onClick={toggleSidebar} className="sidebar-toggle btn btn-link p-1">
-          {isMobileSidebarOpen ? <FaTimes size={25} /> : <FiSidebar size={25} />}
+        <button onClick={toggleSidebar} className={`sidebar-toggle btn btn-link p-1 ${isMobileSidebarOpen ? "toggle-shifted" : ""}`}>
+          <GiHamburgerMenu size={20} />
         </button>
       )}
       <div
@@ -175,7 +176,7 @@ const Sidebar = () => {
         {/*  */}
         <Nav className="flex-column text-center w-100">
           {/* Logo che rimanda a /dashboard */}
-          <Link to="/dashboard" className="text-decoration-none p-0">
+          <Link to="/dashboard" className="text-decoration-none">
             <Image src="../assets/logo1.jpg" alt="logo" roundedCircle fluid className="h-50" />
           </Link>
 
@@ -249,17 +250,10 @@ const Sidebar = () => {
             <img
               src={avatarUrl}
               alt="Avatar"
-              className="avatar-image"
+              className="avatar-image-sidebar"
               onError={(e) => {
                 setLocalAvatarError(true);
                 e.target.onerror = null;
-              }}
-              style={{
-                width: "40px",
-                height: "40px",
-                objectFit: "cover",
-                borderRadius: "50%",
-                border: "2px solid #C69B7B",
               }}
             />
           )}
@@ -412,10 +406,10 @@ const Sidebar = () => {
                 >
                   <Card.Body>
                     <Row className="align-items-center">
-                      <Col xs={4} md={2}>
+                      <Col xs={2} md={2}>
                         <Card.Title className="project-list-number">{idx + 1}</Card.Title>
                       </Col>
-                      <Col xs={8} md={10}>
+                      <Col xs={10} md={10}>
                         <Card.Subtitle className="text-muted">{proj.nomeProgetto}</Card.Subtitle>
                         <Card.Text className="text-secondary">{proj.indirizzo}</Card.Text>
                       </Col>
@@ -446,10 +440,10 @@ const Sidebar = () => {
               <Card className="floating-card mb-3">
                 <Card.Body>
                   <Row className="align-items-center">
-                    <Col md={2}>
+                    <Col xs={2} md={2}>
                       <Card.Title className="phases-list-number">{fase.num}</Card.Title>
                     </Col>
-                    <Col md={10}>
+                    <Col xs={10} md={10}>
                       <Card.Subtitle className="mb-2 text-muted">{fase.titolo}</Card.Subtitle>
                     </Col>
                   </Row>

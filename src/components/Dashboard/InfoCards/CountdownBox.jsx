@@ -69,18 +69,18 @@ const CountdownBox = () => {
   }
 
   return (
-    <Card className="countdown-box p-2">
+    <Card className="countdown-box h-100">
       <Card.Body>
         <Card.Title className="countdown-label">
-          <Col md={12} className="d-flex align-items-center">
-            <p className="m-0" style={{ color: "#C69B7B", fontWeight: "bold" }}>
+          <Col md={12} className="d-flex align-items-center" style={{ paddingBottom: "1em" }}>
+            <p className="m-0 fs-6 fw-bold" style={{ color: "#C69B7B" }}>
               Prossimo caffè alle {nextBreak.targetTime}
             </p>
             <FiCoffee size={25} color="#C69B7B" className="ms-auto" />
           </Col>
         </Card.Title>
 
-        <div className="countdown-timer text-center fs-4 fw-bold">
+        <div className="countdown-timer text-center fs-3 fw-bold">
           <span className="time-segment">{nextBreak.hours}</span>
           <span className="time-separator mx-1">:</span>
           <span className="time-segment">{nextBreak.minutes}</span>

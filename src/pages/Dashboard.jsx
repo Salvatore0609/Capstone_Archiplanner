@@ -1,13 +1,12 @@
 import { Carousel, Col, Container, Row } from "react-bootstrap";
 import Sidebar from "../components/Dashboard/Sidebar";
 import Topbar from "../components/Dashboard/Topbar";
-import ProjectStatus from "../components/Dashboard/ProjectStatus";
-import CountdownBox from "../components/Dashboard/CountdownBox";
 import ProjectMap from "../components/Dashboard/ProjectMap";
 import PersonalyCalendar from "../components/Dashboard/PersonalyCalendar";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import DashboardInfoCards from "../components/Dashboard/DashboardInfoCards";
 
 const Dashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -42,25 +41,18 @@ const Dashboard = () => {
         <Col sm={12} className="main-dashboard">
           <Topbar />
 
-          {/* WRAPPER che dà altezza fissa e centra il Carousel */}
           <div className="carousel-wrapper">
             <Carousel activeIndex={activeIndex} onSelect={changeSlide} controls={false} indicators={false} interval={null}>
               {/* Slide 1 */}
               <Carousel.Item>
-                {/* RIGA 1: ProjectStatus + CountdownBox */}
-                <Row className="justify-content-center align-items-center">
-                  <Col md={3}>
-                    <ProjectStatus />
-                  </Col>
-                  <Col md={3}>
-                    <CountdownBox />
-                  </Col>
-                </Row>
-
-                {/* RIGA 2: ProjectMap */}
-                <Row className="mt-4 justify-content-center">
-                  <Col md={6}>
-                    <ProjectMap projects={projectLocations} />
+                <Row className="justify-content-center">
+                  <Col xs={12} md={6} className="px-0">
+                    <div className="d-flex flex-column gap-4 w-100">
+                      <DashboardInfoCards />
+                      <div className="w-100 map-wrapper">
+                        <ProjectMap projects={projectLocations} />
+                      </div>
+                    </div>
                   </Col>
                 </Row>
               </Carousel.Item>
@@ -76,7 +68,7 @@ const Dashboard = () => {
             </Carousel>
           </div>
 
-          {/* Frecce posizionate con assoluto rispetto a .main-dashboard */}
+          {/* Frecce navigazione */}
           <div className="carousel-arrow">
             {activeIndex > 0 && (
               <button onClick={() => changeSlide(activeIndex - 1)} className="carousel-control" aria-label="Previous">
