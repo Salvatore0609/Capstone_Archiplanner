@@ -257,7 +257,7 @@ const PersonalyCalendar = ({ refreshKey }) => {
   };
 
   return (
-    <Container fluid>
+    <Container fluid className="p-0">
       <Card className="bg-transparent glass-card">
         <Card.Body className="bg-transparent">
           <div className="d-flex justify-content-between align-items-center mb-3">

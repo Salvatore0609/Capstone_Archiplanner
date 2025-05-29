@@ -46,7 +46,7 @@ const Dashboard = () => {
               {/* Slide 1 */}
               <Carousel.Item>
                 <Row className="justify-content-center">
-                  <Col xs={12} md={6} className="px-0">
+                  <Col xs={12} md={6}>
                     <div className="d-flex flex-column gap-4 w-100">
                       <DashboardInfoCards />
                       <div className="w-100 map-wrapper">
