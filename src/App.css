@@ -388,18 +388,24 @@ button {
 .pinBtn,
 .editBtn {
   background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+.pinBtn:hover,
+.editBtn:hover {
+  background-color: #d9d9d9;
+  cursor: pointer;
 }
 
 .deleteProjectBtn {
   background-color: #c67b7b;
   border-radius: 50px;
   border-color: #c67b7b;
-  padding: 1em;
+  padding: 0.8rem;
 }
 
 /*===============================*/
@@ -752,11 +758,6 @@ button {
     padding: 0.5rem;
   }
 
-  .main-dashboard {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-
   .avatar-image-sidebar {
     display: none;
   }
@@ -764,8 +765,8 @@ button {
   .carousel-wrapper {
     top: 10%;
     height: calc(100vh - 20rem);
-    /*  padding-left: 4rem;
-    padding-right: 4rem; */
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 
   /* Riduco ancora i padding delle card */
@@ -830,14 +831,14 @@ button {
     margin-top: 0.3em;
   }
 
-  .boolean-pill {
-    padding: 1em;
-    font-size: 0.8rem;
-    font-weight: 500;
+  .boolean-pill.unchecked .circle {
+    margin: 0;
   }
 
   .deleteProjectBtn {
-    padding: 0.5em;
-    font-size: 0.8rem;
+    background-color: transparent;
+    color: #c67b7b;
+    border-radius: 50%;
+    padding: 0;
   }
 }

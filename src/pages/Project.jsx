@@ -19,7 +19,7 @@ import { phase6Tasks as p6 } from "../components/StepsProject/phase6Tasks";
 import BooleanPill from "../components/commons/BooleanPill";
 
 // Import icone pin
-import { TiPinOutline, TiPin } from "react-icons/ti";
+import { TiPinOutline, TiPin, TiDelete } from "react-icons/ti";
 
 const Project = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -243,11 +243,11 @@ const Project = () => {
                   </Button>
 
                   {/* BooleanPill per “Completato” */}
-                  <BooleanPill label="Completato" checked={checked} onChange={handleToggle} />
-
+                  <BooleanPill label={<span className="d-none d-md-inline">Completato</span>} checked={checked} onChange={handleToggle} />
                   {/* Bottone “Elimina progetto” */}
-                  <Button size="sm" onClick={handleDeleteProject} className="deleteProjectBtn">
-                    Elimina progetto
+                  <Button onClick={handleDeleteProject} className="deleteProjectBtn">
+                    <span className="d-none d-md-inline">Elimina progetto</span>
+                    <TiDelete size={40} className="d-inline d-md-none" />
                   </Button>
                 </div>
               </div>
@@ -279,13 +279,15 @@ const Project = () => {
             {/* ──────────────────────────────────────────────────────────── */}
 
             <Card className="map-card">
-              <Card.Header className="map-header d-flex flex-column" style={{ color: "#C69B7B" }}>
-                <div className="d-flex justify-content-between align-items-center">
-                  <h5 className="me-auto">Area Progetto</h5>
-                  <FaRegMap size={25} style={{ color: "#C69B7B" }} />
+              <div style={{ border: "5px solid rgb(255, 255, 255)", borderRadius: "20px" }} className="p-2 pt-0 bg-white m-0">
+                <div className="d-flex justify-content-between align-items-center border-0">
+                  <h5 style={{ color: "#C69B7B" }} className="m-2">
+                    Aree Progetti
+                  </h5>
+                  <FaRegMap size={25} style={{ color: "#C69B7B" }} className="me-auto" />
                 </div>
                 <GoogleMapView projects={[project]} />
-              </Card.Header>
+              </div>
             </Card>
 
             <Card className="card mt-4">
