@@ -115,7 +115,7 @@ function Register({ show, onClose }) {
               </FormGroup>
 
               <FormGroup className="mb-3">
-                <Form.Label>Nome Compagnia</Form.Label>
+                <Form.Label>Società</Form.Label>
                 <Form.Control name="nomeCompagnia" />
               </FormGroup>
 

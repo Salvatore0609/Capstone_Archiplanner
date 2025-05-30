@@ -20,6 +20,7 @@ import BooleanPill from "../components/commons/BooleanPill";
 
 // Import icone pin
 import { TiPinOutline, TiPin, TiDelete } from "react-icons/ti";
+import { IoMdDownload } from "react-icons/io";
 
 const Project = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -323,15 +324,16 @@ const Project = () => {
                                   <Button
                                     size="sm"
                                     variant="link"
+                                    className="fw-bold"
                                     style={{
-                                      color: "#C69B7B",
+                                      color: "#7BADC6",
                                       textDecoration: "none",
                                     }}
                                     onClick={() => {
                                       handleDownload(sd.fileUrl, sd.fileName);
                                     }}
                                   >
-                                    {sd.fileName}
+                                    {sd.fileName} <IoMdDownload size={20} />
                                   </Button>
                                 </div>
                               ) : (

@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, ListGroup, Form } from "react-bootstrap";
+import { Button, Card, ListGroup, Form, Modal } from "react-bootstrap";
 import { fetchStepDataByProject, saveStepData, uploadStepFile } from "../../redux/action/stepDataActions";
 import BooleanPill from "../commons/BooleanPill";
 import { getToken } from "../../redux/utils/authUtils";
+import { IoMdDownload } from "react-icons/io";
 
 // #region renderParametri
 const renderParametri = (parametri) => {
@@ -122,6 +123,19 @@ const TaskCard = ({ task, project, phase }) => {
   const [localData, setLocalData] = useState({});
   const [activeModalStep, setActiveModalStep] = useState(null);
   const [modalTextareaValue, setModalTextareaValue] = useState("");
+  const [pdfPreview, setPdfPreview] = useState({
+    show: false,
+    url: null,
+    fileName: "",
+  });
+
+  // Nuovo stato per l'anteprima DWG
+  /* const [dwgLoading, setDwgLoading] = useState(false);
+  const [dwgPreview, setDwgPreview] = useState({
+    show: false,
+    url: null,
+    fileName: "",
+  }); */
 
   // elenco dei titoli + id degli articoli
   // ogni elemento: { id: <numero>, titolo: <string> }
@@ -272,6 +286,42 @@ const TaskCard = ({ task, project, phase }) => {
         alert("Errore durante l'upload del file.");
       });
   };
+
+  // Apre l'anteprima PDF utilizzando Google Docs Viewer
+  const openPdfPreview = (fileUrl, fileName) => {
+    setPdfPreview({
+      show: true,
+      url: fileUrl,
+      fileName: fileName,
+    });
+  };
+
+  // Chiude l'anteprima PDF
+  const closePdfPreview = () => {
+    setPdfPreview({
+      show: false,
+      url: null,
+      fileName: "",
+    });
+  };
+
+  // Apre l'anteprima DWG utilizzando Google Drive Viewer
+  /* const openDwgPreview = (fileUrl, fileName) => {
+    setDwgPreview({
+      show: true,
+      url: fileUrl,
+      fileName: fileName,
+    });
+  }; */
+
+  // Chiude l'anteprima DWG
+  /* const closeDwgPreview = () => {
+    setDwgPreview({
+      show: false,
+      url: null,
+      fileName: "",
+    });
+  }; */
 
   return (
     <>
@@ -429,9 +479,55 @@ const TaskCard = ({ task, project, phase }) => {
 
                     {/* ------------ FILE UPLOAD ------------ */}
                     {step.type.includes("file") && (
-                      <div className="d-flex flex-column align-items-start">
+                      <div className="d-flex align-items-center gap-2">
+                        {/* File name display - appears to the left of the button */}
+                        {savedData.fileName && (
+                          <div className="d-flex align-items-center gap-2">
+                            {savedData.fileUrl ? (
+                              <>
+                                <a
+                                  href={savedData.fileUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="fw-bold text-decoration-none"
+                                  style={{ color: "#7BADC6" }}
+                                >
+                                  {savedData.fileName}
+                                </a>
+
+                                {/* Pulsante Anteprima PDF */}
+                                {savedData.fileName.toLowerCase().endsWith(".pdf") && (
+                                  <Button
+                                    variant="link"
+                                    size="sm"
+                                    className="text-secondary p-0 ms-2"
+                                    onClick={() => openPdfPreview(savedData.fileUrl, savedData.fileName)}
+                                  >
+                                    Anteprima
+                                  </Button>
+                                )}
+
+                                {/* Pulsante Anteprima DWG */}
+                                {savedData.fileName.toLowerCase().endsWith(".dwg") && (
+                                  <Button
+                                    variant="link"
+                                    size="sm"
+                                    className="text-secondary p-0 ms-2"
+                                    /* onClick={() => openDwgPreview(savedData.fileUrl, savedData.fileName)} */
+                                  >
+                                    Anteprima
+                                  </Button>
+                                )}
+                              </>
+                            ) : (
+                              <small className="text-success text-decoration-none">{savedData.fileName}</small>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Button with fixed text "Carica file" */}
                         <Form.Label className="botton-file btn btn-sm">
-                          Scegli file
+                          Carica file
                           <Form.Control
                             type="file"
                             accept={step.accept}
@@ -442,17 +538,6 @@ const TaskCard = ({ task, project, phase }) => {
                             style={{ display: "none" }}
                           />
                         </Form.Label>
-                        {savedData.fileName && (
-                          <div className="d-flex align-items-center gap-2">
-                            {savedData.fileUrl ? (
-                              <a href={savedData.fileUrl} target="_blank" rel="noopener noreferrer" className="text-success">
-                                {savedData.fileName}
-                              </a>
-                            ) : (
-                              <small className="text-success">{savedData.fileName}</small>
-                            )}
-                          </div>
-                        )}
                       </div>
                     )}
 
@@ -524,6 +609,68 @@ const TaskCard = ({ task, project, phase }) => {
           </div>
         </div>
       )}
+
+      {/* Modal per anteprima PDF con Google Docs Viewer */}
+      <Modal show={pdfPreview.show} onHide={closePdfPreview} size="xl" centered className="d-flex">
+        <Modal.Header closeButton>
+          <Modal.Title>Anteprima PDF: {pdfPreview.fileName}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div style={{ height: "70vh", width: "100%" }}>
+            <iframe
+              title="pdf-preview"
+              src={`https://docs.google.com/gview?url=${encodeURIComponent(pdfPreview.url || "")}&embedded=true`}
+              width="100%"
+              height="100%"
+              style={{ border: "none" }}
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closePdfPreview}>
+            Chiudi
+          </Button>
+          <Button variant="primary" href={pdfPreview.url} download>
+            <IoMdDownload className="me-1" /> Scarica
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal per anteprima DWG */}
+      {/* <Modal show={dwgPreview.show} onHide={closeDwgPreview} size="xl" centered className="d-flex">
+        <Modal.Header closeButton>
+          <Modal.Title>Anteprima DWG: {dwgPreview.fileName}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ height: "70vh", padding: 0 }}>
+          {dwgLoading ? (
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "100%" }}>
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Caricamento...</span>
+              </div>
+              <span className="ms-3">Caricamento anteprima DWG...</span>
+            </div>
+          ) : (
+            <iframe
+              title="dwg-preview"
+              loading="lazy"
+              src={`https://web.gstarcad.com/viewer?url=${encodeURIComponent(dwgPreview.url || "")}`}
+              width="100%"
+              height="100%"
+              style={{ border: "none" }}
+              onLoad={() => setDwgLoading(false)}
+              allowFullScreen
+            />
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeDwgPreview}>
+            Chiudi
+          </Button>
+          <Button variant="primary" href={dwgPreview.url} download>
+            <IoMdDownload className="me-1" /> Scarica
+          </Button>
+        </Modal.Footer>
+      </Modal> */}
     </>
   );
 };

@@ -6,10 +6,6 @@ import loginGoogleReducer from "../reducers/LoginGoogleReducer";
 import stepDataReducer from "../reducers/stepDataReducer";
 import { notificationReducer } from "../reducers/NotificationReducer";
 
-const preloadedState = {
-  projects: JSON.parse(localStorage.getItem("projects")) || [],
-};
-
 export const store = configureStore({
   reducer: {
     projects: projectsReducer,
@@ -19,5 +15,4 @@ export const store = configureStore({
     stepData: stepDataReducer,
     notifications: notificationReducer,
   },
-  preloadedState,
 });

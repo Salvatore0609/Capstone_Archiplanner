@@ -261,7 +261,7 @@ const Sidebar = () => {
       </div>
 
       {/* ─────────────────────────────────────── MODAL CREAZIONE PROGETTO ─────────────────────────────────────── */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered className="d-flex">
         <Modal.Header closeButton>
           <Modal.Title>Crea nuovo progetto</Modal.Title>
         </Modal.Header>
