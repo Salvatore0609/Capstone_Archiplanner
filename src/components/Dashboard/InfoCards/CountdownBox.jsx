@@ -69,7 +69,7 @@ const CountdownBox = () => {
   }
 
   return (
-    <Card className="countdown-box h-100">
+    <Card className="h-100">
       <Card.Body>
         <Card.Title className="countdown-label">
           <Col md={12} className="d-flex align-items-center" style={{ paddingBottom: "1em" }}>

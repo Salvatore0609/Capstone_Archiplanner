@@ -1,0 +1,1080 @@
+/*=======================================
+  VARIABILI GLOBALI (per tema/light/dark)
+========================================*/
+:root {
+  /* ─── COLORI BASE ─── */
+  --color-white: #ffffff;
+  --color-gray-light: #ababab;
+  --color-gray-medium: #9a9998;
+  --color-gray-dark: #a89b8f;
+  --color-gray-border: #e0dcd7;
+  --color-gray-hover: #d9d9d9;
+  --color-black-30: rgba(0, 0, 0, 0.3);
+  --color-black-20: rgba(0, 0, 0, 0.2);
+  --color-black-19: rgba(0, 0, 0, 0.188);
+  --color-black-10: rgba(0, 0, 0, 0.1);
+  --color-white-15: rgba(255, 255, 255, 0.15);
+  --color-white-18: rgba(255, 255, 255, 0.18);
+  --color-white-20: rgba(255, 255, 255, 0.2);
+  --color-white-25: rgba(255, 255, 255, 0.25);
+  --color-white-30: rgba(255, 255, 255, 0.3);
+  --color-white-40: rgba(255, 255, 255, 0.4);
+
+  /* ─── PALETTE “BRAND” ─── */
+  --color-bg-gradient-start: rgba(198, 155, 123, 1); /* marrone/rosa chiaro */
+  --color-bg-gradient-end: rgba(255, 255, 255, 1); /* bianco pieno */
+  --color-brand: #c67b7b; /* marrone/rosa medio (bordi, titoli, mappe, chat) */
+  --color-brand-light: #c69b7b;
+
+  /* ─── VARIANTI “AZIONE” ─── */
+  --color-primary: #7bc682; /* verde chiaro (btn) */
+  --color-primary-hover: #629f68; /* verde scuro hover */
+  --color-success: #84c284;
+  --color-success-light: rgba(198, 155, 123, 0.3);
+  --color-success-disabled: rgba(0, 128, 0, 0.107);
+  --color-success-hover: rgba(98, 159, 104, 0.6);
+  --color-warning: #ffbc02;
+  --color-info: #7badc6;
+
+  /* ─── OMBRE ─── */
+  --shadow-xxl: var(--color-black-30);
+  --shadow-xl: var(--color-black-20);
+  --shadow-lg: var(--color-black-19);
+  --shadow-md: var(--color-black-10);
+
+  /* ─── SCROLLBAR ─── */
+  --color-scrollbar-thumb: #0000004a;
+
+  /* ─── SFONDI SECONDARI ─── */
+  --color-sidebar-bg: var(--color-white);
+  --color-topbar-bg: var(--color-white);
+  --color-card-bg: var(--color-white);
+}
+
+/*================================
+  OVERRIDE PER DARK MODE
+=================================*/
+html.dark-mode {
+  /* ─── SFONDO “PRINCIPALE” (intera pagina) ─── */
+  --color-bg-gradient-start: #030d10; /* verde-blu scuro preso dal logo */
+  --color-bg-gradient-end: #072028; /* uniforme */
+
+  /* ─── COLORI “CHIARO” (elementi in contrasto) ─── */
+  --color-white: #ffffff; /* dorato/giallo scuro */
+  --color-brand: #c49c37; /* accenti titoli, mappe, chat */
+  --color-brand-light: #c49c37;
+
+  /* ─── VARIANTI “AZIONE” IN DARK ─── */
+  --color-primary: #c49c37; /* bottone primario in dark */
+  --color-primary-hover: #b08f33;
+  --color-success: #c49c37; /* BooleanPill.checked in dark */
+  --color-success-light: rgba(196, 156, 55, 0.3);
+  --color-success-disabled: rgba(196, 156, 55, 0.15);
+  --color-success-hover: rgba(196, 156, 55, 0.6);
+  --color-warning: #c49c37;
+  --color-info: #c49c37;
+
+  /* ─── GRIGI E NERI DA SCURIRE ─── */
+  --color-gray-light: #4f5a61;
+  --color-gray-medium: #3b444b;
+  --color-gray-dark: #2d353c;
+  --color-gray-border: #1f282f;
+  --color-gray-hover: #354049;
+
+  /* ─── OMBRE IN DARK ─── */
+  --shadow-xxl: var(--color-black-30);
+  --shadow-xl: var(--color-black-20);
+  --shadow-lg: var(--color-black-19);
+  --shadow-md: var(--color-black-10);
+
+  /* ─── SCROLLBAR IN DARK ─── */
+  --color-scrollbar-thumb: #444;
+
+  /* ─── SFONDI SECONDARI IN DARK ─── */
+  --color-sidebar-bg: #072028; /* verde-blu scuro */
+  --color-topbar-bg: #072028; /* verde-blu scuro */
+  --color-card-bg: rgb(14, 59, 74); /* vetro-blu scuro semitrasparente */
+}
+
+/* Dark mode: fondo body senza immagine */
+html.dark-mode body {
+  background: linear-gradient(0deg, var(--color-bg-gradient-start) 0%, var(--color-bg-gradient-end) 100%);
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+}
+
+/* Dark mode: testo evidenziato in Project Status */
+html.dark-mode .status-card p,
+html.dark-mode .status-card small {
+  color: var(--color-brand);
+}
+
+/* Dark mode: FullCalendar axis e slot label */
+html.dark-mode .fc .fc-timegrid-axis-cushion,
+html.dark-mode .fc .fc-timegrid-slot-label-cushion {
+  font-weight: 500;
+  color: var(--color-brand);
+}
+
+/* Dark mode: modal overrides */
+html.dark-mode .modal-content {
+  background-color: var(--color-card-bg);
+  color: var(--color-white);
+}
+html.dark-mode .modal-header {
+  border-bottom-color: var(--color-brand);
+}
+html.dark-mode .modal-title {
+  color: var(--color-brand);
+}
+html.dark-mode .modal-body .form-label {
+  color: #000; /* etichette sempre nere */
+}
+html.dark-mode .modal-body .form-control {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-gray-border);
+  color: #000; /* testo sempre nero */
+}
+html.dark-mode .modal-body .form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem rgba(196, 156, 55, 0.25);
+}
+html.dark-mode .modal-footer {
+  border-top-color: var(--color-gray-border);
+}
+html.dark-mode .modal-footer .btn-danger,
+html.dark-mode .modal-footer .btn[data-style="delete"] {
+  background-color: var(--color-brand);
+  color: var(--color-white);
+}
+html.dark-mode .modal-footer .btn-primary,
+html.dark-mode .modal-footer .btn[data-style="save"] {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+/*=============================
+  STYLE GENERALE (reset)
+==============================*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 1rem;
+  position: relative;
+  min-height: 100vh;
+  background: url("/assets/background1.png") no-repeat center center,
+    linear-gradient(0deg, var(--color-bg-gradient-start) 0%, var(--color-bg-gradient-end) 100%);
+  background-size: auto 30%, cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center bottom, center bottom;
+}
+
+/*=============================
+  SCROLLBAR
+==============================*/
+*::-webkit-scrollbar-track,
+::-webkit-scrollbar-track {
+  display: none;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar-thumb);
+  border-radius: 25px;
+}
+
+/*=============================
+  OVERRIDE SWITCH PER ICONA INTERNA
+==============================*/
+.dark-switch .form-check-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  top: 3px;
+  width: 3rem;
+  height: 1.5rem;
+  background-color: var(--color-gray-hover);
+  border: none;
+  border-radius: 1.5rem;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.dark-switch .form-check-input:checked {
+  border: none;
+}
+.dark-switch .form-check-input::before {
+  position: absolute;
+  border-radius: 50%;
+  border: none;
+  transition: transform 0.3s ease, background-image 0.3s ease;
+}
+.dark-switch .form-check-input:checked::before {
+  transform: translateX(1.5rem);
+}
+.dark-switch .form-check-input:focus,
+.dark-switch .form-check-input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.dark-switch .form-check-label {
+  margin-left: 0.5rem;
+  font-size: 0;
+}
+
+/*=============================
+  LAYOUT CONTAINERS
+==============================*/
+.main-dashboard {
+  position: relative;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 3.5rem;
+}
+
+/*=============================
+  COMPONENTI BASE
+==============================*/
+.card {
+  border-radius: 15px;
+  background: var(--color-card-bg);
+  box-shadow: 0px 10px 25px 1px var(--shadow-xxl);
+  backdrop-filter: none;
+}
+
+a,
+a:hover,
+button {
+  transition: color 0.2s, background-color 0.2s;
+}
+
+/*=============================
+  BOOLEAN PILL
+==============================*/
+.boolean-pill {
+  background-color: var(--color-white);
+  box-shadow: 0px 5px 25px 2px var(--shadow-xxl);
+  color: var(--color-gray-light);
+  border-radius: 50px;
+  padding: 1em;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.boolean-pill.unchecked .circle {
+  border: 2px solid #84c284;
+  background-color: var(--color-white);
+  margin-left: 1em;
+}
+.boolean-pill.checked {
+  background-color: #84c284;
+  color: var(--color-white);
+}
+.boolean-pill.checked .circle {
+  background-color: var(--color-white);
+  color: #84c284;
+  border: none;
+  margin-left: 1em;
+}
+.boolean-pill .circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*=============================
+  CAROUSEL
+==============================*/
+.carousel-wrapper {
+  position: relative;
+  top: 35%;
+  height: calc(100vh - 35rem);
+}
+.carousel-arrow {
+  position: fixed;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 10px;
+}
+.carousel-control {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  color: var(--color-brand-light);
+}
+
+/*=============================
+  SIDEBAR
+==============================*/
+.sidebar {
+  background: var(--color-sidebar-bg);
+  box-shadow: 0px 4px 25px 2px var(--shadow-lg);
+  border-radius: 25px;
+  height: calc(100vh - 2rem);
+  position: fixed;
+  overflow: visible;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+.sidebar.sidebar-collapsed {
+  width: 90px;
+}
+.sidebar.sidebar-expanded {
+  width: 250px;
+}
+.sidebar a {
+  color: var(--color-brand);
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem 0;
+  font-size: 1.4rem;
+}
+.icon-hover {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+.icon-hover:hover {
+  background-color: var(--color-gray-hover);
+}
+.sidebar-expanded .nav-link:hover span {
+  text-decoration: underline;
+}
+.sidebar-expanded .nav-link span {
+  color: var(--color-gray-light);
+  font-weight: 600;
+  transition: text-decoration 0.2s ease;
+}
+.sidebar-toggle {
+  position: absolute;
+  right: -50px;
+  top: 25px;
+  z-index: 1000;
+  background: var(--color-white-30);
+  color: var(--color-bg-gradient-start);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px var(--shadow-md);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-white-40);
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.sidebar-toggle:hover {
+  transform: scale(1.1);
+  color: var(--color-bg-gradient-start);
+  border: none;
+  box-shadow: 0 4px 12px var(--shadow-md);
+}
+.sidebar-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(198, 155, 123, 0.5);
+}
+
+/*=============================
+  MODALI & CARD
+==============================*/
+.modal-dialog {
+  width: 100%;
+}
+.modal-header {
+  border-bottom: 2px solid var(--color-brand);
+}
+.modal-title {
+  color: var(--color-gray-dark);
+  font-weight: 600;
+}
+.btn-primary {
+  background-color: #7bc682;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+.floating-cards-container {
+  position: fixed;
+  overflow: auto;
+  left: 130px;
+  top: 120px;
+  bottom: 20px;
+  width: 300px;
+  z-index: 1000;
+  padding: 1em;
+  border-radius: 15px;
+  box-shadow: 0 0 20px var(--shadow-md);
+  backdrop-filter: blur(8px);
+  animation: slideIn 0.3s ease-out;
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.floating-cards-container .btn-close {
+  top: 5px;
+  right: 5px;
+  position: absolute;
+  background: transparent;
+  z-index: 1000;
+}
+.floating-card {
+  background: var(--color-card-bg);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px var(--shadow-md);
+  border: none;
+  transition: transform 0.3s ease;
+  backdrop-filter: none;
+}
+.floating-card:hover {
+  transform: translateX(-5px);
+  cursor: pointer;
+}
+.sidebar-expanded + .floating-cards-container {
+  left: 290px;
+}
+
+/*=============================
+  TOPBAR
+==============================*/
+.topbar {
+  background: var(--color-topbar-bg);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 4px var(--shadow-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+}
+.search-bar {
+  border: 1px solid var(--color-gray-border);
+  border-radius: 25px;
+  padding: 0.5rem;
+}
+.dropdown-search {
+  z-index: 1000;
+  position: absolute;
+  width: 50%;
+  height: auto;
+  overflow-y: auto;
+  backdrop-filter: blur(5px);
+  border-radius: 10px;
+  box-shadow: 0px 5px 25px 2px var(--shadow-xxl);
+  padding: 0.5rem;
+  margin-top: 1rem;
+}
+.dropdown-search div:hover p {
+  background-color: #9a99987e;
+  color: #ffffff;
+  cursor: pointer;
+}
+.search-bar input {
+  border: none;
+  border-radius: 25px;
+  background-color: transparent;
+}
+.user-info span {
+  font-weight: 500;
+  color: var(--color-gray-dark);
+}
+#user-dropdown-toggle::after {
+  display: none;
+}
+
+/*=============================
+  PROGETTI & STATI
+==============================*/
+.project-status .status-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-border);
+}
+.project-status .status-card:hover {
+  transform: translateY(-5px);
+}
+.status-count {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--color-gray-dark);
+}
+.status-label {
+  font-size: 1rem;
+  color: var(--color-gray-medium);
+}
+.pinBtn,
+.editBtn {
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+}
+.pinBtn:hover,
+.editBtn:hover {
+  background-color: var(--color-gray-hover);
+  cursor: pointer;
+}
+.deleteProjectBtn {
+  background-color: #c67b7b;
+  border-radius: 50px;
+  border-color: #c67b7b;
+  padding: 0.8rem;
+  box-shadow: 0px 5px 15px var(--shadow-xl);
+}
+.deleteProjectBtn:hover {
+  background-color: #c67b7b;
+}
+
+/*=============================
+  TIMER CAFFÈ
+==============================*/
+.countdown-box {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-border);
+}
+.countdown-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-gray-dark);
+  margin-bottom: 0.5rem;
+}
+.countdown-timer {
+  font-size: 4rem;
+  font-weight: bold;
+}
+.time-segment {
+  background-image: linear-gradient(180deg, var(--color-bg-gradient-start) 0%, var(--color-brand-light) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.time-separator {
+  margin: 0 0.25rem;
+  background-image: linear-gradient(0deg, var(--color-bg-gradient-start) 0%, var(--color-brand-light) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/*=============================
+  CHAT
+==============================*/
+.chat-widget {
+  background: var(--color-white-25);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-white-18);
+  border-radius: 1rem;
+  position: relative;
+  z-index: 1;
+  padding: 1rem;
+}
+.chat-list {
+  max-height: 250px;
+  overflow-y: auto;
+}
+.message-content {
+  background: var(--color-brand);
+  border: none;
+  border-radius: 10px;
+  padding: 0.5em;
+  max-width: 70%;
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--color-white);
+  margin-top: 0.3rem;
+}
+.message-user {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-gray-medium);
+  margin-bottom: 0.2rem;
+  margin-top: 0.5rem;
+}
+.message-time {
+  font-size: 0.7rem;
+  color: var(--color-gray-dark);
+  font-style: italic;
+  position: absolute;
+  bottom: 0.2rem;
+  right: 0.5rem;
+}
+.chat-input-wrapper {
+  background: transparent;
+}
+.chat-input-wrapper button {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--color-brand);
+}
+
+/*=============================
+  MAPPE
+==============================*/
+/* Titolo della mappa */
+.map-header {
+  font-weight: 500;
+  color: var(--color-brand-light);
+}
+.map-container {
+  width: 100%;
+  min-height: 350px;
+  border-radius: 15px;
+  overflow: hidden;
+}
+.map-wrapper {
+  border-radius: 20px;
+}
+.map-title {
+  color: #c69b7b;
+}
+.map-icon {
+  color: #c69b7b;
+}
+
+/*=============================
+  CALENDARIO
+==============================*/
+.fc {
+  background-color: var(--color-white-20);
+  backdrop-filter: blur(8px);
+  border-radius: 10px;
+  max-height: 510px;
+  box-shadow: 0 4px 6px var(--shadow-md);
+  overflow-y: auto;
+}
+.fc a {
+  color: var(--color-gray-medium);
+  text-decoration: none;
+}
+.fc .fc-timegrid-slot {
+  height: 4em;
+}
+.fc .fc-timegrid-axis-cushion,
+.fc .fc-timegrid-slot-label-cushion {
+  color: var(--color-brand-light);
+}
+.fc-timegrid .fc-timegrid-slot {
+  transition: opacity 0.3s;
+  cursor: pointer;
+}
+.fc-timegrid .fc-timegrid-slot:not(.fc-event):hover {
+  opacity: 0.7;
+  background-color: var(--color-success-light);
+}
+.fc .fc-event {
+  background-color: var(--color-brand);
+  border: none;
+}
+.fc .fc-timegrid-slot-label {
+  font-weight: 500;
+  color: var(--color-gray-medium);
+}
+.fc .fc-day-today {
+  background-color: var(--color-success-disabled) !important;
+}
+.arrow-calendar {
+  background-color: var(--color-brand-light)#c69b7b;
+  border: none;
+}
+.arrow-calendar:hover {
+  background-color: var(--color-brand-light);
+  border: none;
+}
+.button-plus {
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-white-30);
+  border: 1px solid var(--color-white-40);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+.button-plus:hover {
+  background: #84c284;
+  transform: scale(1.1);
+  border: none;
+}
+
+/*=============================
+  TASK & FASI
+==============================*/
+.task-card {
+  background: var(--color-white-15);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  border: 1px solid var(--color-white-25);
+}
+.task-label-pill {
+  color: var(--color-black-80, black);
+  border-radius: 20px;
+  padding: 0.8em;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: inline-block;
+}
+.avatar-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-brand);
+}
+.avatar-image-sidebar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-brand);
+}
+html.dark-mode .phases-title {
+  color: #c69b7b;
+}
+.phases-list-number {
+  font-size: 3rem;
+  font-weight: bold;
+  display: inline-block;
+  background-image: linear-gradient(180deg, var(--color-bg-gradient-start) 0%, var(--color-brand-light) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+html.dark-mode .phases-list-text {
+  color: var(--color-brand-light);
+}
+
+/*=============================
+  LISTA PROGETTI
+==============================*/
+html.dark-mode .project-title {
+  color: #c69b7b;
+}
+.project-list-number {
+  font-size: 3rem;
+  font-weight: bold;
+  display: inline-block;
+  background-image: linear-gradient(180deg, var(--color-bg-gradient-start) 0%, var(--color-brand-light) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+html.dark-mode .project-list-text {
+  color: var(--color-brand-light);
+}
+
+/*==================================================
+  STILE GLOBALE PER I MODALI
+==================================================*/
+/* Contenuto generale del modal */
+.modal-content {
+  background-color: var(--color-card-bg);
+  color: var(--color-gray-dark);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px var(--shadow-md);
+}
+/* HEADER */
+.modal-header {
+  border-bottom: 2px solid var(--color-brand-light);
+  background-color: transparent;
+  padding: 1rem;
+}
+/* Titolo del modal */
+.modal-title {
+  color: var(--color-brand-light);
+  font-weight: 600;
+}
+/* BODY */
+.modal-body {
+  background-color: transparent;
+  padding: 1rem;
+  color: var(--color-gray-medium);
+}
+/* Etichette (Form.Label) */
+.modal-body .form-label {
+  color: #000; /* etichette sempre nere */
+  font-weight: 500;
+}
+/* Input di tipo testo/textarea/time/date: testo inserito sempre nero */
+.modal-body .form-control {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-border);
+  color: #000; /* testo dell’input diventa nero */
+  border-radius: 5px;
+  padding: 0.5rem;
+}
+.modal-body .form-control::placeholder {
+  color: #888; /
+}
+.modal-body .form-control:disabled {
+  background-color: var(--color-white-20);
+}
+/* FOOTER */
+.modal-footer {
+  background-color: transparent;
+  border-top: 1px solid var(--color-gray-border);
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+/* BUTTON DI DEFAULT ALL’INTERNO DEL MODAL */
+.modal-footer .btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+/* Bottone “Elimina” (rosso/brand) */
+.modal-footer .btn-danger,
+.modal-footer .btn[data-style="delete"] {
+  background-color: var(--color-brand);
+  border: none;
+  color: var(--color-white);
+  box-shadow: 0px 5px 15px var(--shadow-xl);
+}
+.modal-footer .btn-danger:hover,
+.modal-footer .btn[data-style="delete"]:hover {
+  background-color: #b35f5f; /* leggero scurimento di var(--color-brand) */
+}
+/* Bottone “Salva” (primary) */
+.modal-footer .btn-primary,
+.modal-footer .btn[data-style="save"] {
+  background-color: var(--color-primary);
+  border: none;
+  color: var(--color-white);
+  box-shadow: 0px 5px 15px var(--shadow-xl);
+}
+.modal-footer .btn-primary:hover,
+.modal-footer .btn[data-style="save"]:hover {
+  background-color: var(--color-primary-hover);
+}
+/* In tutti i form-control: focus */
+.modal-body .form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem rgba(123, 198, 130, 0.25);
+  outline: none;
+}
+
+/*=============================
+  BOTTONI CUSTOM
+==============================*/
+.btn-save-custom {
+  background-color: var(--color-primary) !important;
+  color: var(--color-white) !important;
+  border: none;
+  box-shadow: 0px 5px 15px var(--shadow-xl);
+}
+.btn-link-custom {
+  background-color: var(--color-bg-gradient-start) !important;
+  color: var(--color-white) !important;
+  border: none;
+  box-shadow: 0px 5px 15px var(--shadow-xl);
+}
+.btn-commenta-custom {
+  background-color: var(--color-warning) !important;
+  color: var(--color-white) !important;
+  border: none;
+  box-shadow: 0px 5px 15px var(--shadow-xl);
+}
+.botton-file {
+  color: var(--color-info);
+  border: 1px solid var(--color-info);
+  box-shadow: 0px 5px 15px var(--shadow-xl);
+}
+.botton-file:hover {
+  background-color: var(--color-info);
+  color: var(--color-white);
+}
+
+/*=============================
+  RESPONSIVE
+==============================*/
+/* Tablet medio (<1200px) */
+@media (max-width: 1200px) {
+  .sidebar.sidebar-expanded + .floating-cards-container {
+    left: 270px;
+  }
+  .fc {
+    max-height: 500px;
+  }
+}
+
+/* Tablet piccolo (<768px) */
+@media (max-width: 768px) {
+  body {
+    padding: 0.5rem; /* meno padding laterale */
+  }
+  .carousel-wrapper {
+    top: 20%;
+    height: calc(100vh - 25rem);
+  }
+  /* Riduci padding delle card */
+  .status-card .card-body,
+  .countdown-box .card-body {
+    padding: 0.75rem !important;
+  }
+  /* Countdown timer più piccolo */
+  .countdown-timer {
+    font-size: 3rem;
+  }
+  /* Mappa un po’ più bassa */
+  .map-container {
+    min-height: 250px;
+  }
+  /* Sidebar compatta su tablet */
+  .sidebar {
+    width: 80px;
+  }
+  .sidebar.sidebar-expanded {
+    width: 240px;
+  }
+  .floating-cards-container {
+    width: 250px;
+    left: 100px;
+  }
+}
+
+/* Mobile (<576px) */
+@media (max-width: 576px) {
+  body {
+    padding: 0.5rem;
+  }
+  .avatar-image-sidebar {
+    display: none;
+  }
+  .carousel-wrapper {
+    top: 10%;
+    height: calc(100vh - 20rem);
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  /* Riduci padding delle card */
+  .status-card .card-body,
+  .countdown-box .card-body {
+    padding: 0.5rem !important;
+  }
+  /* Titoli delle card e mappa più piccoli */
+  .status-card .fs-5,
+  .countdown-label,
+  .map-header h5 {
+    font-size: 1rem;
+  }
+  /* Countdown timer molto più compatto */
+  .countdown-timer {
+    font-size: 2rem;
+  }
+  /* Mappa height ridotta */
+  .map-container {
+    min-height: 180px;
+  }
+  /* Nascondi search-bar */
+  .search-bar {
+    display: none;
+  }
+  /* Sidebar a scomparsa */
+  .sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100px;
+    transition: transform 0.3s ease-in-out;
+    z-index: 1050;
+  }
+  .sidebar.sidebar-visible {
+    transform: translateX(0);
+  }
+  .sidebar-toggle {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1100;
+  }
+  .toggle-shifted {
+    left: 110px;
+  }
+  .phases-list-number {
+    font-size: 3rem;
+  }
+  /* Rimuovi ombre e margini extra dalle card */
+  .card {
+    box-shadow: none;
+    margin-top: 0.3em;
+  }
+  .boolean-pill {
+    box-shadow: 0px 0px 0px var(--shadow-xl);
+  }
+  .boolean-pill.unchecked .circle {
+    margin: 0;
+  }
+  .boolean-pill.checked .circle {
+    margin: 0;
+  }
+
+  .deleteProjectBtn {
+    background-color: transparent;
+    color: #c67b7b;
+    border-radius: 50%;
+    padding: 0;
+    box-shadow: 0px 0px 0px var(--shadow-xl);
+  }
+}

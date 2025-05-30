@@ -1,4 +1,4 @@
-import { Badge, Dropdown, FormControl, InputGroup, Spinner } from "react-bootstrap";
+import { Badge, Dropdown, /* Form, */ FormControl, InputGroup, Spinner } from "react-bootstrap";
 import { FaRegUserCircle, FaSearch } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,10 +7,13 @@ import { clearUserData, removeToken } from "../../redux/utils/authUtils";
 import { logoutGoogle, logoutNormal } from "../../redux/action/LoginActions";
 import { useEffect, useState } from "react";
 import { fetchNotifications, fetchUnreadNotificationsCount, markNotificationAsRead } from "../../redux/action/NotificationActions";
+/* import { useDarkMode } from "../commons/useDarkMode";
+import { MdLightMode, MdOutlineDarkMode } from "react-icons/md"; */
 
 const Topbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  /* const [mode, toggleMode] = useDarkMode(); */
   const [localAvatarError, setLocalAvatarError] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -106,6 +109,20 @@ const Topbar = () => {
           </div>
         )}
       </div>
+
+      {/* Dark Mode */}
+      {/* <div className="d-flex align-items-center ms-3">
+        <Form className="d-flex align-items-center">
+          <Form.Check
+            type="switch"
+            id="darkModeSwitch"
+            className="dark-switch me-3"
+            label={mode === "dark" ? <MdLightMode size={30} color="#c69b7b" /> : <MdOutlineDarkMode size={30} color="#c69b7b" />}
+            checked={mode === "dark"}
+            onChange={toggleMode}
+          />
+        </Form>
+      </div> */}
 
       <div className="user-info d-flex align-items-center ms-3 position-relative">
         {/* Icona campanella con badge */}

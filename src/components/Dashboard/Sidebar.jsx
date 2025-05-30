@@ -326,7 +326,7 @@ const Sidebar = () => {
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button type="submit" disabled={!previewCoordinates || isGeocoding}>
+            <Button type="submit" disabled={!previewCoordinates || isGeocoding} style={{ backgroundColor: "#7BC682", cursor: "pointer" }}>
               Crea progetto
             </Button>
           </Modal.Footer>

@@ -226,20 +226,19 @@ const Project = () => {
             {/* Dettagli progetto */}
             <Col md={12}>
               <div className="d-flex align-items-center">
-                <h4 className="me-auto fs-5">{project.nomeProgetto}</h4>
-                <div className="d-flex gap-4 align-items-center">
+                <div className="d-flex gap-4 align-items-center ms-auto">
                   {/* Icona PIN */}
                   <Button
                     onClick={handlePinToggle}
                     className="pinBtn"
                     title={project.inProgress ? "Rimuovi da Lavori in corso" : "Aggiungi a Lavori in corso"}
                   >
-                    {project.inProgress ? <TiPin size={24} color="#C69B7B" /> : <TiPinOutline size={24} color="#C69B7B" />}
+                    {project.inProgress ? <TiPin size={25} color="#C69B7B" /> : <TiPinOutline size={24} color="#C69B7B" />}
                   </Button>
 
                   {/* Icona EDIT */}
                   <Button onClick={openEditModal} className="editBtn" title="Modifica dati progetto">
-                    <FaEdit size={24} color="#C69B7B" />
+                    <FaEdit size={25} color="#C69B7B" />
                   </Button>
 
                   {/* BooleanPill per “Completato” */}
@@ -247,13 +246,14 @@ const Project = () => {
                   {/* Bottone “Elimina progetto” */}
                   <Button onClick={handleDeleteProject} className="deleteProjectBtn">
                     <span className="d-none d-md-inline">Elimina progetto</span>
-                    <TiDelete size={40} className="d-inline d-md-none" />
+                    <TiDelete size={70} className="d-inline d-md-none" />
                   </Button>
                 </div>
               </div>
+              <h4 className="project-title mt-3 fs-5">{project.nomeProgetto}</h4>
             </Col>
             <Col md={12} className="mt-3">
-              <Row className="projectDetails gx-3 gy-2" style={{ color: "#C69B7B", fontWeight: "bold" }}>
+              <Row className="projectDetails gx-3 gy-2 fw-bold p-2" style={{ color: "#C69B7B", fontSize: "14px" }}>
                 <Col xs={12} sm={6} lg={3} className="d-flex">
                   <span>Progettista:&nbsp;</span>
                   <span className="m-0">{project.progettista || "Non specificato"}</span>
@@ -270,21 +270,18 @@ const Project = () => {
                 </Col>
 
                 <Col xs={12} sm={6} lg={3} className="d-flex">
-                  <span>Creato:&nbsp;</span>
+                  <span className="ms-auto ">Creato:&nbsp;</span>
                   <span className="m-0">{new Date(project.createdAt).toLocaleDateString()}</span>
                 </Col>
               </Row>
             </Col>
 
             {/* ──────────────────────────────────────────────────────────── */}
-
-            <Card className="map-card">
-              <div style={{ border: "5px solid rgb(255, 255, 255)", borderRadius: "20px" }} className="p-2 pt-0 bg-white m-0">
+            <Card className="map-card mt-2">
+              <div className="map-wrapper p-2 pt-0 m-0">
                 <div className="d-flex justify-content-between align-items-center border-0">
-                  <h5 style={{ color: "#C69B7B" }} className="m-2">
-                    Aree Progetti
-                  </h5>
-                  <FaRegMap size={25} style={{ color: "#C69B7B" }} className="me-auto" />
+                  <h5 className="map-title m-2">Aree Progetti</h5>
+                  <FaRegMap size={25} className="map-icon me-auto" />
                 </div>
                 <GoogleMapView projects={[project]} />
               </div>
@@ -307,13 +304,13 @@ const Project = () => {
                           <Row key={sd.id} className="mb-3 align-items-center border-bottom pb-2">
                             <Col md={3} className="fw-bold">
                               <div>
-                                <strong>Fase:</strong> <span style={{ color: "#ababab" }}>{sd.faseId}</span>
+                                <strong>Fase:</strong> <span>{sd.faseId}</span>
                               </div>
                               <div>
-                                <strong>Task:</strong> <span style={{ color: "#ababab" }}>{taskTitle}</span>
+                                <strong>Task:</strong> <span>{taskTitle}</span>
                               </div>
                               <div>
-                                <strong>Step:</strong> <span style={{ color: "#ababab" }}>{stepLabel}</span>
+                                <strong>Step:</strong> <span>{stepLabel}</span>
                               </div>
                             </Col>
 
@@ -388,7 +385,7 @@ const Project = () => {
       </Row>
 
       {/* ─── MODAL ELIMINA PROGETTO ─── */}
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered className="d-flex">
         <Modal.Header closeButton>
           <Modal.Title>Conferma eliminazione</Modal.Title>
         </Modal.Header>
@@ -396,17 +393,17 @@ const Project = () => {
           Eliminare <strong>{projectToDelete?.nomeProgetto}</strong>?
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+          <Button onClick={() => setShowDeleteModal(false)} style={{ backgroundColor: "#D9D9D9" }}>
             Annulla
           </Button>
-          <Button variant="danger" onClick={confirmDelete}>
+          <Button onClick={confirmDelete} style={{ backgroundColor: "#c67b7b" }}>
             Elimina
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* ─── MODAL MODIFICA PROGETTO ─── */}
-      <Modal show={showEditModal} onHide={closeEditModal} centered>
+      <Modal show={showEditModal} onHide={closeEditModal} centered className="d-flex">
         <Modal.Header closeButton>
           <Modal.Title>Modifica progetto</Modal.Title>
         </Modal.Header>
@@ -428,10 +425,12 @@ const Project = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={closeEditModal}>
+            <Button onClick={closeEditModal} style={{ backgroundColor: "#C67B7B" }}>
               Annulla
             </Button>
-            <Button type="submit">Salva modifiche</Button>
+            <Button type="submit" style={{ backgroundColor: "#7BC682" }}>
+              Salva modifiche
+            </Button>
           </Modal.Footer>
         </Form>
       </Modal>

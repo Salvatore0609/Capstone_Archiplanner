@@ -49,7 +49,7 @@ const Dashboard = () => {
                   <Col xs={12} md={6}>
                     <div className="d-flex flex-column gap-4 w-100">
                       <DashboardInfoCards />
-                      <div className="w-100 map-wrapper">
+                      <div className="w-100">
                         <ProjectMap projects={projectLocations} />
                       </div>
                     </div>
@@ -72,12 +72,12 @@ const Dashboard = () => {
           <div className="carousel-arrow">
             {activeIndex > 0 && (
               <button onClick={() => changeSlide(activeIndex - 1)} className="carousel-control" aria-label="Previous">
-                <FaChevronLeft size={30} color="#C69B7B" />
+                <FaChevronLeft size={30} />
               </button>
             )}
             {activeIndex < totalSlides - 1 && (
               <button onClick={() => changeSlide(activeIndex + 1)} className="carousel-control" aria-label="Next">
-                <FaChevronRight size={30} color="#C69B7B" />
+                <FaChevronRight size={30} />
               </button>
             )}
           </div>

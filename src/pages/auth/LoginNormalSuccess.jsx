@@ -68,9 +68,8 @@ function NormalLoginSuccess() {
       <Spinner animation="border" variant="success" style={{ width: "3rem", height: "3rem" }} />
 
       <p
-        className="mt-3"
+        className="mt-3 fw-bold"
         style={{
-          color: "#333",
           fontSize: "1.2rem",
           animation: "fadeIn 0.8s ease-out",
         }}

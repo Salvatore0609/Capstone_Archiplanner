@@ -261,13 +261,13 @@ const PersonalyCalendar = ({ refreshKey }) => {
       <Card className="bg-transparent glass-card">
         <Card.Body className="bg-transparent">
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <Button style={{ backgroundColor: "#C69B7B", border: "none" }} onClick={() => setCurrentDate((d) => subDays(d, 2))}>
+            <Button className="arrow-calendar" onClick={() => setCurrentDate((d) => subDays(d, 2))}>
               <FaArrowLeft className="d-flex" />
             </Button>
-            <h5 className="text-center w-100" style={{ color: "#555" }}>
+            <h5 className="text-center text-secondary w-100">
               {format(currentDate, "EEE dd/MM", { itLocale })} - {format(addDays(currentDate, 1), "EEE dd/MM yyyy", { itLocale })}
             </h5>
-            <Button style={{ backgroundColor: "#C69B7B", border: "none" }} onClick={() => setCurrentDate((d) => addDays(d, 2))}>
+            <Button className="arrow-calendar" onClick={() => setCurrentDate((d) => addDays(d, 2))}>
               <FaArrowRight className="d-flex" />
             </Button>
           </div>

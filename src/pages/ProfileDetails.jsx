@@ -346,7 +346,7 @@ export default function ProfileDetails() {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={closeEditModal}>
+            <Button variant="secondary" onClick={closeEditModal} style={{ backgroundColor: "#C67B7B" }}>
               Annulla
             </Button>
             {/* Ora chiama direttamente handleEditSubmit */}

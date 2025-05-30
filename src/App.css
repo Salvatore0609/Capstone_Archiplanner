@@ -51,7 +51,6 @@ body {
 /*===============================*/
 .main-dashboard {
   position: relative;
-  /* Compensa il padding di body, così i contenuti arrivano a filo */
   padding-left: 0;
   padding-right: 0;
   padding-top: 3.5rem;
@@ -140,6 +139,7 @@ button {
   border: none;
   cursor: pointer;
   outline: none;
+  color: #c69b7b;
 }
 
 /*===============================*/
@@ -391,9 +391,10 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px;
+  padding: 1rem;
   border-radius: 50%;
   transition: background-color 0.2s ease;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
 }
 .pinBtn:hover,
 .editBtn:hover {
@@ -406,6 +407,10 @@ button {
   border-radius: 50px;
   border-color: #c67b7b;
   padding: 0.8rem;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+.deleteProjectBtn:hover {
+  background-color: #c67b7b;
 }
 
 /*===============================*/
@@ -590,6 +595,14 @@ button {
 .fc .fc-day-today {
   background-color: rgba(0, 128, 0, 0.107) !important;
 }
+.arrow-calendar {
+  background-color: #c69b7b;
+  border: none;
+}
+.arrow-calendar:hover {
+  background-color: #c69b7b;
+  border: none;
+}
 
 /* Pulsante + del calendario */
 .button-plus {
@@ -676,26 +689,30 @@ button {
   background-color: #7bc682 !important;
   color: white !important;
   border: none;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn-link-custom {
   background-color: #c69b7b !important;
   color: white !important;
   border: none;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn-commenta-custom {
   background-color: #ffbc02 !important;
   color: white !important;
   border: none;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .botton-file {
-  color: #c69b7b;
-  border: 1px solid #c69b7b;
+  color: #7badc6;
+  border: 1px solid #7badc6;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
 .botton-file:hover {
-  background-color: #c69b7b;
+  background-color: #7badc6;
   color: white;
 }
 
@@ -834,11 +851,14 @@ button {
   .boolean-pill.unchecked .circle {
     margin: 0;
   }
+  .boolean-pill.checked .circle {
+    margin: 0;
+  }
 
   .deleteProjectBtn {
     background-color: transparent;
     color: #c67b7b;
-    border-radius: 50%;
     padding: 0;
+    box-shadow: 0px 0px 0px 0px #00000000;
   }
 }
