@@ -7,6 +7,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import DashboardInfoCards from "../components/Dashboard/DashboardInfoCards";
+/* import SardegnaMap from "../components/commons/SardegnaMappe"; */
 
 const Dashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -49,6 +50,10 @@ const Dashboard = () => {
                   <Col xs={12} md={6}>
                     <div className="d-flex flex-column gap-4 w-100">
                       <DashboardInfoCards />
+
+                      {/* <SardegnaMap /> */}
+
+                      {/* In alternativa, se vuoi mantenere anche ProjectMap, puoi tenerlo qui */}
                       <div className="w-100">
                         <ProjectMap projects={projectLocations} />
                       </div>

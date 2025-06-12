@@ -129,14 +129,6 @@ const TaskCard = ({ task, project, phase }) => {
     fileName: "",
   });
 
-  // Nuovo stato per l'anteprima DWG
-  /* const [dwgLoading, setDwgLoading] = useState(false);
-  const [dwgPreview, setDwgPreview] = useState({
-    show: false,
-    url: null,
-    fileName: "",
-  }); */
-
   // elenco dei titoli + id degli articoli
   // ogni elemento: { id: <numero>, titolo: <string> }
   const [titles, setTitles] = useState([]);
@@ -304,24 +296,6 @@ const TaskCard = ({ task, project, phase }) => {
       fileName: "",
     });
   };
-
-  // Apre l'anteprima DWG utilizzando Google Drive Viewer
-  /* const openDwgPreview = (fileUrl, fileName) => {
-    setDwgPreview({
-      show: true,
-      url: fileUrl,
-      fileName: fileName,
-    });
-  }; */
-
-  // Chiude l'anteprima DWG
-  /* const closeDwgPreview = () => {
-    setDwgPreview({
-      show: false,
-      url: null,
-      fileName: "",
-    });
-  }; */
 
   return (
     <>
@@ -635,42 +609,6 @@ const TaskCard = ({ task, project, phase }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {/* Modal per anteprima DWG */}
-      {/* <Modal show={dwgPreview.show} onHide={closeDwgPreview} size="xl" centered className="d-flex">
-        <Modal.Header closeButton>
-          <Modal.Title>Anteprima DWG: {dwgPreview.fileName}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body style={{ height: "70vh", padding: 0 }}>
-          {dwgLoading ? (
-            <div className="d-flex justify-content-center align-items-center" style={{ height: "100%" }}>
-              <div className="spinner-border" role="status">
-                <span className="visually-hidden">Caricamento...</span>
-              </div>
-              <span className="ms-3">Caricamento anteprima DWG...</span>
-            </div>
-          ) : (
-            <iframe
-              title="dwg-preview"
-              loading="lazy"
-              src={`https://web.gstarcad.com/viewer?url=${encodeURIComponent(dwgPreview.url || "")}`}
-              width="100%"
-              height="100%"
-              style={{ border: "none" }}
-              onLoad={() => setDwgLoading(false)}
-              allowFullScreen
-            />
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={closeDwgPreview}>
-            Chiudi
-          </Button>
-          <Button variant="primary" href={dwgPreview.url} download>
-            <IoMdDownload className="me-1" /> Scarica
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
     </>
   );
 };
