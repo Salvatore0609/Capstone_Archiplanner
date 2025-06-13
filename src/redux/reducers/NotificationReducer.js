@@ -11,11 +11,11 @@ import {
 } from "../action/NotificationActions";
 
 const initialState = {
-  all: [], // array di NotificationResponse
-  unreadCount: 0, // numero di notifiche non lette
-  loading: false, // loading per fetchNotifications
+  all: [],
+  unreadCount: 0,
+  loading: false,
   error: null,
-  updating: false, // loading per markAsRead
+  updating: false,
 };
 
 export const notificationReducer = (state = initialState, action) => {

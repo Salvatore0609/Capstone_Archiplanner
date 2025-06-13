@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { /* getNormalUserData */ getToken, saveNormalUserData, saveToken /* saveNormalUserData  */ } from "../../redux/utils/authUtils";
+import { getToken, saveNormalUserData, saveToken } from "../../redux/utils/authUtils";
 import { loginNormalSuccess } from "../../redux/action/LoginActions";
 import { Spinner } from "react-bootstrap";
-/* import { useSearchParams } from "react-router-dom"; */
+
 import { fetchProjects } from "../../redux/action/projectsActions";
 import { useNavigate } from "react-router-dom";
 
@@ -23,10 +23,6 @@ function NormalLoginSuccess() {
 
         // Salva il token
         saveToken(token);
-
-        /*  setTimeout(() => {
-          navigate("/dashboard");
-        }, 5000); */
 
         const response = await fetch(`${import.meta.env.VITE_API_URL}/utenti/current-user`, {
           headers: { Authorization: `Bearer ${token}` },

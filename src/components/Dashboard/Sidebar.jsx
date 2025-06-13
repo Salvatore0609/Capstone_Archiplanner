@@ -1,7 +1,7 @@
 import { Button, Card, Col, Form, Modal, Nav, Row } from "react-bootstrap";
 import { FaPlus, FaRegUserCircle, FaChevronLeft, FaLayerGroup, FaTimes, FaListUl } from "react-icons/fa";
 import { FiSidebar } from "react-icons/fi";
-import { TiPinOutline } from "react-icons/ti"; // Icona statica per "Lavori in corso"
+import { TiPinOutline } from "react-icons/ti";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Image } from "react-bootstrap";
@@ -35,7 +35,7 @@ const Sidebar = () => {
 
   // Redux e routing
   const dispatch = useDispatch();
-  // Prendo tutti i progetti da Redux
+
   const projects = useSelector((state) => state.projects?.items || []);
   const navigate = useNavigate();
   const location = useLocation();

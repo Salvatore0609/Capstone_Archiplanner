@@ -32,7 +32,7 @@ export const phase1Tasks = [
         ],
       },
       {
-        id: 4, // nuovo id step, deve essere unico
+        id: 4,
         label: "Seleziona la zona di interesse  (collegamento al PUC di rifermento)",
         type: ["dropdown"],
       },
