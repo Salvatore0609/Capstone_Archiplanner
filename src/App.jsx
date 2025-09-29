@@ -11,8 +11,11 @@ import LoginNormalSuccess from "./pages/auth/LoginNormalSuccess";
 import { useEffect } from "react";
 import { fetchProfile, loginGoogleSuccess, loginNormalSuccess } from "./redux/action/LoginActions";
 import { fetchProjects } from "./redux/action/projectsActions";
+import { useTheme } from "./hooks/UseTheme";
 
 const App = () => {
+  useTheme();
+
   const dispatch = useDispatch();
   const token = getToken();
 

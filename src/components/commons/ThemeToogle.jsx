@@ -1,31 +1,10 @@
-import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { FiSun } from "react-icons/fi";
 import { IoMoon } from "react-icons/io5";
+import { useTheme } from "../../hooks/UseTheme";
 
 const ThemeToggle = () => {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-    const initialTheme = savedTheme === "dark" || (!savedTheme && systemPrefersDark);
-    setIsDark(initialTheme);
-    applyTheme(initialTheme);
-  }, []);
-
-  const applyTheme = (dark) => {
-    const theme = dark ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  };
-
-  const toggleTheme = () => {
-    const newDark = !isDark;
-    setIsDark(newDark);
-    applyTheme(newDark);
-  };
+  const [isDark, toggleTheme] = useTheme(false);
 
   return (
     <Button
@@ -37,7 +16,7 @@ const ThemeToggle = () => {
         justifyContent: "center",
         borderRadius: "20px",
         border: "2px solid",
-        borderColor: isDark ? "var(--primary)" : "var(--primary)",
+        borderColor: "var(--primary)",
         backgroundColor: "transparent",
         color: "var(--primary)",
         transition: "all 0.3s ease",

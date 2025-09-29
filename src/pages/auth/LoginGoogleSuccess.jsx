@@ -11,8 +11,6 @@ function LoginGoogleSuccess() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  localStorage.getItem("theme");
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const encoded = params.get("data");
