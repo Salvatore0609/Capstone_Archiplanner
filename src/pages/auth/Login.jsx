@@ -125,7 +125,7 @@ function Login() {
               </Card>
             </div>
           </Col>
-          <Form onSubmit={handleSubmit} className="login-form  ms-auto">
+          <Form onSubmit={handleSubmit} className="login-form  ms-auto py-5">
             <img src="/assets/logo.png" alt="Logo" className="w-100 h-30" />
             {error && <Alert variant="danger">{error}</Alert>}
             <FormGroup>

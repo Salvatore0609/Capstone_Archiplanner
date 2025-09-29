@@ -97,19 +97,6 @@
   --logo-height: 50%;
 }
 
-/* [data-theme="dark"] body.login-page::before {
-  content: "";
-  position: absolute;
-  left: -10%;
-  bottom: 30%;
-  width: var(--logo-width);
-  height: var(--logo-height);
-  background: url("/assets/logo.png") no-repeat center bottom;
-  background-size: contain;
-  transform-origin: center center;
-  opacity: 1;
-} */
-
 [data-theme="dark"] .form-label {
   background: transparent !important;
   border: 0 !important;
