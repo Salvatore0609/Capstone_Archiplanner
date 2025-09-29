@@ -177,7 +177,7 @@ const Sidebar = () => {
         <Nav className="flex-column text-center w-100">
           {/* Logo che rimanda a /dashboard */}
           <Link to="/dashboard" className="text-decoration-none">
-            <Image src="../assets/logo2.png" alt="logo" roundedCircle fluid className="h-100" />
+            <Image src="../assets/logo.png" alt="logo" roundedCircle fluid className="h-100" />
           </Link>
 
           {/* Nuovo progetto */}

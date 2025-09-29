@@ -5,7 +5,7 @@
   /* Colori principali */
   --primary: #c4926c;
   --primary-light: #ffcfab;
-  --primary-gradient: linear-gradient(-45deg, #c69b7b 0%, #ffcfab 100%);
+  --primary-gradient: linear-gradient(45deg, #c69b7b 0%, #fdfdfd 100%);
 
   /* Colori di azione */
   --success: #7bc682;
@@ -76,53 +76,39 @@
 [data-theme="dark"] body {
   background: #000000;
   background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: auto 30% cover;
+  background-position: center center;
+  background-size: cover;
   background-attachment: fixed;
 }
 
-@keyframes rotate-scale-up {
-  0% {
-    transform: scale(1) rotateZ(0);
-  }
-  50% {
-    transform: scale(1.2) rotateZ(180deg);
-  }
-  100% {
-    transform: scale(1) rotateZ(360deg);
-  }
-}
-
 [data-theme="dark"] body.login-page {
-  background: var(--neutral-light);
+  background: #000000;
+  background: linear-gradient(45deg, rgba(0, 0, 0, 1) 40%, rgba(253, 29, 29, 1) 85%, rgba(252, 176, 69, 1) 100%);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
   position: relative;
   overflow: hidden;
 }
 
-/* Dimensioni del logo: aggiusta questi valori */
 :root {
-  --logo-width: 80%; /* cambia a seconda del logo */
-  --logo-height: 80%; /* oppure usa percentuali relative alla height del body */
+  --logo-width: 50%;
+  --logo-height: 50%;
 }
 
-[data-theme="dark"] body.login-page::before {
+/* [data-theme="dark"] body.login-page::before {
   content: "";
   position: absolute;
-  left: 5%;
-  bottom: 10%;
+  left: -10%;
+  bottom: 30%;
   width: var(--logo-width);
   height: var(--logo-height);
   background: url("/assets/logo.png") no-repeat center bottom;
-  background-size: contain; /* o '100% auto' se preferisci */
-  transform-origin: center center; /* centro del logo */
-  will-change: transform;
-  /* nessuna animazione di default: parte solo con :hover */
-}
-
-[data-theme="dark"] body.login-page:hover::before {
-  -webkit-animation: rotate-scale-up 0.65s linear both;
-  animation: rotate-scale-up 0.65s linear both;
-}
+  background-size: contain;
+  transform-origin: center center;
+  opacity: 1;
+} */
 
 [data-theme="dark"] .form-label {
   background: transparent !important;
@@ -167,7 +153,6 @@
   color: var(--primary) !important;
   background-color: rgba(26, 26, 26, 0.8);
   border: 1px solid var(--neutral-medium);
-  backdrop-filter: blur(10px);
 }
 
 [data-theme="dark"] .form-control:focus,
@@ -247,7 +232,7 @@
 [data-theme="dark"] .login-form,
 [data-theme="dark"] .container-details {
   background: rgba(13, 13, 13, 0.8);
-  border: 1px solid var(--primary);
+  border: 2px solid var(--primary);
   backdrop-filter: blur(20px);
 }
 
@@ -287,7 +272,7 @@ body {
   padding: 0.5rem;
   position: relative;
   min-height: 100vh;
-  background: url("/assets/background1.png") no-repeat center center, var(--primary-gradient);
+  background: url("") no-repeat center center, var(--primary-gradient);
   background-size: auto 30%, cover;
   background-attachment: fixed;
   background-repeat: no-repeat, no-repeat;
@@ -295,7 +280,7 @@ body {
 }
 
 body.login-page {
-  background: url("/assets/background1.png") no-repeat left bottom, url("") no-repeat right bottom, var(--primary-gradient);
+  background: url("") no-repeat left bottom, url("") no-repeat right bottom, var(--primary-gradient);
   background-size: auto 60%, auto 30%, cover;
   background-attachment: fixed;
   background-repeat: no-repeat, no-repeat, no-repeat;

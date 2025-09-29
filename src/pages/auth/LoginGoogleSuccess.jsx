@@ -48,7 +48,7 @@ function LoginGoogleSuccess() {
   return (
     <div className="d-flex flex-column justify-content-center align-items-center" style={{ height: "98vh" }}>
       <img
-        src="/assets/logo2.png"
+        src="/assets/logo.png"
         alt="Logo"
         style={{
           width: "300px",
@@ -65,6 +65,7 @@ function LoginGoogleSuccess() {
         style={{
           fontSize: "1.2rem",
           animation: "fadeIn 0.8s ease-out",
+          color: "var(--primary)",
         }}
       >
         Preparati per Archiplanner...
