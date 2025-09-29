@@ -55,14 +55,12 @@ const ProjectStatus = () => {
     <Card className="status-card text-start p-2">
       <Card.Body>
         <div className="d-flex align-items-center">
-          <Card.Title className="fs-5" style={{ color: "#C69B7B" }}>
-            Progetti
-          </Card.Title>
-          <VscGraph size={24} color="#C69B7B" className="ms-auto" />
+          <Card.Title className="fs-5">Progetti</Card.Title>
+          <VscGraph size={24} className="ms-auto icon-color" />
         </div>
 
         {statuses.map((s, idx) => (
-          <div key={idx} className="d-flex justify-content-between align-items-center border-bottom">
+          <div key={idx} className="d-flex justify-content-between align-items-center border-bottom " style={{ color: "var(--text-dark)" }}>
             <p className="mb-0">{s.label}</p>
             <small>{s.count}</small>
           </div>

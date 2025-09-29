@@ -138,7 +138,7 @@ function Register({ show, onClose }) {
             <div className="d-flex justify-content-center">
               <div className="rounded-circle" style={{ width: "100px", height: "100px", overflow: "hidden" }}>
                 {imagePreview ? (
-                  <img src={imagePreview} alt="Avatar Preview" className="w-100 h-100" style={{ objectFit: "cover" }} />
+                  <img src={imagePreview} alt="Avatar Preview" className="avatarPreview" />
                 ) : (
                   <div className="d-flex justify-content-center align-items-center" style={{ height: "100%" }}></div>
                 )}

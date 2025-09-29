@@ -157,20 +157,11 @@ export default function ProfileDetails() {
         <Col sm={10}>
           <Topbar />
           <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
-            <Container fluid>
+            <Container fluid className="container-details">
               <Row>
                 {/* Colonna avatar */}
                 <Col md={4} className="d-flex flex-column align-items-center">
-                  <div
-                    className="rounded-circle d-flex justify-content-center align-items-center"
-                    style={{
-                      width: "150px",
-                      height: "150px",
-                      overflow: "hidden",
-                      border: "5px solid #C69B7B",
-                      backgroundColor: "#f8f9fa",
-                    }}
-                  >
+                  <div className="avatar-profile-details rounded-circle d-flex justify-content-center align-items-center">
                     {getAvatarUrl() ? (
                       <img src={getAvatarUrl()} alt="Avatar" onError={handleAvatarError} className="w-100 h-100" style={{ objectFit: "cover" }} />
                     ) : (
@@ -184,18 +175,7 @@ export default function ProfileDetails() {
                   {/* Titolo e Icona Edit */}
                   <div className="d-flex align-items-center mb-4">
                     <h3 className="me-auto">Il Tuo Profilo</h3>
-                    <Button
-                      onClick={openEditModal}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        padding: 0,
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                      title="Modifica profilo"
-                    >
+                    <Button className="editBtn" onClick={openEditModal} title="Modifica profilo">
                       <FaEdit size={24} color="#C69B7B" />
                     </Button>
                   </div>
@@ -205,33 +185,33 @@ export default function ProfileDetails() {
                     <Row>
                       <Col md={6}>
                         <Form.Group className="mb-3">
-                          <Form.Label>Username</Form.Label>
+                          <Form.Label className="bg-transparent border-0">Username</Form.Label>
                           <Form.Control name="username" value={formData.username} onChange={handleInputChange} readOnly />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                          <Form.Label>Nome</Form.Label>
+                          <Form.Label className="bg-transparent border-0">Nome</Form.Label>
                           <Form.Control name="nome" value={formData.nome} onChange={handleInputChange} readOnly />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                          <Form.Label>Cognome</Form.Label>
+                          <Form.Label className="bg-transparent border-0">Cognome</Form.Label>
                           <Form.Control name="cognome" value={formData.cognome} onChange={handleInputChange} readOnly />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                          <Form.Label>Data di nascita</Form.Label>
+                          <Form.Label className="bg-transparent border-0">Data di nascita</Form.Label>
                           <Form.Control type="date" name="dataNascita" value={formData.dataNascita} onChange={handleInputChange} readOnly />
                         </Form.Group>
                       </Col>
                       <Col md={6}>
                         <Form.Group className="mb-3">
-                          <Form.Label>Email</Form.Label>
+                          <Form.Label className="bg-transparent border-0">Email</Form.Label>
                           <Form.Control type="email" name="email" value={formData.email} onChange={handleInputChange} readOnly />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                          <Form.Label>Luogo di nascita</Form.Label>
+                          <Form.Label className="bg-transparent border-0">Luogo di nascita</Form.Label>
                           <Form.Control name="luogoNascita" value={formData.luogoNascita} onChange={handleInputChange} readOnly />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                          <Form.Label>Residenza</Form.Label>
+                          <Form.Label className="bg-transparent border-0">Residenza</Form.Label>
                           <Form.Control name="residenza" value={formData.residenza} onChange={handleInputChange} readOnly />
                         </Form.Group>
                       </Col>
@@ -239,13 +219,13 @@ export default function ProfileDetails() {
                     <Row>
                       <Col md={6}>
                         <Form.Group className="mb-3">
-                          <Form.Label>Società</Form.Label>
+                          <Form.Label className="bg-transparent border-0">Società</Form.Label>
                           <Form.Control name="nomeCompagnia" value={formData.nomeCompagnia} onChange={handleInputChange} readOnly />
                         </Form.Group>
                       </Col>
                       <Col md={6}>
                         <Form.Group className="mb-4">
-                          <Form.Label>Lingua preferita</Form.Label>
+                          <Form.Label className="bg-transparent border-0">Lingua preferita</Form.Label>
                           <Form.Control name="lingua" value={languageMap[formData.lingua]} readOnly />
                         </Form.Group>
                       </Col>
@@ -268,33 +248,33 @@ export default function ProfileDetails() {
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Username</Form.Label>
+                  <Form.Label className="bg-transparent border-0">Username</Form.Label>
                   <Form.Control name="username" value={formData.username} onChange={handleInputChange} required />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Nome</Form.Label>
+                  <Form.Label className="bg-transparent border-0">Nome</Form.Label>
                   <Form.Control name="nome" value={formData.nome} onChange={handleInputChange} required />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Cognome</Form.Label>
+                  <Form.Label className="bg-transparent border-0">Cognome</Form.Label>
                   <Form.Control name="cognome" value={formData.cognome} onChange={handleInputChange} required />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Data di nascita</Form.Label>
+                  <Form.Label className="bg-transparent border-0">Data di nascita</Form.Label>
                   <Form.Control type="date" name="dataNascita" value={formData.dataNascita} onChange={handleInputChange} required />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Email</Form.Label>
+                  <Form.Label className="bg-transparent border-0">Email</Form.Label>
                   <Form.Control type="email" name="email" value={formData.email} onChange={handleInputChange} required />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Luogo di nascita</Form.Label>
+                  <Form.Label className="bg-transparent border-0">Luogo di nascita</Form.Label>
                   <Form.Control name="luogoNascita" value={formData.luogoNascita} onChange={handleInputChange} required />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Residenza</Form.Label>
+                  <Form.Label className="bg-transparent border-0">Residenza</Form.Label>
                   <Form.Control name="residenza" value={formData.residenza} onChange={handleInputChange} required />
                 </Form.Group>
               </Col>
@@ -302,13 +282,13 @@ export default function ProfileDetails() {
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Società</Form.Label>
+                  <Form.Label className="bg-transparent border-0">Società</Form.Label>
                   <Form.Control name="nomeCompagnia" value={formData.nomeCompagnia} onChange={handleInputChange} />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Lingua preferita</Form.Label>
+                  <Form.Label className="bg-transparent border-0">Lingua preferita</Form.Label>
                   <Form.Select name="lingua" value={formData.lingua} onChange={handleInputChange}>
                     {Object.entries(languageMap).map(([code, label]) => (
                       <option key={code} value={code}>
@@ -322,23 +302,13 @@ export default function ProfileDetails() {
             <Row>
               <Col md={12}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Avatar (jpg/png)</Form.Label>
+                  <Form.Label className="bg-transparent border-0">Avatar (jpg/png)</Form.Label>
                   <Form.Control type="file" name="avatar" accept="image/*" onChange={handleAvatarFileChange} />
                 </Form.Group>
                 {/* Anteprima all’interno del modal */}
                 {previewAvatar && (
                   <div className="text-center mb-3">
-                    <img
-                      src={previewAvatar}
-                      alt="Anteprima avatar"
-                      style={{
-                        width: "100px",
-                        height: "100px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        border: "2px solid #C69B7B",
-                      }}
-                    />
+                    <img src={previewAvatar} alt="Anteprima avatar" className="avatarPreview" />
                   </div>
                 )}
               </Col>
@@ -346,11 +316,10 @@ export default function ProfileDetails() {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={closeEditModal} style={{ backgroundColor: "#C67B7B" }}>
+            <Button onClick={closeEditModal} className="btn-cancel">
               Annulla
             </Button>
-            {/* Ora chiama direttamente handleEditSubmit */}
-            <Button variant="primary" onClick={handleEditSubmit}>
+            <Button onClick={handleEditSubmit} className="btn-primary">
               Salva modifiche
             </Button>
           </Modal.Footer>

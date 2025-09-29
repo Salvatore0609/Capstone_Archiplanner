@@ -9,10 +9,10 @@ const ProjectMap = ({ projects = [] }) => {
     <Card className="map-card">
       <div className="map-wrapper p-2 pt-0 m-0">
         <div className="d-flex justify-content-between align-items-center border-0">
-          <h5 className="map-title m-2" style={{ color: "#C69B7B" }}>
+          <h5 className="map-title m-2" style={{ color: "var(--primary)" }}>
             Aree Progetti
           </h5>
-          <FaRegMap size={25} className="map-icon me-auto" style={{ color: "#C69B7B" }} />
+          <FaRegMap size={25} className="map-icon me-auto icon-color" />
         </div>
         <GoogleMapView projects={validProjects} />
       </div>

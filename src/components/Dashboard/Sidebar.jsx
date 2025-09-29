@@ -159,7 +159,7 @@ const Sidebar = () => {
       {/* ─────────────────────────────────────── SIDEBAR ─────────────────────────────────────── */}
       {isMobile && (
         <button onClick={toggleSidebar} className={`sidebar-toggle btn btn-link p-1 ${isMobileSidebarOpen ? "toggle-shifted" : ""}`}>
-          <GiHamburgerMenu size={20} />
+          <GiHamburgerMenu size={20} color="icon-color" />
         </button>
       )}
       <div
@@ -170,14 +170,14 @@ const Sidebar = () => {
       >
         {!isMobile && (
           <button onClick={toggleSidebar} className="sidebar-toggle btn btn-link p-1">
-            {expanded ? <FaChevronLeft size={25} /> : <FiSidebar size={25} />}
+            {expanded ? <FaChevronLeft size={25} color="--icon-color" /> : <FiSidebar size={25} color="--icon-color" />}
           </button>
         )}
         {/*  */}
         <Nav className="flex-column text-center w-100">
           {/* Logo che rimanda a /dashboard */}
           <Link to="/dashboard" className="text-decoration-none">
-            <Image src="../assets/logo1.jpg" alt="logo" roundedCircle fluid className="h-50" />
+            <Image src="../assets/logo2.png" alt="logo" roundedCircle fluid className="h-100" />
           </Link>
 
           {/* Nuovo progetto */}
@@ -186,7 +186,7 @@ const Sidebar = () => {
             onClick={() => setShowModal(true)}
           >
             <div className="icon-hover">
-              <FaPlus size={20} color="#C69B7B" />
+              <FaPlus size={20} className="icon-color" />
             </div>
             {expanded && <span className="ms-2">Nuovo progetto</span>}
           </Nav.Link>
@@ -197,7 +197,7 @@ const Sidebar = () => {
             onClick={handleLoadProjects}
           >
             <div className="icon-hover">
-              <FaListUl size={20} color="#C69B7B" />
+              <FaListUl size={20} className="icon-color" />
               {loadingProjects && (
                 <span className="ms-2">
                   <div className="spinner-border spinner-border-sm text-secondary" role="status">
@@ -220,7 +220,7 @@ const Sidebar = () => {
               }}
             >
               <div className="icon-hover">
-                <FaLayerGroup size={20} color="#C69B7B" />
+                <FaLayerGroup size={20} className="icon-color" />
               </div>
               {expanded && <span className="ms-2">Fasi progetto</span>}
             </Nav.Link>
@@ -236,7 +236,7 @@ const Sidebar = () => {
             }}
           >
             <div className="icon-hover">
-              <TiPinOutline size={30} color="#C69B7B" />
+              <TiPinOutline size={30} className="icon-color" />
             </div>
             {expanded && <span className="ms-2">Lavori in corso</span>}
           </Nav.Link>
@@ -338,7 +338,7 @@ const Sidebar = () => {
         <div className="floating-cards-container">
           <h5>Progetti ({projects.length})</h5>
           <Button className="btn-close" onClick={() => setShowProjectList(false)}>
-            <FaTimes size={20} color="#C69B7B" />
+            <FaTimes size={20} />
           </Button>
 
           {loadingProjects ? (
@@ -381,7 +381,7 @@ const Sidebar = () => {
         <div className="floating-cards-container">
           <h5>Lavori in corso ({inProgressProjects.length})</h5>
           <Button className="btn-close" onClick={() => setShowInProgressList(false)}>
-            <FaTimes size={20} color="#C69B7B" />
+            <FaTimes size={20} />
           </Button>
 
           {loadingProjects ? (
@@ -426,7 +426,7 @@ const Sidebar = () => {
         <div className="floating-cards-container">
           <h5>{currentProject.nomeProgetto} - Fasi</h5>
           <Button className="btn-close" onClick={() => setShowPhaseCards(false)}>
-            <FaTimes size={20} color="#C69B7B" />
+            <FaTimes size={20} />
           </Button>
           {[
             { num: "1", titolo: "FASE INIZIALE" },

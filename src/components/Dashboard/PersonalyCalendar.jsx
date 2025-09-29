@@ -244,11 +244,11 @@ const PersonalyCalendar = ({ refreshKey }) => {
         </Modal.Body>
         <Modal.Footer>
           {modalData && (
-            <Button style={{ backgroundColor: "#C67B7B", border: "none" }} onClick={deleteAppointment}>
+            <Button className="btn-delete" onClick={deleteAppointment}>
               Elimina
             </Button>
           )}
-          <Button style={{ backgroundColor: "#7BC682", border: "none" }} onClick={saveAppointment}>
+          <Button className="btn-primary" onClick={saveAppointment}>
             Salva Appuntamento
           </Button>
         </Modal.Footer>
@@ -264,7 +264,7 @@ const PersonalyCalendar = ({ refreshKey }) => {
             <Button className="arrow-calendar" onClick={() => setCurrentDate((d) => subDays(d, 2))}>
               <FaArrowLeft className="d-flex" />
             </Button>
-            <h5 className="text-center text-secondary w-100">
+            <h5 className="text-center w-100">
               {format(currentDate, "EEE dd/MM", { itLocale })} - {format(addDays(currentDate, 1), "EEE dd/MM yyyy", { itLocale })}
             </h5>
             <Button className="arrow-calendar" onClick={() => setCurrentDate((d) => addDays(d, 2))}>

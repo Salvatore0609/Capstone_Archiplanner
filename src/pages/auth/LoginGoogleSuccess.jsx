@@ -11,6 +11,8 @@ function LoginGoogleSuccess() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  localStorage.getItem("theme");
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const encoded = params.get("data");
@@ -48,10 +50,10 @@ function LoginGoogleSuccess() {
   return (
     <div className="d-flex flex-column justify-content-center align-items-center" style={{ height: "98vh" }}>
       <img
-        src="/assets/logo1.jpg"
+        src="/assets/logo2.png"
         alt="Logo"
         style={{
-          width: "200px",
+          width: "300px",
           marginBottom: "2rem",
           animation: "fadeIn 0.5s ease-out",
         }}

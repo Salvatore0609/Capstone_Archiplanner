@@ -568,7 +568,7 @@ const TaskCard = ({ task, project, phase }) => {
               </div>
               <div className="modal-footer">
                 <Button
-                  className="btn-save-custom"
+                  className="btn-primary"
                   onClick={() => {
                     handleFieldChange(activeModalStep, {
                       textareaValue: modalTextareaValue,
@@ -601,10 +601,10 @@ const TaskCard = ({ task, project, phase }) => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={closePdfPreview}>
+          <Button className="btn-delete" onClick={closePdfPreview}>
             Chiudi
           </Button>
-          <Button variant="primary" href={pdfPreview.url} download>
+          <Button className="btn-primary" href={pdfPreview.url} download>
             <IoMdDownload className="me-1" /> Scarica
           </Button>
         </Modal.Footer>

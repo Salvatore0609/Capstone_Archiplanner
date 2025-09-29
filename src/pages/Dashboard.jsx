@@ -50,8 +50,6 @@ const Dashboard = () => {
                     <div className="d-flex flex-column gap-4 w-100">
                       <DashboardInfoCards />
 
-                      {/* <SardegnaMap /> */}
-
                       <div className="w-100">
                         <ProjectMap projects={projectLocations} />
                       </div>

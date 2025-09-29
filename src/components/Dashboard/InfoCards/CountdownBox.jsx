@@ -73,10 +73,10 @@ const CountdownBox = () => {
       <Card.Body>
         <Card.Title className="countdown-label">
           <Col md={12} className="d-flex align-items-center" style={{ paddingBottom: "1em" }}>
-            <p className="m-0 fs-6 fw-bold" style={{ color: "#C69B7B" }}>
+            <p className="m-0 fs-6 fw-bold" style={{ color: "var(--primary)" }}>
               Prossimo caffè alle {nextBreak.targetTime}
             </p>
-            <FiCoffee size={25} color="#C69B7B" className="ms-auto" />
+            <FiCoffee size={25} className="ms-auto icon-color" />
           </Col>
         </Card.Title>
 

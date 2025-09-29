@@ -78,7 +78,7 @@ const Project = () => {
     }
   }, [dispatch, projects.length]);
 
-  // All’avvio e quando cambia `project`, popolo `checked` dal campo `completato`
+  // All’avvio e quando cambio `project`, popolo `checked` dal campo `completato`
   // e imposto i dati iniziali per l’editModal
   useEffect(() => {
     if (project) {
@@ -197,14 +197,14 @@ const Project = () => {
     try {
       dispatch(
         updateProject(project.id, {
-          nomeProgetto: project.nomeProgetto, // nome non cambia qui
+          nomeProgetto: project.nomeProgetto,
           progettista: editData.progettista,
           impresaCostruttrice: editData.impresaCostruttrice,
           indirizzo: editData.indirizzo,
-          lat: project.lat, // lat/lng restano invariati
+          lat: project.lat,
           lng: project.lng,
-          completato: project.completato, // completato non cambia
-          inProgress: project.inProgress, // inProgress non cambia
+          completato: project.completato,
+          inProgress: project.inProgress,
         })
       );
       closeEditModal();
@@ -364,15 +364,7 @@ const Project = () => {
                             </Col>
 
                             <Col md={1}>
-                              <Button
-                                style={{
-                                  backgroundColor: "#C67B7B",
-                                  borderColor: "#C67B7B",
-                                  color: "white",
-                                }}
-                                size="sm"
-                                onClick={() => dispatch(deleteStepDataById(sd.id, project.id))}
-                              >
+                              <Button className="btn-delete" size="sm" onClick={() => dispatch(deleteStepDataById(sd.id, project.id))}>
                                 Elimina
                               </Button>
                             </Col>
@@ -397,10 +389,10 @@ const Project = () => {
           Eliminare <strong>{projectToDelete?.nomeProgetto}</strong>?
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setShowDeleteModal(false)} style={{ backgroundColor: "#D9D9D9" }}>
+          <Button onClick={() => setShowDeleteModal(false)} className="btn-cancel">
             Annulla
           </Button>
-          <Button onClick={confirmDelete} style={{ backgroundColor: "#c67b7b" }}>
+          <Button onClick={confirmDelete} className="btn-delete">
             Elimina
           </Button>
         </Modal.Footer>
@@ -429,10 +421,10 @@ const Project = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={closeEditModal} style={{ backgroundColor: "#C67B7B" }}>
+            <Button onClick={closeEditModal} className="btn-cancel">
               Annulla
             </Button>
-            <Button type="submit" style={{ backgroundColor: "#7BC682" }}>
+            <Button type="submit" className="btn-primary">
               Salva modifiche
             </Button>
           </Modal.Footer>

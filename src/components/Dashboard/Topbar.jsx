@@ -7,6 +7,7 @@ import { clearUserData, removeToken } from "../../redux/utils/authUtils";
 import { logoutGoogle, logoutNormal } from "../../redux/action/LoginActions";
 import { useEffect, useState } from "react";
 import { fetchNotifications, fetchUnreadNotificationsCount, markNotificationAsRead } from "../../redux/action/NotificationActions";
+import ThemeToggle from "../commons/ThemeToogle";
 /* import { useDarkMode } from "../commons/useDarkMode";
 import { MdLightMode, MdOutlineDarkMode } from "react-icons/md"; */
 
@@ -73,7 +74,7 @@ const Topbar = () => {
       <div className="w-50 ms-auto me-auto">
         <InputGroup className="search-bar">
           <InputGroup.Text className="border border-0 bg-transparent" role="button" onClick={handleSearch}>
-            <FaSearch size={20} color="#C69B7B" />
+            <FaSearch size={20} color="var(--primary)" />
           </InputGroup.Text>
           <FormControl
             type="text"
@@ -110,24 +111,12 @@ const Topbar = () => {
         )}
       </div>
 
-      {/* Dark Mode */}
-      {/* <div className="d-flex align-items-center ms-3">
-        <Form className="d-flex align-items-center">
-          <Form.Check
-            type="switch"
-            id="darkModeSwitch"
-            className="dark-switch me-3"
-            label={mode === "dark" ? <MdLightMode size={30} color="#c69b7b" /> : <MdOutlineDarkMode size={30} color="#c69b7b" />}
-            checked={mode === "dark"}
-            onChange={toggleMode}
-          />
-        </Form>
-      </div> */}
+      <ThemeToggle />
 
       <div className="user-info d-flex align-items-center ms-3 position-relative">
         {/* Icona campanella con badge */}
         <div className="position-relative me-3" style={{ cursor: "pointer" }} onClick={toggleNotifications}>
-          <IoMdNotificationsOutline size={30} color="#C69B7B" />
+          <IoMdNotificationsOutline size={30} className="icon-color" />
           {unreadCount > 0 && (
             <Badge pill bg="danger" className="position-absolute top-0 start-100 translate-middle text-white">
               {unreadCount}
@@ -143,6 +132,7 @@ const Topbar = () => {
               right: 0,
               top: "40px",
               width: "300px",
+              backgroundColor: "var(--neutral-gray)",
             }}
           >
             <div className="p-2 border-bottom d-flex justify-content-between align-items-center">
@@ -182,7 +172,7 @@ const Topbar = () => {
         <Dropdown>
           <Dropdown.Toggle variant="link" id="user-dropdown-toggle" className="text-decoration-none">
             {localAvatarError || !avatarUrl ? (
-              <FaRegUserCircle size={30} className="text-secondary" />
+              <FaRegUserCircle size={30} />
             ) : (
               <img
                 src={avatarUrl}
@@ -197,7 +187,7 @@ const Topbar = () => {
                   height: "40px",
                   objectFit: "cover",
                   borderRadius: "50%",
-                  border: "2px solid #C69B7B",
+                  border: "2px solid var(--primary)",
                 }}
               />
             )}
