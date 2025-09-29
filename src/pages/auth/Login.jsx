@@ -41,14 +41,14 @@ function Login() {
                 className="p-3 text-light "
                 style={{
                   right: "-5%",
-                  top: "15%",
+                  top: "5%",
                   backgroundColor: "rgba(0, 0, 0, 0)",
                   backdropFilter: "blur(10px)",
                   border: "0px solid",
                   borderRadius: "20px",
                   width: "100%",
                   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
-                  maxHeight: "70%",
+                  maxHeight: "90%",
                   overflowY: "auto",
                 }}
               >

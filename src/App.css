@@ -74,7 +74,7 @@
 /*        DARK THEME STYLES      */
 /*===============================*/
 [data-theme="dark"] body {
-  background: #000000;
+  background: var(--neutral-gray);
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
@@ -90,11 +90,6 @@
   background-attachment: fixed;
   position: relative;
   overflow: hidden;
-}
-
-:root {
-  --logo-width: 50%;
-  --logo-height: 50%;
 }
 
 [data-theme="dark"] .form-label {
@@ -129,6 +124,7 @@
 
 [data-theme="dark"] .modal-header {
   background: rgba(255, 107, 53, 0.1);
+  border-radius: var(--border-radius);
   border-bottom: 1px solid var(--neutral-medium);
   backdrop-filter: blur(10px);
 }
