@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Container, Row, Col, Spinner, Card, Button, Modal, Form } from "react-bootstrap";
+import { Container, Row, Col, Spinner, Card, Button, Modal, Form, Alert } from "react-bootstrap";
 import { useEffect, useMemo, useState } from "react";
 import Sidebar from "../components/Dashboard/Sidebar";
 import Topbar from "../components/Dashboard/Topbar";
@@ -25,6 +25,8 @@ import { IoMdDownload } from "react-icons/io";
 const Project = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const [checked, setChecked] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editData, setEditData] = useState({
@@ -111,9 +113,14 @@ const Project = () => {
 
   // ────────────────────────────────────────────────────────────
   // GESTIONE DELETE PROGETTO
+
   const handleDeleteProject = () => {
     if (stepDataItems.length > 0) {
-      alert("Non puoi eliminare il progetto finché ci sono step salvati. Elimina prima tutti gli step.");
+      setAlertMessage("Non puoi eliminare il progetto finché ci sono step salvati. Elimina prima tutti gli step.");
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 5000);
       return;
     }
     setProjectToDelete(project);
@@ -127,7 +134,11 @@ const Project = () => {
       setShowDeleteModal(false);
       navigate("/dashboard");
     } catch (err) {
-      alert("Errore nell'eliminazione: " + err.message);
+      setAlertMessage("Errore nell'eliminazione: " + err.message);
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 5000);
     }
   };
   // ────────────────────────────────────────────────────────────
@@ -223,6 +234,24 @@ const Project = () => {
         <Col sm={10} className="pt-5 mx-auto">
           <Topbar />
           <Container fluid className="pt-5">
+            {showAlert && (
+              <Alert
+                variant="danger"
+                dismissible
+                onClose={() => setShowAlert(false)}
+                style={{
+                  position: "fixed",
+                  top: "92%",
+                  right: "1%",
+                  zIndex: 9999,
+                  minWidth: "300px",
+                  fontWeight: "bold",
+                  padding: "2em",
+                }}
+              >
+                {alertMessage}
+              </Alert>
+            )}
             {/* ──────────────────────────────────────────────────────────── */}
             {/* Dettagli progetto */}
             <Col md={12}>
@@ -234,12 +263,12 @@ const Project = () => {
                     className="pinBtn"
                     title={project.inProgress ? "Rimuovi da Lavori in corso" : "Aggiungi a Lavori in corso"}
                   >
-                    {project.inProgress ? <TiPin size={25} color="#C69B7B" /> : <TiPinOutline size={24} color="#C69B7B" />}
+                    {project.inProgress ? <TiPin size={25} /> : <TiPinOutline size={24} />}
                   </Button>
 
                   {/* Icona EDIT */}
                   <Button onClick={openEditModal} className="editBtn" title="Modifica dati progetto">
-                    <FaEdit size={25} color="#C69B7B" />
+                    <FaEdit size={25} />
                   </Button>
 
                   {/* BooleanPill per “Completato” */}
@@ -251,10 +280,12 @@ const Project = () => {
                   </Button>
                 </div>
               </div>
-              <h4 className="project-title mt-3 fs-5">{project.nomeProgetto}</h4>
+              <h4 className="project-title mt-3 fs-5" style={{ color: "var(--primary)" }}>
+                {project.nomeProgetto}
+              </h4>
             </Col>
             <Col md={12} className="mt-3">
-              <Row className="projectDetails gx-3 gy-2 fw-bold p-2" style={{ color: "#C69B7B", fontSize: "14px" }}>
+              <Row className="projectDetails gx-3 gy-2 fw-bold p-2" style={{ color: "var(--primary)", fontSize: "14px" }}>
                 <Col xs={12} sm={6} lg={3} className="d-flex">
                   <span>Progettista:&nbsp;</span>
                   <span className="m-0">{project.progettista || "Non specificato"}</span>
@@ -281,10 +312,10 @@ const Project = () => {
             <Card className="map-card mt-2">
               <div className="map-wrapper p-2 pt-0 m-0">
                 <div className="d-flex justify-content-between align-items-center border-0">
-                  <h5 className="map-title m-2" style={{ color: "#C69B7B" }}>
+                  <h5 className="map-title m-2" style={{ color: "var(--primary)" }}>
                     Aree Progetti
                   </h5>
-                  <FaRegMap size={25} className="map-icon me-auto" style={{ color: "#C69B7B" }} />
+                  <FaRegMap size={25} className="map-icon me-auto" style={{ color: "var(--primary)" }} />
                 </div>
                 <GoogleMapView projects={[project]} />
               </div>
@@ -292,12 +323,12 @@ const Project = () => {
 
             <Card className="card mt-4">
               <div className="p-3">
-                <h5 style={{ color: "#C69B7B" }}>Dati task/step per questo progetto</h5>
+                <h5 style={{ color: "var(--primary)" }}>Dati task/step per questo progetto</h5>
 
                 {isLoadingStepData ? (
                   <Spinner />
                 ) : (
-                  <div>
+                  <div style={{ color: "var(--text-dark)" }}>
                     {stepDataItems.length === 0 ? (
                       <p>Nessun dato salvato finora.</p>
                     ) : (
@@ -326,7 +357,7 @@ const Project = () => {
                                     variant="link"
                                     className="fw-bold"
                                     style={{
-                                      color: "#7BADC6",
+                                      color: "var(--info)",
                                       textDecoration: "none",
                                     }}
                                     onClick={() => {
@@ -359,8 +390,8 @@ const Project = () => {
                               )}
                             </Col>
 
-                            <Col md={1} className="ms-auto">
-                              <p className="mb-1 text-muted small">{new Date(sd.updatedAt).toLocaleString("it-IT")}</p>
+                            <Col md={1} className="ms-auto" style={{ color: "var(--text-dark)" }}>
+                              <p className="mb-1 small">{new Date(sd.updatedAt).toLocaleString("it-IT")}</p>
                             </Col>
 
                             <Col md={1}>

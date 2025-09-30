@@ -83,7 +83,7 @@
 
 [data-theme="dark"] body.login-page {
   background: #000000;
-  background: linear-gradient(45deg, rgba(0, 0, 0, 1) 40%, rgba(253, 29, 29, 1) 85%, rgba(252, 176, 69, 1) 100%);
+  background: linear-gradient(45deg, rgba(0, 0, 0, 1) 35%, rgba(253, 29, 29, 1) 90%, rgba(252, 176, 69, 1) 100%);
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
@@ -195,9 +195,14 @@
   color: var(--text-light);
 }
 
+[data-theme="dark"] .pinBtn,
+[data-theme="dark"] .editBtn {
+  color: var(--primary);
+}
 [data-theme="dark"] .pinBtn:hover,
 [data-theme="dark"] .editBtn:hover {
   background-color: var(--primary);
+  color: var(--text-dark);
   transform: scale(1.2);
 }
 
@@ -733,6 +738,7 @@ button {
   padding: 1rem;
   border-radius: 50%;
   transition: background-color 0.2s ease;
+  color: var(--primary);
 }
 
 .pinBtn:hover,

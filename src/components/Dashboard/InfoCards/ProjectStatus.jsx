@@ -52,10 +52,12 @@ const ProjectStatus = () => {
   ];
 
   return (
-    <Card className="status-card text-start p-2">
+    <Card className="text-start p-2">
       <Card.Body>
         <div className="d-flex align-items-center">
-          <Card.Title className="fs-5">Progetti</Card.Title>
+          <Card.Title className="fs-5" style={{ color: "var(--primary)" }}>
+            Progetti
+          </Card.Title>
           <VscGraph size={24} className="ms-auto icon-color" />
         </div>
 

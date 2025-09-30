@@ -33,93 +33,51 @@ function Login() {
     <>
       <ThemeToggle className="position-absolute top-0 start-0 m-3" />
       <Container fluid className="d-flex align-items-center">
-        <Row className="w-100">
+        <Row className="w-100 ">
           <Col lg={8} className="d-none d-lg-flex align-items-center justify-content-center">
-            <div className="position-relative w-100 h-100">
+            <div className="position-relative w-100 " style={{ height: "90vh" }}>
               {/* Testo descrittivo */}
+              <div
+                className="position-absolute"
+                style={{
+                  left: "15%",
+                  top: "28%",
+                  width: "40%",
+                  height: "40%",
+                  background: "url('/assets/logo.png') no-repeat center center",
+                  backgroundSize: "contain",
+                  opacity: 1,
+                  zIndex: 1000,
+                }}
+              />
               <Card
                 className="p-3 text-light "
                 style={{
-                  right: "-5%",
-                  top: "5%",
+                  right: "-50%",
+                  top: "35%",
                   backgroundColor: "rgba(0, 0, 0, 0)",
-                  backdropFilter: "blur(10px)",
+                  backdropFilter: "blur(20px)",
                   border: "0px solid",
                   borderRadius: "20px",
-                  width: "100%",
-                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
+                  width: "50%",
+                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.38)",
                   maxHeight: "90%",
                   overflowY: "auto",
                 }}
               >
-                <div
-                  className="position-absolute"
-                  style={{
-                    left: "60%",
-                    top: "50%",
-                    width: "40%",
-                    height: "60%",
-                    background: "url('/assets/logo.png') no-repeat center center",
-                    backgroundSize: "contain",
-                    opacity: 1,
-                    zIndex: 1000,
-                  }}
-                />
                 <Card.Body>
-                  <h1 className="text-center mb-4" style={{ color: "var(--primary)", fontSize: "2rem", fontWeight: "bold" }}>
-                    ARCHIPLANNER
-                  </h1>
-                  <h2 className="text-center mb-4" style={{ color: "var(--text-dark)", fontSize: "1.2rem" }}>
-                    La piattaforma per la gestione intelligente dei progetti architettonici
-                  </h2>
-
                   <div className="mb-4">
-                    <h4 style={{ color: "var(--primary)" }}>PROBLEMA ATTUALE NEL SETTORE EDILIZIO E URBANISTICO:</h4>
-                    <p>I professionisti e gli studi tecnici si trovano ogni giorno ad affrontare:</p>
-                    <ul>
-                      <li> Documentazione frammentata tra Comuni, SUAP e Catasto</li>
-                      <li> Difficoltà nel tracciare le 6 fasi progettuali</li>
-                      <li> Perdita di tempo nella ricerca delle normative urbanistiche</li>
-                    </ul>
-                  </div>
+                    <h1 className="text-start mb-1" style={{ color: "var(--primary)", fontSize: "2rem", fontWeight: "bold" }}>
+                      ARCHIPLANNER
+                    </h1>
+                    <h2 className="text-start mb-4" style={{ color: "var(--text-dark)", fontSize: "1.2rem" }}>
+                      La piattaforma per la gestione intelligente dei progetti architettonici
+                    </h2>
+                    <h5 className="text-start mb-4">GESTIONE INTELLIGENTE DELLE FASI PROGETTUALI</h5>
 
-                  <div className="mb-4">
-                    <h4 style={{ color: "var(--primary)" }}>LA SOLUZIONE: ARCHIPLANNER</h4>
-                    <p>Una piattaforma centralizzata che semplifica e potenzia la gestione dei progetti architettonici:</p>
+                    <h5 className="text-start mb-4">BANCA DATI NORMATIVA INTEGRATA</h5>
 
-                    <h5>GESTIONE INTELLIGENTE DELLE FASI PROGETTUALI</h5>
-                    <p>Progetti strutturati automaticamente in 6 fasi conformi alle normative tramite:</p>
-                    <ul>
-                      <li>Task guidate</li>
-                      <li>Documenti precompilati</li>
-                    </ul>
-
-                    <h5>BANCA DATI NORMATIVA INTEGRATA</h5>
-                    <p>Restituisce:</p>
-                    <ul>
-                      <li>Articoli di legge</li>
-                      <li>Parametri urbanistici</li>
-                      <li>Usi del territorio e vincoli</li>
-                    </ul>
-                    <p>Tutto tramite schede tecniche pre-caricate per ogni fase del progetto.</p>
-
-                    <h5>ORGANIZZAZIONE EFFICACE</h5>
-                    <ul>
-                      <li>Calendario personale (sincronizzato con Google Calendar)</li>
-                      <li>Georeferenziazione automatica dei progetti</li>
-                      <li>Notifiche in tempo reale (WebSocket)</li>
-                      <li>File sharing con anteprima dei documenti</li>
-                    </ul>
-                  </div>
-
-                  <div className="mb-4">
-                    <h4 style={{ color: "var(--primary)" }}>PERCHÉ FUNZIONA</h4>
-                    <p>Con Archiplanner i team possono:</p>
-                    <ul>
-                      <li>Ridurre del 40% i tempi di gestione</li>
-                      <li>Evitare errori normativi</li>
-                      <li>Aumentare la produttività grazie a:</li>
-                    </ul>
+                    <h5 className="text-start mb-4">ORGANIZZAZIONE EFFICACE</h5>
                   </div>
                 </Card.Body>
               </Card>
@@ -160,7 +118,7 @@ function Login() {
                   className="w-100 fw-bold"
                   onClick={() => setShowRegister(true)}
                   style={{
-                    backgroundColor: "#FFBC02",
+                    backgroundColor: "var(--warning)",
                     border: "none",
                   }}
                 >
@@ -172,7 +130,7 @@ function Login() {
                 className="w-100 fw-bold"
                 onClick={handleGoogleLogin}
                 style={{
-                  backgroundColor: "#7BADC6",
+                  backgroundColor: "var(--info)",
                   border: "none",
                 }}
               >

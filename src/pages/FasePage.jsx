@@ -48,7 +48,9 @@ const FasePage = () => {
           <Topbar />
 
           <Row className="justify-content-center " style={{ height: "calc(100vh - 180px)" }}>
-            <h5 className="mt-3">{title}</h5>
+            <h5 className="mt-3" style={{ color: "var(--primary)" }}>
+              {title}
+            </h5>
             {tasks.map((task) => (
               <Col key={task.id} md={12}>
                 <TaskCard task={task} project={project} phase={phase} />

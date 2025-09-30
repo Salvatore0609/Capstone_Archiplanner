@@ -9,7 +9,7 @@ import { IoMdDownload } from "react-icons/io";
 // #region renderParametri
 const renderParametri = (parametri) => {
   return (
-    <ul style={{ marginTop: 4 }}>
+    <ul style={{ marginTop: 4, color: "var(--text-dark)" }}>
       {parametri.map((p, i) => (
         <li key={i}>
           Indice Fondiario: {p.indiceFondiario} <br />
@@ -35,7 +35,7 @@ const renderParametri = (parametri) => {
 // #region renderUsiPermessi
 const renderUsiPermessi = (usiPermessi) => {
   return (
-    <ul>
+    <ul style={{ color: "var(--text-dark)" }}>
       {usiPermessi.map((uso) => (
         <li key={uso.id} style={{ marginBottom: 8 }}>
           <strong>Zona:</strong> {uso.zona} <br />
@@ -72,9 +72,9 @@ const renderContent = (art) => {
         borderRadius: 4,
       }}
     >
-      <h5>{art.titolo}</h5>
+      <h5 style={{ color: "var(--text-dark)" }}>{art.titolo}</h5>
       {art.sezioni.map((sez) => (
-        <div key={sez.sezId} style={{ marginBottom: 16 }}>
+        <div key={sez.sezId} style={{ marginBottom: 16, color: "var(--text-dark)" }}>
           <h6>Sezione: {sez.titolo}</h6>
           {sez.contenuto?.map((c, i) => (
             <p key={i}>{c}</p>
@@ -98,7 +98,7 @@ const renderContent = (art) => {
             </p>
           )}
           {renderUsiPermessi(sez.usiPermessi)}
-          {sez.parametriUrbanistici && <pre style={{ background: "#f5f5f5", padding: 8 }}>{JSON.stringify(sez.parametriUrbanistici, null, 2)}</pre>}
+          {sez.parametriUrbanistici && <pre style={{ padding: 8 }}>{JSON.stringify(sez.parametriUrbanistici, null, 2)}</pre>}
         </div>
       ))}
     </div>
@@ -301,8 +301,10 @@ const TaskCard = ({ task, project, phase }) => {
     <>
       <Card className="task-card p-4 rounded-4 mb-3">
         <Card.Body>
-          <div className="fw-bold fs-5 mb-3">{task.title}</div>
-          <ListGroup variant="flush">
+          <div className="fw-bold fs-5 mb-3" style={{ color: "var(--primary)" }}>
+            {task.title}
+          </div>
+          <ListGroup variant="flush" style={{ color: "var(--text-primary)" }}>
             {task.steps.map((step, idx) => {
               const realStepId = step.id;
               const stepKey = `step-${realStepId}`;

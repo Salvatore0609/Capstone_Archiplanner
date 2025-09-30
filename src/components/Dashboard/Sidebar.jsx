@@ -335,7 +335,7 @@ const Sidebar = () => {
 
       {/* ─────────────────────────────────────── LISTA PROGETTI “TUTTI” ─────────────────────────────────────── */}
       {showProjectList && (
-        <div className="floating-cards-container">
+        <div className="floating-cards-container" style={{ color: "var(--text-dark)" }}>
           <h5>Progetti ({projects.length})</h5>
           <Button className="btn-close" onClick={() => setShowProjectList(false)}>
             <FaTimes size={20} />
@@ -364,9 +364,9 @@ const Sidebar = () => {
                       <Col xs={4} md={2}>
                         <Card.Title className="project-list-number">{index + 1}</Card.Title>
                       </Col>
-                      <Col xs={8} md={10}>
-                        <Card.Subtitle className="text-muted">{proj.nomeProgetto}</Card.Subtitle>
-                        <Card.Text className="text-secondary">{proj.indirizzo}</Card.Text>
+                      <Col xs={8} md={10} style={{ color: "var(--text-dark)" }}>
+                        <Card.Subtitle style={{ color: "var(--text-dark)" }}>{proj.nomeProgetto}</Card.Subtitle>
+                        <Card.Text style={{ color: "var(--text-gray)" }}>{proj.indirizzo}</Card.Text>
                       </Col>
                     </Row>
                   </Card.Body>
@@ -379,7 +379,7 @@ const Sidebar = () => {
       {/* ─────────────────────────────────────── LISTA “LAVORI IN CORSO” ─────────────────────────────────────── */}
       {showInProgressList && (
         <div className="floating-cards-container">
-          <h5>Lavori in corso ({inProgressProjects.length})</h5>
+          <h5 style={{ color: "var(--text-dark)" }}>Lavori in corso ({inProgressProjects.length})</h5>
           <Button className="btn-close" onClick={() => setShowInProgressList(false)}>
             <FaTimes size={20} />
           </Button>
@@ -410,8 +410,8 @@ const Sidebar = () => {
                         <Card.Title className="project-list-number">{idx + 1}</Card.Title>
                       </Col>
                       <Col xs={10} md={10}>
-                        <Card.Subtitle className="text-muted">{proj.nomeProgetto}</Card.Subtitle>
-                        <Card.Text className="text-secondary">{proj.indirizzo}</Card.Text>
+                        <Card.Subtitle style={{ color: "var(--text-dark)" }}>{proj.nomeProgetto}</Card.Subtitle>
+                        <Card.Text style={{ color: "var(--text-gray)" }}>{proj.indirizzo}</Card.Text>
                       </Col>
                     </Row>
                   </Card.Body>
@@ -424,7 +424,7 @@ const Sidebar = () => {
       {/* ─────────────────────────────────────── LISTA FASI PROGETTO ─────────────────────────────────────── */}
       {showPhaseCards && currentProject && (
         <div className="floating-cards-container">
-          <h5>{currentProject.nomeProgetto} - Fasi</h5>
+          <h5 style={{ color: "var(--text-dark)" }}>{currentProject.nomeProgetto} - Fasi</h5>
           <Button className="btn-close" onClick={() => setShowPhaseCards(false)}>
             <FaTimes size={20} />
           </Button>
@@ -444,7 +444,9 @@ const Sidebar = () => {
                       <Card.Title className="phases-list-number">{fase.num}</Card.Title>
                     </Col>
                     <Col xs={10} md={10}>
-                      <Card.Subtitle className="mb-2 text-muted">{fase.titolo}</Card.Subtitle>
+                      <Card.Subtitle className="mb-2 " style={{ color: "var(--text-dark)" }}>
+                        {fase.titolo}
+                      </Card.Subtitle>
                     </Col>
                   </Row>
                 </Card.Body>
