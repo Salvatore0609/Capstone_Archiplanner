@@ -38,7 +38,7 @@ const FasePage = () => {
   const title = titles[phaseNum] || `Fase ${phaseNum}`;
 
   return (
-    <Container fluid className="fase-page">
+    <Container fluid className="pt-5">
       <Row>
         <Col sm={1} className="sidebar-container">
           <Sidebar />

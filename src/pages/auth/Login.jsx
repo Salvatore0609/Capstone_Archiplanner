@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginWithGoogle, loginUser } from "../../redux/action/LoginActions";
 import ThemeToggle from "../../components/commons/ThemeToogle";
+import { FaGoogle } from "react-icons/fa";
 
 function Login() {
   const [showRegister, setShowRegister] = useState(false);
@@ -125,7 +126,9 @@ function Login() {
                   Registrati
                 </Button>
               </div>
-              <div className="text-center my-3 fw-bold">— oppure —</div>
+              <div className="text-center my-3 fw-bold" style={{ color: "var(--text-dark)" }}>
+                — oppure —
+              </div>
               <Button
                 className="w-100 fw-bold"
                 onClick={handleGoogleLogin}
@@ -134,6 +137,7 @@ function Login() {
                   border: "none",
                 }}
               >
+                <FaGoogle size={20} className="me-2" />
                 Continua con Google
               </Button>
             </FormGroup>

@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import { Card, Button, Modal, Form, Row, Col, Container } from "react-bootstrap";
+import { Button, Modal, Form, Row, Col, Container } from "react-bootstrap";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { FaPlus, FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaPlus, FaArrowLeft, FaArrowRight, FaGoogle } from "react-icons/fa";
 import { format, parseISO } from "date-fns";
 import itLocale from "@fullcalendar/core/locales/it";
 import { useDispatch, useSelector } from "react-redux";
@@ -256,40 +256,47 @@ const PersonalyCalendar = ({ refreshKey }) => {
     );
   };
 
+  const renderEventContent = (eventInfo) => {
+    const isGoogle = eventInfo.event.extendedProps.source === "google";
+    return (
+      <div className="d-flex align-items-center">
+        {isGoogle && <FaGoogle size={20} className="me-2" />}
+        <span>{eventInfo.event.title}</span>
+      </div>
+    );
+  };
+
   return (
-    <Container fluid className="p-0">
-      <Card className="bg-transparent glass-card">
-        <Card.Body className="bg-transparent">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <Button className="arrow-calendar" onClick={() => setCurrentDate((d) => subDays(d, 2))}>
-              <FaArrowLeft className="d-flex" />
-            </Button>
-            <h5 className="text-center w-100">
-              {format(currentDate, "EEE dd/MM", { itLocale })} - {format(addDays(currentDate, 1), "EEE dd/MM yyyy", { itLocale })}
-            </h5>
-            <Button className="arrow-calendar" onClick={() => setCurrentDate((d) => addDays(d, 2))}>
-              <FaArrowRight className="d-flex" />
-            </Button>
-          </div>
-          <FullCalendar
-            ref={calendarRef}
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="timeGridTwoDay"
-            views={{ timeGridTwoDay: { type: "timeGrid", duration: { days: 2 } } }}
-            locale={itLocale}
-            timeZone="local"
-            allDaySlot={false}
-            slotMinTime="08:00:00"
-            slotMaxTime="20:00:00"
-            slotDuration="01:00:00"
-            events={events}
-            dateClick={handleDateClick}
-            eventClick={handleOpenModalToUptDlt}
-            headerToolbar={false}
-            height="auto"
-          />
-        </Card.Body>
-      </Card>
+    <Container fluid className="pt-3 px-0">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <Button className="arrow-calendar" onClick={() => setCurrentDate((d) => subDays(d, 2))}>
+          <FaArrowLeft className="d-flex" />
+        </Button>
+        <h5 className="text-center w-100" style={{ color: "var(--text-dark)" }}>
+          {format(currentDate, "EEE dd/MM", { itLocale })} - {format(addDays(currentDate, 1), "EEE dd/MM yyyy", { itLocale })}
+        </h5>
+        <Button className="arrow-calendar" onClick={() => setCurrentDate((d) => addDays(d, 2))}>
+          <FaArrowRight className="d-flex" />
+        </Button>
+      </div>
+      <FullCalendar
+        ref={calendarRef}
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView="timeGridTwoDay"
+        views={{ timeGridTwoDay: { type: "timeGrid", duration: { days: 2 } } }}
+        locale={itLocale}
+        timeZone="local"
+        allDaySlot={false}
+        slotMinTime="08:00:00"
+        slotMaxTime="20:00:00"
+        slotDuration="01:00:00"
+        events={events}
+        dateClick={handleDateClick}
+        eventClick={handleOpenModalToUptDlt}
+        headerToolbar={false}
+        height="auto"
+        eventContent={renderEventContent}
+      />
       <Button className="button-plus rounded-circle position-fixed" onClick={handleFreeTime}>
         <FaPlus />
       </Button>

@@ -349,9 +349,9 @@ body.login-page {
 /*===============================*/
 .main-dashboard {
   position: relative;
+  /* padding-top: 3rem; */
   padding-left: 0;
-  padding-right: 0;
-  padding-top: 3.5rem;
+  padding-right: 3rem;
 }
 
 /*===============================*/
@@ -444,10 +444,10 @@ button {
   outline: none;
   color: var(--primary-light);
 }
-.carousel-control:hover {
-  padding: 1em;
-  transform: scale(1.2);
-}
+/* .carousel-control:hover {
+ padding: 1em;
+  transform: scale(1.2); 
+} */
 
 /*===============================*/
 /*        SIDEBAR                */
@@ -886,7 +886,7 @@ button {
   background-color: color-mix(in srgb, var(--neutral-light) 20%, transparent);
   backdrop-filter: blur(8px);
   border-radius: var(--border-radius-small);
-  max-height: 510px;
+  max-height: 50em;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
 }
@@ -897,7 +897,7 @@ button {
 }
 
 .fc .fc-timegrid-slot {
-  height: 4em;
+  height: 8em;
 }
 
 .fc-timegrid .fc-timegrid-slot {

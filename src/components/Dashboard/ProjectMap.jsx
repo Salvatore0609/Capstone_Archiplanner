@@ -12,7 +12,7 @@ const ProjectMap = ({ projects = [] }) => {
           <h5 className="map-title m-2" style={{ color: "var(--primary)" }}>
             Aree Progetti
           </h5>
-          <FaRegMap size={25} className="map-icon me-auto icon-color" />
+          <FaRegMap size={25} className="map-icon ms-auto icon-color" />
         </div>
         <GoogleMapView projects={validProjects} />
       </div>

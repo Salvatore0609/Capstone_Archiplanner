@@ -1,4 +1,4 @@
-import { Card, Col } from "react-bootstrap";
+import { Card, Col, Row } from "react-bootstrap";
 import { FiCoffee } from "react-icons/fi";
 import { useEffect, useState, useRef } from "react";
 
@@ -72,21 +72,29 @@ const CountdownBox = () => {
     <Card className="h-100">
       <Card.Body>
         <Card.Title className="countdown-label">
-          <Col md={12} className="d-flex align-items-center" style={{ paddingBottom: "1em" }}>
-            <p className="m-0 fs-6 fw-bold" style={{ color: "var(--primary)" }}>
-              Prossimo caffè alle {nextBreak.targetTime}
-            </p>
-            <FiCoffee size={25} className="ms-auto icon-color" />
-          </Col>
+          <Row>
+            <Col md={12} className="d-flex align-items-center" style={{ paddingBottom: "1em" }}>
+              <p className="m-0 fs-6 fw-bold" style={{ color: "var(--primary)" }}>
+                Prossimo caffè alle {nextBreak.targetTime}
+              </p>
+              <FiCoffee size={25} className="ms-auto icon-color" />
+            </Col>
+          </Row>
+          <Row>
+            <Col className="d-flex flex-column align-items-center">
+              <p className="m-0 fs-6 fw-bold mt-5" style={{ color: "var(--primary)" }}>
+                Tempo rimanente:
+              </p>
+              <div className="countdown-timer fs-0 fw-bold mt-5">
+                <span className="time-segment">{nextBreak.hours}</span>
+                <span className="time-separator mx-1">:</span>
+                <span className="time-segment">{nextBreak.minutes}</span>
+                <span className="time-separator mx-1">:</span>
+                <span className="time-segment">{nextBreak.seconds}</span>
+              </div>
+            </Col>
+          </Row>
         </Card.Title>
-
-        <div className="countdown-timer text-center fs-3 fw-bold">
-          <span className="time-segment">{nextBreak.hours}</span>
-          <span className="time-separator mx-1">:</span>
-          <span className="time-segment">{nextBreak.minutes}</span>
-          <span className="time-separator mx-1">:</span>
-          <span className="time-segment">{nextBreak.seconds}</span>
-        </div>
       </Card.Body>
     </Card>
   );

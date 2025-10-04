@@ -1,5 +1,5 @@
 // src/components/ProjectStatus.jsx
-import { useState, useEffect } from "react";
+/* import { useState, useEffect } from "react";
 import { Card } from "react-bootstrap";
 import { VscGraph } from "react-icons/vsc";
 import { useSelector } from "react-redux";
@@ -72,4 +72,4 @@ const ProjectStatus = () => {
   );
 };
 
-export default ProjectStatus;
+export default ProjectStatus; */

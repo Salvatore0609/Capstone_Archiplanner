@@ -47,7 +47,7 @@ const Dashboard = () => {
               <Carousel.Item>
                 <Row className="justify-content-center">
                   <Col xs={12} md={6}>
-                    <div className="d-flex flex-column gap-4 w-100">
+                    <div className="d-flex flex-column gap-2 w-100">
                       <DashboardInfoCards />
 
                       <div className="w-100">
@@ -61,7 +61,7 @@ const Dashboard = () => {
               {/* Slide 2 */}
               <Carousel.Item>
                 <Row className="justify-content-center">
-                  <Col md={6} className="mb-5">
+                  <Col md={9}>
                     <PersonalyCalendar key={refreshKey} />
                   </Col>
                 </Row>

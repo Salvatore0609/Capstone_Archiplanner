@@ -1,14 +1,13 @@
-// (opzionale) DashboardInfoCards.jsx
-import ProjectStatus from "./InfoCards/ProjectStatus";
+import ProjectStatus2 from "./InfoCards/ProjectStatus2";
 import CountdownBox from "./InfoCards/CountdownBox";
 
 export default function DashboardInfoCards() {
   return (
-    <div className="d-flex  flex-column flex-md-row w-100 gap-3">
-      <div className="flex-fill">
-        <ProjectStatus />
+    <div className="row w-100 g-2">
+      <div className="col-12 col-md-7">
+        <ProjectStatus2 />
       </div>
-      <div className="flex-fill">
+      <div className="col-12 col-md-5">
         <CountdownBox />
       </div>
     </div>

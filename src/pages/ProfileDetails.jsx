@@ -176,7 +176,7 @@ export default function ProfileDetails() {
                   <div className="d-flex align-items-center mb-4">
                     <h3 className="me-auto">Il Tuo Profilo</h3>
                     <Button className="editBtn" onClick={openEditModal} title="Modifica profilo">
-                      <FaEdit size={24} color="#C69B7B" />
+                      <FaEdit size={24} />
                     </Button>
                   </div>
 
