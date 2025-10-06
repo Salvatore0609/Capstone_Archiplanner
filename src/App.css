@@ -886,7 +886,7 @@ button {
   background-color: color-mix(in srgb, var(--neutral-light) 20%, transparent);
   backdrop-filter: blur(8px);
   border-radius: var(--border-radius-small);
-  max-height: 50em;
+  max-height: 680px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
 }
