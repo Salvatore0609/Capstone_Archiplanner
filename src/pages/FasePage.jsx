@@ -38,7 +38,7 @@ const FasePage = () => {
   const title = titles[phaseNum] || `Fase ${phaseNum}`;
 
   return (
-    <Container fluid className="pt-5">
+    <Container fluid>
       <Row>
         <Col sm={1} className="sidebar-container">
           <Sidebar />
@@ -47,7 +47,7 @@ const FasePage = () => {
         <Col sm={11} className="main-dashboard">
           <Topbar />
 
-          <Row className="justify-content-center " style={{ height: "calc(100vh - 180px)" }}>
+          <Row className="justify-content-center pt-5">
             <h5 className="mt-3" style={{ color: "var(--primary)" }}>
               {title}
             </h5>

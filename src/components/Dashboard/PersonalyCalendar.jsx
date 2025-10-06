@@ -267,7 +267,7 @@ const PersonalyCalendar = ({ refreshKey }) => {
   };
 
   return (
-    <Container fluid className="pt-3 px-0">
+    <Container fluid className="px-0">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <Button className="arrow-calendar" onClick={() => setCurrentDate((d) => subDays(d, 2))}>
           <FaArrowLeft className="d-flex" />
