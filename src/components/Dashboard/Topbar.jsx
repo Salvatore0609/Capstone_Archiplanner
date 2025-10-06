@@ -33,6 +33,23 @@ const Topbar = () => {
     dispatch(fetchUnreadNotificationsCount());
   }, [dispatch]);
 
+  const interval = setInterval(() => {
+    dispatch(fetchUnreadNotificationsCount());
+    /* fallo solo una volta */
+    clearInterval(interval);
+  }, 60000);
+
+  /* notifiche */
+  const toggleNotifications = () => {
+    setShowNotifications((prev) => !prev);
+  };
+
+  const handleNotificationClick = (notifId) => {
+    dispatch(markNotificationAsRead(notifId));
+    clearInterval(interval); // fermo il conteggio automatico
+    setShowNotifications(false);
+  };
+
   const avatarUrl = activeUser?.avatar;
 
   const handleLogout = () => {
@@ -58,15 +75,6 @@ const Topbar = () => {
     } else {
       alert("Nessun progetto trovato.");
     }
-  };
-
-  /* notifiche */
-  const toggleNotifications = () => {
-    setShowNotifications((prev) => !prev);
-  };
-
-  const handleNotificationClick = (notifId) => {
-    dispatch(markNotificationAsRead(notifId));
   };
 
   return (
@@ -133,6 +141,7 @@ const Topbar = () => {
               top: "40px",
               width: "300px",
               backgroundColor: "var(--neutral-gray)",
+              overflow: "auto",
             }}
           >
             <div className="p-2 border-bottom d-flex justify-content-between align-items-center">
